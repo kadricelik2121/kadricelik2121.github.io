@@ -1,0 +1,420 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Almanca Bağlaçlar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            padding: 20px;
+        }
+        #button-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            justify-items: center;
+        }
+        .button {
+            font-weight: bold;
+            font-size: 38px;
+            line-height: 1.2;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal;
+            word-break: break-word;
+            width: 100%;
+            max-width: 300px;
+            height: 120px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            text-align: center;
+        }
+        .button:hover {
+            background-color: #2980b9;
+        }
+        .content, .back-button {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            font-size: 50px;
+        }
+        .back-button {
+            margin-top: 30px;
+            display: inline-flex;
+            align-items: center;
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 50px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .back-button:hover {
+            background-color: #c0392b;
+        }
+        .back-button span {
+            margin-right: 20px;
+            font-size: 60px;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="font-size: 50px; text-align: center;">Almanca Bağlaçlar</h1>
+    <div id="button-container">
+<div class="button" onclick="showContent('und__')">und (=ve)</div>
+<div class="button" onclick="showContent('denn______-icin__çünkü_')">denn (<...-icin, çünkü)</div>
+<div class="button" onclick="showContent('aber__')">aber (=ama, fakat)</div>
+<div class="button" onclick="showContent('sondern__')">sondern (=tam tersine, aksine,
+bilakis)</div>
+<div class="button" onclick="showContent('weil__')">weil (=...-icin, çünkü)</div>
+<div class="button" onclick="showContent('da__-___-igin__çünkü_')">da (-...-igin, çünkü)</div>
+<div class="button" onclick="showContent('wenn__')">wenn (=eger)</div>
+<div class="button" onclick="showContent('wenn__')">wenn (=eger)</div>
+<div class="button" onclick="showContent('als__')">als (=...-iken)</div>
+<div class="button" onclick="showContent('seitdem__')">seitdem (=...-den beri)</div>
+<div class="button" onclick="showContent('bevor__-___-den_Once_')">bevor (-...-den Once)</div>
+<div class="button" onclick="showContent('nachdem__-___-den_sonra_')">nachdem (-...-den sonra)</div>
+<div class="button" onclick="showContent('sobald__-___-ir_ermez_')">sobald (-...-ir ermez)</div>
+<div class="button" onclick="showContent('solange__')">solange (=oldugu sürece)</div>
+<div class="button" onclick="showContent('wahrend__-___-iken__sirasinda_')">wahrend (-...-iken, sirasinda)</div>
+<div class="button" onclick="showContent('obwohl__obgleich__obschon__-___-e_ragmen_')">obwohl, obgleich, obschon (-...-e
+ragmen)</div>
+<div class="button" onclick="showContent('trotzdem___')">trotzdem (<=...-e rajmen, ama)</div>
+<div class="button" onclick="showContent('deshalb__deswegen__-icin_____-den_dolayi_')">deshalb, deswegen (-icin, ...-den
+dolayi)</div>
+<div class="button" onclick="showContent('dann__sonra_')">dann (sonra)</div>
+<div class="button" onclick="showContent('darum______-in_icin_')">darum (<...-in icin)</div>
+<div class="button" onclick="showContent('daher__-___-den_dolayi_____-igin_')">daher (-...-den dolayi, ...-igin)</div>
+<div class="button" onclick="showContent('daher__-___-den_dolayi_____-igin_')">daher (-...-den dolayi, ...-igin)</div>
+<div class="button" onclick="showContent('dass__-___-ini_ni_')">dass (-...-ini/ni)</div>
+<div class="button" onclick="showContent('damit__')">damit (=icin, boylelikle, diye)</div>
+<div class="button" onclick="showContent('um___zu__')">um...zu (=icin, boylelikle)</div>
+<div class="button" onclick="showContent('ob__')">ob (=olup olmadigini)</div>
+<div class="button" onclick="showContent('sonst__-aksi_taktirde__yoksa_')">sonst (-aksi taktirde, yoksa)</div>
+<div class="button" onclick="showContent('sonst__')">sonst (=aksi taktirde, yoksa)</div>
+<div class="button" onclick="showContent('sowohl___als_auch__')">sowohl...als auch (=hem... hem de)</div>
+<div class="button" onclick="showContent('weder___noch__')">weder...noch (=ne...ne de)</div>
+<div class="button" onclick="showContent('zwart___aber__')">zwart...aber (=gerci, ama)</div>
+<div class="button" onclick="showContent('entweder___oder__')">entweder...oder (=ya...ya da)</div>
+<div class="button" onclick="showContent('_an_statt___zu__')">(an)statt...zu (=yerine)</div>
+<div class="button" onclick="showContent('so___dass__')">so...dass (=öyle ki)</div>
+<div class="button" onclick="showContent('so_dass__')">so dass (=öyle ki)</div>
+<div class="button" onclick="showContent('ohne___zu__')">ohne...zu (=...-meksizin)</div>
+</div>
+<div id="content-container">
+
+    <div class="content" id="und__">
+        <h2>und (=ve)</h2>
+        <p>Er ist nach Deutschland
+gefahren und hat dort studiert. (=O
+Almanya’ya gidip lniversitede
+okudu.)</p>
+    </div>
+    
+    <div class="content" id="denn______-icin__çünkü_">
+        <h2>denn (<...-icin, çünkü)</h2>
+        <p>Ich muss
+mich beeilen, denn meine Mutter
+wartet auf mich. (=Annem beklediği
+igin acele etmek zorundayim.)</p>
+    </div>
+    
+    <div class="content" id="aber__">
+        <h2>aber (=ama, fakat)</h2>
+        <p>Ich wohne in
+Istanbul, aber ich arbeite in Gebze.
+(=Ben Istanbul’da oturuyorum ama
+Gebze'de calisiyorum.)</p>
+    </div>
+    
+    <div class="content" id="sondern__">
+        <h2>sondern (=tam tersine, aksine,
+bilakis)</h2>
+        <p>Die Flasche ist nicht leer,
+sondern (sie ist) voll. (=Sise bos
+degil, tam tersine dolu.)</p>
+    </div>
+    
+    <div class="content" id="weil__">
+        <h2>weil (=...-icin, çünkü)</h2>
+        <p>Ich gehe nicht
+zur Arbeit, weil ich krank bin. (=Ise
+gitmiyorum çünkü hastayim.)</p>
+    </div>
+    
+    <div class="content" id="da__-___-igin__çünkü_">
+        <h2>da (-...-igin, çünkü)</h2>
+        <p>Da ich krank
+bin, gehe ich nicht zur Arbeit.
+(-Hasta oldugum igin ise
+gitmiyorum.)</p>
+    </div>
+    
+    <div class="content" id="wenn__">
+        <h2>wenn (=eger)</h2>
+        <p>Wenn du in Ankara
+bist, muss#ee=ereseswelven. (=Eger</p>
+    </div>
+    
+    <div class="content" id="wenn__">
+        <h2>wenn (=eger)</h2>
+        <p>Wenn du in Ankara
+bist, musst du uns besuchen. (=Eger
+Ankara’ya gelirsen bizi ziyaret</p>
+    </div>
+    
+    <div class="content" id="als__">
+        <h2>als (=...-iken)</h2>
+        <p>Als ich 5 Jahre alt war,
+ist mein Vater gestorben. (=Ben bes
+yasindayken babam oldut.)</p>
+    </div>
+    
+    <div class="content" id="seitdem__">
+        <h2>seitdem (=...-den beri)</h2>
+        <p>Seitdem er
+geheiratet hat, besucht er seine
+Eltern nicht. (=Evlendiğinden beri
+anne babasini ziyaret etmiyor.)</p>
+    </div>
+    
+    <div class="content" id="bevor__-___-den_Once_">
+        <h2>bevor (-...-den Once)</h2>
+        <p>Bevor du ins
+Bett gehst, musst du deine Zahne
+putzen. (=Yatmadan once dişlerini
+fırçalamalısın.)</p>
+    </div>
+    
+    <div class="content" id="nachdem__-___-den_sonra_">
+        <h2>nachdem (-...-den sonra)</h2>
+        <p>Nachdem
+wir gegessen haben, sind wir
+spazieren gegangen. (=Yemek
+yedikten sonra yurus yaptik.)</p>
+    </div>
+    
+    <div class="content" id="sobald__-___-ir_ermez_">
+        <h2>sobald (-...-ir ermez)</h2>
+        <p>Du musst
+deine Eltern besuchen, sobald du
+hier bist. (7Anne babani ziyaret
+etmelisin buraya gelir gelmez.)
+Sobald du hier bist, musst du deine
+Eltern besuchen. (=Buraya gelir
+gelmez anne babani ziyaret
+etmelisin.)</p>
+    </div>
+    
+    <div class="content" id="solange__">
+        <h2>solange (=oldugu sürece)</h2>
+        <p>Solange er
+bei uns war, hat er nicht geschlafen.
+(=Bizdeyken oldugu sürece hiç uyumadi.)
+Er hat nicht geschlafen, solange er
+bei uns war. (=Hig uyumadi bizde
+oldugu sürece.)</p>
+    </div>
+    
+    <div class="content" id="wahrend__-___-iken__sirasinda_">
+        <h2>wahrend (-...-iken, sirasinda)</h2>
+        <p>Wahrend ich friihstticke, lese ich
+Zeitung. (=Kahvalti ederken gazeteyi
+okurum.)</p>
+    </div>
+    
+    <div class="content" id="obwohl__obgleich__obschon__-___-e_ragmen_">
+        <h2>obwohl, obgleich, obschon (-...-e
+ragmen)</h2>
+        <p>Obwohl sie gute Freunde
+sind, streiten sie oft. (=lyi arkadas
+olmalarina ragmen sik sik kavga
+ediyorlar.)</p>
+    </div>
+    
+    <div class="content" id="trotzdem___">
+        <h2>trotzdem (<=...-e rajmen, ama)</h2>
+        <p>Er ist
+krank, trotzdem geht er zur Arbeit.
+(-O hasta ama buna ragmen ise
+gidiyor.)</p>
+    </div>
+    
+    <div class="content" id="deshalb__deswegen__-icin_____-den_dolayi_">
+        <h2>deshalb, deswegen (-icin, ...-den
+dolayi)</h2>
+        <p>Er hat Fieber,
+deshalb/deswegen geht er zum Arzt.
+(-Atesi ¢iktigi igin doktora gidiyor.)</p>
+    </div>
+    
+    <div class="content" id="dann__sonra_">
+        <h2>dann (sonra)</h2>
+        <p>Er macht (zuerst)
+seine Hausaufgaben, dann geht er
+ins Kino. (=Once édevini yap1yor
+sonra da sinamaya gidiyor.)</p>
+    </div>
+    
+    <div class="content" id="darum______-in_icin_">
+        <h2>darum (<...-in icin)</h2>
+        <p>Sie hat schlechte
+Noten, darum arbeitet sie so viel.
+(-Onun notlan kotii oldugu igin gok
+galisiyor.)</p>
+    </div>
+    
+    <div class="content" id="daher__-___-den_dolayi_____-igin_">
+        <h2>daher (-...-den dolayi, ...-igin)</h2>
+        <p>Die</p>
+    </div>
+    
+    <div class="content" id="daher__-___-den_dolayi_____-igin_">
+        <h2>daher (-...-den dolayi, ...-igin)</h2>
+        <p>Die
+Apotheke ist geschlossen, daher
+kann ich die Medikamente nicht
+kaufen. (=Eczane kapah oldugu igin
+ilaclar1 alamadim.)</p>
+    </div>
+    
+    <div class="content" id="dass__-___-ini_ni_">
+        <h2>dass (-...-ini/ni)</h2>
+        <p>Er sagte, dass er
+mich besuchen wollte. (=Beni
+ziyaret edecegini soyledi.)</p>
+    </div>
+    
+    <div class="content" id="damit__">
+        <h2>damit (=icin, boylelikle, diye)</h2>
+        <p>Er
+kauft seiner Tochter ein Buch, damit
+sie lesen lernt. (=Okumayi1
+ogrenmesi icin kizina kitap altyor.)</p>
+    </div>
+    
+    <div class="content" id="um___zu__">
+        <h2>um...zu (=icin, boylelikle)</h2>
+        <p>Er braucht
+Geld, um zu studieren.
+(-Okuyabilmesi icin paraya ihtiyaci
+var.)</p>
+    </div>
+    
+    <div class="content" id="ob__">
+        <h2>ob (=olup olmadigini)</h2>
+        <p>Er fragt, ob
+das richtig ist. (@]Bunun dogru olup
+olmadigini soruyor.)</p>
+    </div>
+    
+    <div class="content" id="sonst__-aksi_taktirde__yoksa_">
+        <h2>sonst (-aksi taktirde, yoksa)</h2>
+        <p>Du</p>
+    </div>
+    
+    <div class="content" id="sonst__">
+        <h2>sonst (=aksi taktirde, yoksa)</h2>
+        <p>Du
+musst ordentlich essen, sonst wirst
+du krank. (=Dogru diizgiin yemek
+yemelisin yoksa hasta olursun.)</p>
+    </div>
+    
+    <div class="content" id="sowohl___als_auch__">
+        <h2>sowohl...als auch (=hem... hem de)</h2>
+        <p>Ich trinke sowohl Kaffee, als auch
+Tee. (=Hem kahve hem de gay
+igiyorum.)</p>
+    </div>
+    
+    <div class="content" id="weder___noch__">
+        <h2>weder...noch (=ne...ne de)</h2>
+        <p>Ich kann
+weder Deutsch noch Englisch. (=Ne
+Almanca ne de ingilizce biliyorum.)</p>
+    </div>
+    
+    <div class="content" id="zwart___aber__">
+        <h2>zwart...aber (=gerci, ama)</h2>
+        <p>Der Hund
+ist zwar klein, aber er bellt sehr laut.
+(-Kopek kiigtk miigtk ama cok
+havliyor.)</p>
+    </div>
+    
+    <div class="content" id="entweder___oder__">
+        <h2>entweder...oder (=ya...ya da)</h2>
+        <p>Entweder machst du jetzt deine
+Hausaufgaben, oder du musst das
+Geschirr spulen. (=Simdi, ya 6devini
+yaparsin ya da bulasiklam yikarsin.)
+Du machst jetzt entweder deine
+Hausaufgaben, oder du musst das
+Geschirr spllen. (=Simdi, ya 6devini</p>
+    </div>
+    
+    <div class="content" id="_an_statt___zu__">
+        <h2>(an)statt...zu (=yerine)</h2>
+        <p>Kannst du
+mir bitte helfen, anstatt
+fernzusehen? (=Televizyon
+izleyecegine bana yardim eder
+misin?)</p>
+    </div>
+    
+    <div class="content" id="so___dass__">
+        <h2>so...dass (=öyle ki)</h2>
+        <p>Es war gestern</p>
+    </div>
+    
+    <div class="content" id="so_dass__">
+        <h2>so dass (=öyle ki)</h2>
+        <p>Am Abend wurde
+es ziemlich kalt, so dass ich keine
+Lust mehr zum Schwimmen hatte.
+(-Hava oyle sogudu ki ylizmeye
+gitmek istemedim.)</p>
+    </div>
+    
+    <div class="content" id="ohne___zu__">
+        <h2>ohne...zu (=...-meksizin)</h2>
+        <p>Ihr Freund
+ist weggegangen, ohne sich von ihr
+zu verabschieden. (=Arkadasi ona
+bir Allahaismarladik demeden gitti.)</p>
+    </div>
+    
+    <div class="back-button" onclick="goBack()">
+        <span>&larr;</span> Geri Dön
+    </div>
+</div>
+
+<script>
+function showContent(id) {
+    document.getElementById('button-container').style.display = 'none';
+    document.getElementById('content-container').style.display = 'block';
+    document.querySelectorAll('.content').forEach(el => el.style.display = 'none');
+    document.getElementById(id).style.display = 'block';
+}
+
+function goBack() {
+    document.getElementById('content-container').style.display = 'none';
+    document.getElementById('button-container').style.display = 'grid';
+}
+</script>
+
+</body>
+</html>
