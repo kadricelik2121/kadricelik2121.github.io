@@ -1,65 +1,638 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <title>Almanca Bağlaçlar</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            padding: 20px;
-            color: #222;
-        }
-        h1 {
-            text-align: center;
-            color: #004080;
-        }
-        ul {
-            font-size: 18px;
-            line-height: 1.6;
-            padding-left: 20px;
-        }
-        li {
-            margin-bottom: 8px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Almanca Bağlaçlar</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 10px;
+      font-family: Arial, sans-serif;
+      background-color: #fdfdfd;
+      max-width: 430px;
+      width: 100%;
+      margin: auto;
+    }
+    .page { display: none; }
+    .page.active { display: block; }
+
+    h1 { text-align: center; font-size: 22px; color: #2196F3; }
+    .button {
+      display: block;
+      background-color: #2196F3;
+      color: white;
+      height: 32px;
+      line-height: 32px;
+      text-align: center;
+      text-decoration: none;
+      font-size: 14px;
+      border-radius: 6px;
+      width: 100%;
+      margin-bottom: 3px;
+    }
+    .button.header {
+      background-color: #e53935;
+      font-weight: bold;
+      cursor: default;
+    }
+
+    .container {
+      display: flex;
+      justify-content: space-between;
+      gap: 5px;
+    }
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      flex: 1;
+    }
+
+    .content { font-size: 22px; line-height: 1.6; color: #333; padding: 10px; }
+    .example {
+      background-color: #f0f0f0;
+      border-left: 4px solid #2196F3;
+      padding: 10px;
+      margin: 10px 0;
+    }
+
+    .back-button {
+      display: inline-block;
+      font-size: 28px;
+      text-decoration: none;
+      color: #2196F3;
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+    }
+  </style>
+  <script>
+    function showPage(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+  </script>
 </head>
 <body>
+  <div id="index" class="page active">
     <h1>Almanca Bağlaçlar</h1>
-    <ul>
-        <li><b>und</b> (=ve)</li>
-        <li><b>denn</b> (&lt;...-için, çünkü)</li>
-        <li><b>aber</b> (=ama, fakat)</li>
-        <li><b>sondern</b> (=tam tersine, aksine, bilakis)</li>
-        <li><b>weil</b> (=...-için, çünkü)</li>
-        <li><b>da</b> (-...-iğin, çünkü)</li>
-        <li><b>wenn</b> (=eğer)</li>
-        <li><b>als</b> (=...-iken)</li>
-        <li><b>seitdem</b> (=...-den beri)</li>
-        <li><b>bevor</b> (-...-den önce)</li>
-        <li><b>nachdem</b> (-...-den sonra)</li>
-        <li><b>sobald</b> (-...-ir ermez)</li>
-        <li><b>solange</b> (=olduğu sürece)</li>
-        <li><b>während</b> (-...-iken, sırasında)</li>
-        <li><b>obwohl, obgleich, obschon</b> (-...-e rağmen)</li>
-        <li><b>trotzdem</b> (&lt;=...-e rağmen, ama)</li>
-        <li><b>deshalb, deswegen</b> (-için, ...-den dolayı)</li>
-        <li><b>dann</b> (sonra)</li>
-        <li><b>darum</b> (&lt;...-in için)</li>
-        <li><b>daher</b> (-...-den dolayı, ...-için)</li>
-        <li><b>dass</b> (-...-ini/ni)</li>
-        <li><b>damit</b> (=için, böylelikle, diye)</li>
-        <li><b>um...zu</b> (=için, böylelikle)</li>
-        <li><b>ob</b> (=olup olmadığını)</li>
-        <li><b>sonst</b> (=aksi takdirde, yoksa)</li>
-        <li><b>sowohl...als auch</b> (=hem... hem de)</li>
-        <li><b>weder...noch</b> (=ne...ne de)</li>
-        <li><b>zwar...aber</b> (=gerçi, ama)</li>
-        <li><b>entweder...oder</b> (=ya...ya da)</li>
-        <li><b>(an)statt...zu</b> (=yerine)</li>
-        <li><b>so...dass</b> (=öyle ki)</li>
-        <li><b>so dass</b> (=öyle ki)</li>
-        <li><b>ohne...zu</b> (=...-meksizin)</li>
-    </ul>
+    <div class="container">
+      <div class="column">
+        <div class="button header">Position 0</div>
+
+<a class="button" href="javascript:showPage('aber')">aber</a>
+<a class="button" href="javascript:showPage('denn')">denn</a>
+<a class="button" href="javascript:showPage('oder')">oder</a>
+<a class="button" href="javascript:showPage('sondern')">sondern</a>
+<a class="button" href="javascript:showPage('und')">und</a>
+
+      </div>
+      <div class="column">
+        <div class="button header">Verb am Ende</div>
+
+<a class="button" href="javascript:showPage('als')">als</a>
+<a class="button" href="javascript:showPage('bevor')">bevor</a>
+<a class="button" href="javascript:showPage('bis')">bis</a>
+<a class="button" href="javascript:showPage('da')">da</a>
+<a class="button" href="javascript:showPage('damit')">damit</a>
+<a class="button" href="javascript:showPage('dass')">dass</a>
+<a class="button" href="javascript:showPage('falls')">falls</a>
+<a class="button" href="javascript:showPage('indem')">indem</a>
+<a class="button" href="javascript:showPage('nachdem')">nachdem</a>
+<a class="button" href="javascript:showPage('ob')">ob</a>
+<a class="button" href="javascript:showPage('obwohl')">obwohl</a>
+<a class="button" href="javascript:showPage('seitdem')">seitdem</a>
+<a class="button" href="javascript:showPage('sodass')">sodass</a>
+<a class="button" href="javascript:showPage('solange')">solange</a>
+<a class="button" href="javascript:showPage('sooft')">sooft</a>
+<a class="button" href="javascript:showPage('während')">während</a>
+<a class="button" href="javascript:showPage('weil')">weil</a>
+<a class="button" href="javascript:showPage('wenn')">wenn</a>
+
+      </div>
+      <div class="column">
+        <div class="button header">Position 1</div>
+
+<a class="button" href="javascript:showPage('allerdings')">allerdings</a>
+<a class="button" href="javascript:showPage('also')">also</a>
+<a class="button" href="javascript:showPage('außerdem')">außerdem</a>
+<a class="button" href="javascript:showPage('dagegen')">dagegen</a>
+<a class="button" href="javascript:showPage('danach')">danach</a>
+<a class="button" href="javascript:showPage('dann')">dann</a>
+<a class="button" href="javascript:showPage('deshalb')">deshalb</a>
+<a class="button" href="javascript:showPage('deswegen')">deswegen</a>
+<a class="button" href="javascript:showPage('genauso')">genauso</a>
+<a class="button" href="javascript:showPage('inzwischen')">inzwischen</a>
+<a class="button" href="javascript:showPage('jedoch')">jedoch</a>
+<a class="button" href="javascript:showPage('schließlich')">schließlich</a>
+<a class="button" href="javascript:showPage('später')">später</a>
+<a class="button" href="javascript:showPage('trotzdem')">trotzdem</a>
+<a class="button" href="javascript:showPage('vorher')">vorher</a>
+<a class="button" href="javascript:showPage('weder_noch')">weder_noch</a>
+<a class="button" href="javascript:showPage('zwar')">zwar</a>
+
+      </div>
+    </div>
+  </div>
+
+
+  <div id="aber" class="page">
+    <h1>aber</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> ama, fakat</p>
+      <p><strong>Türü:</strong> nebenordnende Konjunktion</p>
+      <p><strong>Kullanımı:</strong> Zıtlık bildirir, iki eşit cümleyi veya öğeyi birbirine bağlar.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Ich wohne in Istanbul, aber ich arbeite in Gebze.<br>
+        <em>= Ben İstanbul’da oturuyorum ama Gebze’de çalışıyorum.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="denn" class="page">
+    <h1>denn</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> çünkü, ... için</p>
+      <p><strong>Türü:</strong> nebenordnende Konjunktion</p>
+      <p><strong>Kullanımı:</strong> Sebep-sonuç ilişkisi kurar, fiil ikinci sırada kalır.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Ich muss mich beeilen, denn meine Mutter wartet auf mich.<br>
+        <em>= Annem beklediği için acele etmek zorundayım.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="oder" class="page">
+    <h1>oder</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> veya, ya da</p>
+      <p><strong>Türü:</strong> nebenordnende Konjunktion</p>
+      <p><strong>Kullanımı:</strong> Seçenekleri birbirine bağlamak için kullanılır.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Möchtest du Tee oder Kaffee trinken?<br>
+        <em>= Çay mı yoksa kahve mi içmek istersin?</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="sondern" class="page">
+    <h1>sondern</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> tam tersine, aksine, bilakis</p>
+      <p><strong>Türü:</strong> nebenordnende Konjunktion</p>
+      <p><strong>Kullanımı:</strong> Olumsuz bir ifadeden sonra karşıtlık bildirmek için kullanılır.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Die Flasche ist nicht leer, sondern (sie ist) voll.<br>
+        <em>= Şişe boş değil, tam tersine dolu.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="und" class="page">
+    <h1>und</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> ve</p>
+      <p><strong>Türü:</strong> nebenordnende Konjunktion</p>
+      <p><strong>Kullanımı:</strong> Cümle ya da kelimeleri eş düzeyde bağlar.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Er ist nach Deutschland gefahren und hat dort studiert.<br>
+        <em>= O Almanya’ya gidip üniversitede okudu.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="weil" class="page">
+    <h1>weil</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> çünkü, ... için</p>
+      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
+      <p><strong>Kullanımı:</strong> Neden-sonuç ilişkisi kurar, fiil sona gider.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Ich gehe nicht zur Arbeit, weil ich krank bin.<br>
+        <em>= İşe gitmiyorum çünkü hastayım.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="da" class="page">
+    <h1>da</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> çünkü, ... için</p>
+      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
+      <p><strong>Kullanımı:</strong> Nedeni vurgulamak için cümle başında kullanılır, fiil sona gider.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Da ich krank bin, gehe ich nicht zur Arbeit.<br>
+        <em>= Hasta olduğum için işe gitmiyorum.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="wenn" class="page">
+    <h1>wenn</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> eğer</p>
+      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
+      <p><strong>Kullanımı:</strong> Koşul belirtir, fiil sona gider.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Wenn du in Ankara bist, musst du uns besuchen.<br>
+        <em>= Eğer Ankara’ya gelirsen bizi ziyaret etmelisin.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="als" class="page">
+    <h1>als</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> ...iken</p>
+      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
+      <p><strong>Kullanımı:</strong> Geçmişte bir defa olan olaylar için kullanılır.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Als ich 5 Jahre alt war, ist mein Vater gestorben.<br>
+        <em>= Ben beş yaşındayken babam öldü.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="seitdem" class="page">
+    <h1>seitdem</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> ...-den beri</p>
+      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
+      <p><strong>Kullanımı:</strong> Başlangıcı geçmişte olup hâlen süren durumlar için kullanılır.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Seitdem er geheiratet hat, besucht er seine Eltern nicht.<br>
+        <em>= Evlendiğinden beri anne babasını ziyaret etmiyor.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="bevor" class="page">
+    <h1>bevor</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> ...-den önce</p>
+      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
+      <p><strong>Kullanımı:</strong> Bir olaydan önce olan durumu belirtir, fiil sona gider.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Bevor du ins Bett gehst, musst du deine Zähne putzen.<br>
+        <em>= Yatmadan önce dişlerini fırçalamalısın.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="nachdem" class="page">
+    <h1>nachdem</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> ...-den sonra</p>
+      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
+      <p><strong>Kullanımı:</strong> Bir olaydan sonra olan durumu belirtir.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Nachdem wir gegessen haben, sind wir spazieren gegangen.<br>
+        <em>= Yemek yedikten sonra yürüyüş yaptık.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="ob" class="page">
+    <h1>ob</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> olup olmadığını</p>
+      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
+      <p><strong>Kullanımı:</strong> Dolaylı soru cümlelerinde kullanılır, fiil sona gider.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Er fragt, ob das richtig ist.<br>
+        <em>= Bunun doğru olup olmadığını soruyor.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="obwohl" class="page">
+    <h1>obwohl</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> ...-e rağmen</p>
+      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
+      <p><strong>Kullanımı:</strong> Zıtlık bildirir, fiil sona gider.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Obwohl sie gute Freunde sind, streiten sie oft.<br>
+        <em>= İyi arkadaş olmalarına rağmen sık sık kavga ediyorlar.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="trotzdem" class="page">
+    <h1>trotzdem</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> ...-e rağmen, ama</p>
+      <p><strong>Türü:</strong> Konjunktionaladverb</p>
+      <p><strong>Kullanımı:</strong> Zıtlık bildirir, fiil ikinci sıradadır.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Er ist krank, trotzdem geht er zur Arbeit.<br>
+        <em>= O hasta ama buna rağmen işe gidiyor.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="deshalb" class="page">
+    <h1>deshalb</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> bu yüzden, ...-den dolayı</p>
+      <p><strong>Türü:</strong> Konjunktionaladverb</p>
+      <p><strong>Kullanımı:</strong> Sebep-sonuç ilişkisi kurar, fiil ikinci sırada yer alır.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Er hat Fieber, deshalb geht er zum Arzt.<br>
+        <em>= Ateşi çıktığı için doktora gidiyor.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="deswegen" class="page">
+    <h1>deswegen</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> bu yüzden, ...-den dolayı</p>
+      <p><strong>Türü:</strong> Konjunktionaladverb</p>
+      <p><strong>Kullanımı:</strong> Sebep bildirir, fiil ikinci sırada olur.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Er hat Fieber, deswegen geht er zum Arzt.<br>
+        <em>= Ateşi çıktığı için doktora gidiyor.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="dann" class="page">
+    <h1>dann</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> sonra</p>
+      <p><strong>Türü:</strong> Konjunktionaladverb</p>
+      <p><strong>Kullanımı:</strong> Olayların sırasını belirtir, fiil ikinci sırada olur.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Er macht seine Hausaufgaben, dann geht er ins Kino.<br>
+        <em>= Önce ödevini yapıyor sonra da sinemaya gidiyor.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="dass" class="page">
+    <h1>dass</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> ...-ini/ni</p>
+      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
+      <p><strong>Kullanımı:</strong> Dolaylı cümlelerde kullanılır, fiil sona gider.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Er sagte, dass er mich besuchen wollte.<br>
+        <em>= Beni ziyaret edeceğini söyledi.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="damit" class="page">
+    <h1>damit</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> için, böylelikle, diye</p>
+      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
+      <p><strong>Kullanımı:</strong> Amaç bildirir, fiil sona gider.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Er kauft seiner Tochter ein Buch, damit sie lesen lernt.<br>
+        <em>= Okumayı öğrenmesi için kızına kitap alıyor.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="nachdem" class="page">
+    <h1>nachdem</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> ...-den sonra</p>
+      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
+      <p><strong>Kullanımı:</strong> Bir olaydan sonra gerçekleşen durumu belirtir.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Wir sind spazieren gegangen, nachdem wir gegessen haben.<br>
+        <em>= Yemek yedikten sonra yürüyüş yaptık.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="solange" class="page">
+    <h1>solange</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> olduğu sürece</p>
+      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
+      <p><strong>Kullanımı:</strong> Zaman bildirir, fiil sona gider.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Solange er bei uns war, hat er nicht geschlafen.<br>
+        <em>= Bizde olduğu sürece hiç uyumadı.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="während" class="page">
+    <h1>während</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> ...-iken, sırasında</p>
+      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
+      <p><strong>Kullanımı:</strong> İki olayın aynı anda gerçekleştiğini ifade eder.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Während ich frühstücke, lese ich Zeitung.<br>
+        <em>= Kahvaltı ederken gazete okurum.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="falls" class="page">
+    <h1>falls</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> eğer, -se/-sa</p>
+      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
+      <p><strong>Kullanımı:</strong> Koşul bildirir, fiil sona gider.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Falls es regnet, bleiben wir zu Hause.<br>
+        <em>= Eğer yağmur yağarsa evde kalırız.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="sooft" class="page">
+    <h1>sooft</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> her ne zaman ...-se</p>
+      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
+      <p><strong>Kullanımı:</strong> Sıklık belirtir, her gerçekleştiğinde anlamı taşır.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Sooft ich ihn sehe, freue ich mich.<br>
+        <em>= Onu her gördüğümde seviniyorum.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="indem" class="page">
+    <h1>indem</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> ...erek, ...arak</p>
+      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
+      <p><strong>Kullanımı:</strong> Araç/yöntem bildirir, nasıl yapıldığını anlatır.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Er lernt Deutsch, indem er jeden Tag übt.<br>
+        <em>= Her gün pratik yaparak Almanca öğreniyor.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="sodass" class="page">
+    <h1>sodass</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> öyle ki, bu yüzden</p>
+      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
+      <p><strong>Kullanımı:</strong> Sonuç bildirir, fiil sona gider.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Es war laut, sodass ich nichts hören konnte.<br>
+        <em>= O kadar gürültülüydü ki hiçbir şey duyamadım.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="außerdem" class="page">
+    <h1>außerdem</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> ayrıca, bunun dışında</p>
+      <p><strong>Türü:</strong> Konjunktionaladverb</p>
+      <p><strong>Kullanımı:</strong> Ek bilgi verir, fiil ikinci sıradadır.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Sie ist müde, außerdem hat sie Kopfschmerzen.<br>
+        <em>= Yorgun, ayrıca başı ağrıyor.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="also" class="page">
+    <h1>also</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> demek ki, yani</p>
+      <p><strong>Türü:</strong> Konjunktionaladverb</p>
+      <p><strong>Kullanımı:</strong> Sonuç bildirir, fiil ikinci sıradadır.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Also, du willst nicht mitkommen?<br>
+        <em>= Demek ki sen bizimle gelmek istemiyorsun?</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="allerdings" class="page">
+    <h1>allerdings</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> gerçi, ancak</p>
+      <p><strong>Türü:</strong> Konjunktionaladverb</p>
+      <p><strong>Kullanımı:</strong> Zıtlık veya sınırlama belirtir, fiil ikinci sırada olur.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Er ist intelligent, allerdings etwas faul.<br>
+        <em>= Zeki ama biraz tembel.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
+  <div id="zwar" class="page">
+    <h1>zwar</h1>
+    <div class="content">
+      <p><strong>Türkçe Anlamı:</strong> gerçi, her ne kadar</p>
+      <p><strong>Türü:</strong> Konjunktionaladverb</p>
+      <p><strong>Kullanımı:</strong> ‘zwar ... aber ...’ yapısında kullanılır.</p>
+      <div class="example">
+        <strong>Örnek Cümle:</strong><br>
+        Er hat zwar viel Geld, aber er ist nicht glücklich.<br>
+        <em>= Gerçi çok parası var ama mutlu değil.</em>
+      </div>
+    </div>
+    <a href="javascript:showPage('index')" class="back-button">←</a>
+  </div>
+
+
 </body>
 </html>
