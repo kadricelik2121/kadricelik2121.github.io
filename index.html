@@ -27,7 +27,7 @@
       line-height: 32px;
       text-align: center;
       text-decoration: none;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: bold;
       border-radius: 6px;
       width: 100%;
@@ -39,10 +39,12 @@
       cursor: default;
     }
 
-    .container {
-      display: flex;
-      justify-content: space-between;
-      gap: 3px;
+   .container {
+  display: flex;
+  justify-content: space-between;
+  gap: 3px;
+  padding-top: 5px;   /* ← Yeni satır: yukarı çeker */
+  margin-top: 0px;     /* ← Yeni satır: fazlalığı siler */
     }
     .column {
       display: flex;
