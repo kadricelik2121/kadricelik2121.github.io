@@ -1,802 +1,562 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Almanca Bağlaçlar</title>
+  <meta charset="UTF-8">
+  <title>Hörverstehen Teil 1</title>
   <style>
-    * { box-sizing: border-box; }
     body {
-      margin: 0;
-      padding: 10px;
       font-family: Arial, sans-serif;
-      background-color: #fdfdfd;
-      max-width: 430px;
-      width: 100%;
-      margin: auto;
-    }
-    .page { display: none; }
-    .page.active { display: block; }
-
-    h1 { text-align: center; font-size: 22px; color: #2196F3; }
-    .button {
-      display: block;
-      background-color: #2196F3;
-      color: white;
-      height: 28px;
-      line-height: 32px;
-      text-align: center;
-      text-decoration: none;
-      font-size: 16px;
-      font-weight: bold;
-      border-radius: 6px;
-      width: 100%;
-      margin-bottom: 1px;
-    }
-    .button.header {
-      background-color: #e53935;
-      font-weight: bold;
-      cursor: default;
-    }
-
-   .container {
-  display: flex;
-  justify-content: space-between;
-  gap: 3px;
-  padding-top: 5px;   /* ← Yeni satır: yukarı çeker */
-  margin-top: 0px;     /* ← Yeni satır: fazlalığı siler */
-    }
-    .column {
+      background: #FFF8E1;
       display: flex;
       flex-direction: column;
-      gap: 3px;
-      flex: 1;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
     }
-
-    .content { font-size: 22px; line-height: 1.6; color: #333; padding: 10px; }
-    .example {
-      background-color: #f0f0f0;
-      border-left: 4px solid #2196F3;
-      padding: 10px;
+    .container {
+      background: #FFFBEA;
+      padding: 32px 24px;
+      border-radius: 18px;
+      box-shadow: 0 2px 12px #0002;
+      margin-top: 32px;
+      min-width: 370px;
+      position: relative;
+    }
+    .page-number {
+      position: absolute;
+      top: 16px;
+      left: -16px;
+      background: #f3ca7b;
+      color: #7a5e1a;
+      font-size: 1.3rem;
+      font-weight: bold;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 6px #0002;
+      border: 2px solid #e6bb5c;
+      z-index: 10;
+      user-select: none;
+    }
+    .stats-box {
+      position: absolute;
+      top: 14px;
+      left: 26px;
+      background: #fffbe7;
+      color: #8b7200;
+      border: 1.2px solid #f3ca7b;
+      border-radius: 9px;
+      box-shadow: 0 1px 6px #0001;
+      padding: 5px 9px 4px 8px;
+      font-size: 0.68rem;
+      font-weight: bold;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      min-width: 64px;
+      z-index: 10;
+      user-select: none;
+      letter-spacing: 0.4px;
+    }
+    .stats-title {
+      font-size: 0.68rem;
+      color: #bf9000;
+      font-weight: bold;
+      letter-spacing: 0.2px;
+      margin-bottom: 1px;
+    }
+    .stats-row {
+      margin-bottom: 0px;
+      font-size: 0.75rem;
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+    .stats-correct {
+      color: #259910;
+      font-size: 0.93rem;
+    }
+    .stats-wrong {
+      color: #b01111;
+      font-size: 0.93rem;
+    }
+    .main-title {
+      font-size: 2.2rem;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+      text-transform: capitalize;
+    }
+    .test-title {
+      font-size: 2rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-align: center;
+      margin-bottom: 18px;
+      text-transform: capitalize;
+    }
+    .code-box {
+      font-size: 2.4rem;
+      font-weight: bold;
+      color: #444;
+      letter-spacing: 5px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .option, .option * {
+      text-decoration: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+      user-select: none;
+    }
+    .option {
+      background: #fafafa;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      padding: 13px 12px;
       margin: 10px 0;
+      cursor: pointer;
+      font-size: 1.07rem;
+      display: flex;
+      align-items: flex-start;
+      transition: background 0.3s, border 0.3s, color 0.3s;
     }
-
- .back-button {
-  font-size: 80px;
-  font-weight: normal;
-  color: #2196F3;
-  background: none;
-  position: fixed;
-  bottom: 15px;
-  left: 15px;
-  text-decoration: none;
-}
+    .option.selected.correct {
+      background: #eaffea;
+      border-color: #1cb31c;
+      color: #118011;
+      font-weight: bold;
+    }
+    .option.selected.incorrect {
+      background: #ffeaea;
+      border-color: #ee2222;
+      color: #b01111;
+      font-weight: bold;
+    }
+    .option:focus,
+    .option:active,
+    .option.selected:focus,
+    .option.selected:active,
+    .option span:focus,
+    .option span:active {
+      outline: none !important;
+      text-decoration: none !important;
+      box-shadow: none !important;
+    }
+    .option-number {
+      font-weight: bold;
+      margin-right: 13px;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+      text-decoration: none !important;
+      outline: none !important;
+      user-select: none;
+    }
+    .nav-btns {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+      align-items: center;
+    }
+    .nav-btn {
+      background: #eee;
+      border: none;
+      padding: 12px 24px;
+      font-size: 1.2rem;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background 0.25s;
+      font-weight: bold;
+      box-shadow: 0 1px 5px #0001;
+      user-select: none;
+      margin: 0 4px;
+    }
+    .nav-btn:hover {
+      background: #e1e6fd;
+    }
   </style>
-  <script>
-    function showPage(id) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-    }
-  </script>
 </head>
 <body>
-  <div id="index" class="page active">
-    <h1>Almanca Bağlaçlar</h1>
-    <div class="container">
-      <div class="column">
-        <div class="button header">Position 0</div>
-
-<a class="button" href="javascript:showPage('aber')">aber</a>
-<a class="button" href="javascript:showPage('denn')">denn</a>
-<a class="button" href="javascript:showPage('oder')">oder</a>
-<a class="button" href="javascript:showPage('sondern')">sondern</a>
-<a class="button" href="javascript:showPage('und')">und</a>
-
-      </div>
-      <div class="column">
-        <div class="button header">Verb am Ende</div>
-
-<a class="button" href="javascript:showPage('als')">als</a>
-<a class="button" href="javascript:showPage('bevor')">bevor</a>
-<a class="button" href="javascript:showPage('bis')">bis</a>
-<a class="button" href="javascript:showPage('da')">da</a>
-<a class="button" href="javascript:showPage('damit')">damit</a>
-<a class="button" href="javascript:showPage('dass')">dass</a>
-<a class="button" href="javascript:showPage('falls')">falls</a>
-<a class="button" href="javascript:showPage('indem')">indem</a>
-<a class="button" href="javascript:showPage('nachdem')">nachdem</a>
-<a class="button" href="javascript:showPage('ob')">ob</a>
-<a class="button" href="javascript:showPage('obwohl')">obwohl</a>
-<a class="button" href="javascript:showPage('seitdem')">seitdem</a>
-<a class="button" href="javascript:showPage('sodass')">sodass</a>
-<a class="button" href="javascript:showPage('solange')">solange</a>
-<a class="button" href="javascript:showPage('sooft')">sooft</a>
-<a class="button" href="javascript:showPage('während')">während</a>
-<a class="button" href="javascript:showPage('weil')">weil</a>
-<a class="button" href="javascript:showPage('wenn')">wenn</a>
-
-      </div>
-      <div class="column">
-        <div class="button header">Position 1</div>
-
-<a class="button" href="javascript:showPage('allerdings')">allerdings</a>
-<a class="button" href="javascript:showPage('also')">also</a>
-<a class="button" href="javascript:showPage('außerdem')">außerdem</a>
-<a class="button" href="javascript:showPage('dagegen')">dagegen</a>
-<a class="button" href="javascript:showPage('danach')">danach</a>
-<a class="button" href="javascript:showPage('dann')">dann</a>
-<a class="button" href="javascript:showPage('deshalb')">deshalb</a>
-<a class="button" href="javascript:showPage('deswegen')">deswegen</a>
-<a class="button" href="javascript:showPage('genauso')">genauso</a>
-<a class="button" href="javascript:showPage('inzwischen')">inzwischen</a>
-<a class="button" href="javascript:showPage('jedoch')">jedoch</a>
-<a class="button" href="javascript:showPage('schließlich')">schließlich</a>
-<a class="button" href="javascript:showPage('später')">später</a>
-<a class="button" href="javascript:showPage('trotzdem')">trotzdem</a>
-<a class="button" href="javascript:showPage('vorher')">vorher</a>
-<a class="button" href="javascript:showPage('weder_noch')">weder_noch</a>
-<a class="button" href="javascript:showPage('zwar')">zwar</a>
-
+  <div class="container">
+    <div class="page-number" id="pageNumber">1</div>
+    <div class="stats-box" id="statsBox">
+      <div class="stats-title">İstatistik</div>
+      <div class="stats-row"><span class="stats-correct">✔</span> <span id="correctCount">0</span> <span>Doğru</span></div>
+      <div class="stats-row"><span class="stats-wrong">✗</span> <span id="wrongCount">0</span> <span>Yanlış</span></div>
+      <div class="stats-row">
+        <span>%</span>
+        <span id="correctPercent">0</span>
+        <span>Doğru</span>
+        <span>/</span>
+        <span id="wrongPercent">0</span>
+        <span>Yanlış</span>
       </div>
     </div>
-  </div>
-
-
-  <div id="aber" class="page">
-    <h1>aber</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> ama, fakat</p>
-      <p><strong>Türü:</strong> nebenordnende Konjunktion</p>
-      <p><strong>Kullanımı:</strong> Zıtlık bildirir, iki eşit cümleyi veya öğeyi birbirine bağlar.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Ich wohne in Istanbul, aber ich arbeite in Gebze.<br>
-        <em>= Ben İstanbul’da oturuyorum ama Gebze’de çalışıyorum.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
-
-
-  <div id="denn" class="page">
-    <h1>denn</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> çünkü, ... için</p>
-      <p><strong>Türü:</strong> nebenordnende Konjunktion</p>
-      <p><strong>Kullanımı:</strong> Sebep-sonuç ilişkisi kurar, fiil ikinci sırada kalır.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Ich muss mich beeilen, denn meine Mutter wartet auf mich.<br>
-        <em>= Annem beklediği için acele etmek zorundayım.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
-
-
-  <div id="oder" class="page">
-    <h1>oder</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> veya, ya da</p>
-      <p><strong>Türü:</strong> nebenordnende Konjunktion</p>
-      <p><strong>Kullanımı:</strong> Seçenekleri birbirine bağlamak için kullanılır.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Möchtest du Tee oder Kaffee trinken?<br>
-        <em>= Çay mı yoksa kahve mi içmek istersin?</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
-
-
-  <div id="sondern" class="page">
-    <h1>sondern</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> tam tersine, aksine, bilakis</p>
-      <p><strong>Türü:</strong> nebenordnende Konjunktion</p>
-      <p><strong>Kullanımı:</strong> Olumsuz bir ifadeden sonra karşıtlık bildirmek için kullanılır.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Die Flasche ist nicht leer, sondern (sie ist) voll.<br>
-        <em>= Şişe boş değil, tam tersine dolu.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
-
-
-  <div id="und" class="page">
-    <h1>und</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> ve</p>
-      <p><strong>Türü:</strong> nebenordnende Konjunktion</p>
-      <p><strong>Kullanımı:</strong> Cümle ya da kelimeleri eş düzeyde bağlar.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Er ist nach Deutschland gefahren und hat dort studiert.<br>
-        <em>= O Almanya’ya gidip üniversitede okudu.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
-
-
-  <div id="weil" class="page">
-    <h1>weil</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> çünkü, ... için</p>
-      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
-      <p><strong>Kullanımı:</strong> Neden-sonuç ilişkisi kurar, fiil sona gider.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Ich gehe nicht zur Arbeit, weil ich krank bin.<br>
-        <em>= İşe gitmiyorum çünkü hastayım.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
-
-
-  <div id="da" class="page">
-    <h1>da</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> çünkü, ... için</p>
-      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
-      <p><strong>Kullanımı:</strong> Nedeni vurgulamak için cümle başında kullanılır, fiil sona gider.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Da ich krank bin, gehe ich nicht zur Arbeit.<br>
-        <em>= Hasta olduğum için işe gitmiyorum.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
-
-
-  <div id="wenn" class="page">
-    <h1>wenn</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> eğer</p>
-      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
-      <p><strong>Kullanımı:</strong> Koşul belirtir, fiil sona gider.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Wenn du in Ankara bist, musst du uns besuchen.<br>
-        <em>= Eğer Ankara’ya gelirsen bizi ziyaret etmelisin.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
-
-
-  <div id="als" class="page">
-    <h1>als</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> ...iken</p>
-      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
-      <p><strong>Kullanımı:</strong> Geçmişte bir defa olan olaylar için kullanılır.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Als ich 5 Jahre alt war, ist mein Vater gestorben.<br>
-        <em>= Ben beş yaşındayken babam öldü.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
-
-
-  <div id="seitdem" class="page">
-    <h1>seitdem</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> ...-den beri</p>
-      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
-      <p><strong>Kullanımı:</strong> Başlangıcı geçmişte olup hâlen süren durumlar için kullanılır.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Seitdem er geheiratet hat, besucht er seine Eltern nicht.<br>
-        <em>= Evlendiğinden beri anne babasını ziyaret etmiyor.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
-
-
-  <div id="bevor" class="page">
-    <h1>bevor</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> ...-den önce</p>
-      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
-      <p><strong>Kullanımı:</strong> Bir olaydan önce olan durumu belirtir, fiil sona gider.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Bevor du ins Bett gehst, musst du deine Zähne putzen.<br>
-        <em>= Yatmadan önce dişlerini fırçalamalısın.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
-  
-
-  <!-- bis -->
-<div id="bis" class="page">
-  <h1>bis</h1>
-  <div class="content">
-    <p><strong>Türkçe Anlamı:</strong> -e kadar, dek</p>
-    <p><strong>Türü:</strong> Konjunktion</p>
-    <p><strong>Kullanımı:</strong> Zaman bildirir. Bir eylemin süresini veya sınırını belirtir. Yan cümlede fiil sona gider.</p>
-    <div class="example">
-      <strong>Örnek Cümle:</strong><br>
-      Warte hier, bis ich zurückkomme.<br>
-      <em>= Ben dönene kadar burada bekle.</em>
+    <div class="main-title">Hörverstehen Teil 1</div>
+    <div class="test-title" id="testTitle"></div>
+    <div class="code-box" id="codeBox"></div>
+    <div id="options"></div>
+    <div class="nav-btns">
+      <button class="nav-btn" id="prevBtn">&#8592; Geri</button>
+      <button class="nav-btn" id="homeBtn">&#8634; Başa Dön</button>
+      <button class="nav-btn" id="nextBtn">İleri &#8594;</button>
     </div>
   </div>
-  <a href="javascript:showPage('index')" class="back-button">⬅️</a>
-</div>
+  <script>
+    // SESLER
+    const dogruSes = new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
+    const yanlisSes = new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg");
+
+    // Test verileri
+    const tests = [
+      // ... senin test sayfaların (aynen bırak) ...
+      {
+        title: "Weniger Vögel",
+        correct: [3,4,5],
+        options: [
+          "Viele Kunden würden für bessere Service Leistungen der Paketdienstw höhere geboren.",
+          "Nach dem Unfall konnten beide Schiffe ihre Fahrt nicht fortsetzen.",
+          "Europaweit gibt es immer weniger Vögel.",
+          "Die Polizei hat auf der Autobahn ein dort verbotenes Fahrzeug entdeckt.",
+          "Bei dem Festival konnte man Konzert an verschiedenen Orten besuchen."
+        ]
+      },
+      {
+        title: "TipTop",
+        correct: [1,4],
+        options: [
+          "Es ist nicht sicher, ob es erneut zu diesem Problem kommen kann.",
+          "Hamburgs Politiker befürworteten den Bau des Einkaufszentrums nicht.",
+          "Zwischen Frankreich und Deutschland wurde ein neuer Hochgeschwindigkeits genommen.",
+          "Die Produkte von TipTop sind in Deutschland nicht mehr so gefragt.",
+          "Ingrid Thieme wird sich an der kommenden WM beteiligen."
+        ]
+      },
+      {
+        title: "Nicht sicher 1",
+        correct: [1, 4],
+        options: [
+          "Wegen Unwetterschäden wurden Urlauber in einer Notunterkunft untergebracht.",
+          "Sämtliche Waren der Firma Mirella wurden aus den Läden entfernt.",
+          "Das Arbeitsplatzangebot in der Bundesrepublik hat einen Tiefstand erreicht.",
+          "Am 21. Mai ist der Besuch der Sonderausstellung kostenlos.",
+          "Entlaufene Tiere verursachten einen Unfall auf der Autobahn."
+        ]
+      },
+      {
+        title: "Fluggeselschaft DL Rostock",
+        correct: [1, 5],
+        options: [
+          "Kunden der Fluggesellschaft DL äußern Unzufriedenheit.",
+          "Die Preise von Süßwaren wurden dieses Jahr gesenkt, um Käufer zurückzugewinnen.",
+          "Die Sonnenstürme hatten keine negativen Auswirkungen.",
+          "Einer der Kandidaten konnte die Mehrheit der Zuschauer auf seine Seite bringen.",
+          "Das Tiefdruckgebiet \"Helena\" kann morgen im Südwesten Deutschlands Verkehrsprobleme verursachen."
+        ]
+      },
+      {
+        title: "12",
+        correct: [1, 2],
+        options: [
+          "In der Europäischen Union verzeichnet man weniger jugendliche Arbeitslose.",
+          "Das Bundesarbeitsministerium bemüht sich um ausländische Arbeitnehmer bestimmter Berufs.",
+          "Die \"Lange Nacht der Musik\" findet am Odeonsplatz in München statt.",
+          "Im \"Tal der goldenen Mumien\" wurden bisher fast 10.000 Tote gefunden.",
+          "Die Gefahr schwerer Unwetter ist nun vorbei."
+        ]
+      },
+      {
+        title: "Europäischen Union",
+        correct: [1, 2],
+        options: [
+          "In der Europäischen Union verzeichnet man weniger jugendliche Arbeitslose.",
+          "Das Bundesarbeitsministerium bemüht sich um ausländische Arbeitnehmer bestimmter Berufs.",
+          "Die \"Lange Nacht der Musik\" findet am Odeonsplatz in München statt.",
+          "Im \"Tal der goldenen Mumien\" wurden bisher fast 10.000 Tote gefunden.",
+          "Die Gefahr schwerer Unwetter ist nun vorbei."
+        ]
+      },
+      {
+  title: "Unwetterschäden",
+  correct: [1, 4],
+  options: [
+    "Wegen Unwetterschäden wurden Urlauber in einer Notunterkunft untergebracht.",
+    "Sämtliche Waren der Firma Mirella wurden aus den Läden entfernt.",
+    "Das Arbeitsplatzangebot in der Bundesrepublik hat einen Tiefstand erreicht.",
+    "Am 21. Mai ist der Besuch der Sonderausstellung kostenlos.",
+    "Entlaufene Tiere verursachten einen Unfall auf der Autobahn."
+  ]
+},
+{
+  title: "Die Wahlbeteiligung 13",
+  correct: [1, 3],
+  options: [
+    "Die Wahlbeteiligung in Deutschland nimmt wieder zu.",
+    "150 Bauarbeiter müssen entlassen werden.",
+    "Bei der Sportveranstaltung wurden neue Bestzeiten aufgestellt.",
+    "Die Sicherheitslücke beim Online-Banking wurde noch nicht gefunden.",
+    "Kinder können in der Bücherei ihre eigenen Texte vorlesen."
+  ]
+},
+{
+  title: "Lufthansa",
+  correct: [2, 3],
+  options: [
+    "Die Deutsche Lufthansa hat ihre Führungsposition verloren.",
+    "Ein Bonner Sportverein zeigt der Öffentlichkeit sein Angebot.",
+    "Die Rahmenbedingungen in deutschen Pflegeheimen bedürfen dringend einer Änderung.",
+    "Durch moderne Wärmedämmung könnten die Heizkosten deutlich reduziert werden.",
+    "Das Nationale Olympische Komitee hat die Dopingsperre für Tom Sanders aufgehoben."
+  ]
+},
+{
+  title: "Die Stadt Friedrichsberg",
+  correct: [2, 3, 5],
+  options: [
+    "Die Stadt Friedrichsberg lädt zu einer Preisverleihung ein.",
+    "Die Alte brücke ist zum Jahresbeginn wieder befahrbar.",
+    "Der Wanderer wurde verarztet und in Sicherheit gebracht.",
+    "In dem Unternehmen kommt es zu Kündigungen.",
+    "Man kann nach einer Registrierung an einem Gruppenlauf teilnehmen."
+  ]
+},
+{
+  title: "Deutsch schiff",
+  correct: [1, 2, 5],
+  options: [
+    "Ein deutsches Schiff ist am Südpol eingefroren, aber Menschen kamen nicht zu Schaden.",
+    "Die Firma Brain International ist in wirtschaftliche Schwierigkeiten geraten.",
+    "Die Europäische Union will Gesetze zur Kontrolle sozialer Netzwerke erlassen.",
+    "Mit einem neuen Gesetz wollen die österreichischen Banken Sparkonten wieder attraktiver machen.",
+    "Nach den Bürgermeisterwahlen in Bensheim bleibt die CDU weiterhin an der Regierung."
+  ]
+},
+{
+  title: "Auf der Insel Bali",
+  correct: [4, 5],
+  options: [
+    "Auf der Insel Bali wurden neue Maßnahmen zur Müllentsorgung beschlossen.",
+    "In Nordfrankreich wird nach einem entlaufenen Panther gesucht.",
+    "Die Mietervereinigung rät Mieterinnen und Mietern, die Betriebskosten nicht zu bezahlen.",
+    "Der Sekthersteller hat die Pläne für sein Bauvorhaben geändert.",
+    "Die Löscharbeiten sind noch nicht abgeschlossen."
+  ]
+},
+{
+  title: "Alpen",
+  correct: [2, 4, 5],
+  options: [
+    "Wetter lang in den Alpen",
+    "Die Fans, die das Spiel unterstützten, waren überrascht und überrascht",
+    "Eine Familie von Pandas kommt im Park an",
+    "Urlaub in Deutschland und weniger Kosten",
+    "Erzieherinnen verlangen bessere Bezahlung"
+  ]
+},
+{
+  title: "Erdbeben",
+  correct: [1, 5],
+  options: [
+    "Nach dem Erdbeben meldeten viele Bürger Schäden bei Polizei und Feuerwehr.",
+    "Eltern müssen sich neuerdings über den Impfschutz für ihre Kinder beraten lassen.",
+    "Verkehrsbehinderungen drohen in den nächsten Wochen besonders samstags und sonntags.",
+    "Pipelines tragen maßgeblich zur Umweltverschmutzung in Schleswig-Holstein bei.",
+    "Anfang nächster Woche ist mit einer erhöhten Ozonbelastung zu rechnen."
+  ]
+},
+{
+  title: "Bierkonsum",
+  correct: [2, 4],
+  options: [
+    "Der Bierkonsum steigt um 10%.",
+    "Deutsche Einkommen liegen im europäischen Vergleich nur im Mittelfeld.",
+    "Es ist ein Ende des Bahnstreiks in Sicht.",
+    "Es wird Gewalt von Fußballfans auch in Deutschland befürchtet.",
+    "Die leopoldina soll internationale Akademie werden."
+  ]
+},
+{
+  title: "Verbrauch von Bier",
+  correct: [2, 4],
+  options: [
+    "Der Verbrauch von Bier steigt um 10 %",
+    "Deutsche Einkommen liegen im europäischen Vergleich nur im Mittelfeld.",
+    "Es ist ein Ende des Bahnstreiks in Sicht.",
+    "Man befürchtet auch in Deutschland Gewalt von Fußballfans.",
+    "Die Leopoldina eine internationale Akademie werden."
+  ]
+},
+{
+  title: "Frau Jürgens",
+  correct: [3, 4, 5],
+  options: [
+    "Frau Jürgens tritt wegen Streitigkeiten zurück.",
+    "Die Filme werden in den Kinos der Stadt gezeigt.",
+    "Der öffentliche Nahverkehr funktioniert noch nicht störungsfrei.",
+    "Wildes Camping ist im In- und Ausland nur bedingt zugelassen.",
+    "Die Temperaturen steigen in den nächsten Tagen an."
+  ]
+},
+{
+  title: "Wetterlage Alpen",
+  correct: [2, 3],
+  options: [
+    "Die Wetterlage in den Alpen wird sich in den nächsten Tagen verbessern.",
+    "Die Fans des FC neustadt waren von dem Sieg ihrer Mannschaft überrascht.",
+    "Erzieherinnen verlangen eine bessere Bezahlung.",
+    "Im Berliner Zoo gibt eine große Pandafamilie.",
+    "Die Zahl der Deutschland Urlauber ist rückläufig."
+  ]
+},
+{
+  title: "Die Fluggeselschaft",
+  correct: [1, 5],
+  options: [
+    "die Fluggeselschaft DL fligt z. B Rostok nicht mehr an.",
+    "Süßwaren warden dieses Jahr angeboten, um Käufer zurückzugewinnen.",
+    "Die Sonnenstürme hatten keine negativen Auswirkungen.",
+    "Einer der kandidaten konnte die Mehrheit der Zuschauer für sich gewinnen.",
+    "Das Tiefdruckgebiet \"Helena\" kann morgen im SüdWesten Deutschlands Verkehrsprobleme verursachen."
+  ]
+}
 
 
-  <div id="nachdem" class="page">
-    <h1>nachdem</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> ...-den sonra</p>
-      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
-      <p><strong>Kullanımı:</strong> Bir olaydan sonra olan durumu belirtir.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Nachdem wir gegessen haben, sind wir spazieren gegangen.<br>
-        <em>= Yemek yedikten sonra yürüyüş yaptık.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
+      //Yeni test eklemek istersen buraya ekle
+    ];
 
+    // Sayaçlar:
+    let totalCorrect = 0;
+    let totalWrong = 0;
+    let totalAnswered = 0;
 
-  <div id="ob" class="page">
-    <h1>ob</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> olup olmadığını</p>
-      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
-      <p><strong>Kullanımı:</strong> Dolaylı soru cümlelerinde kullanılır, fiil sona gider.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Er fragt, ob das richtig ist.<br>
-        <em>= Bunun doğru olup olmadığını soruyor.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
+    let currentTest = 0;
+    let selected = [];
+    let lockedOptions = [];
+    let testJustEnded = false;
 
+    function resetStats() {
+      totalCorrect = 0;
+      totalWrong = 0;
+      totalAnswered = 0;
+      updateStatsBox();
+      testJustEnded = false;
+    }
 
-  <div id="obwohl" class="page">
-    <h1>obwohl</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> ...-e rağmen</p>
-      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
-      <p><strong>Kullanımı:</strong> Zıtlık bildirir, fiil sona gider.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Obwohl sie gute Freunde sind, streiten sie oft.<br>
-        <em>= İyi arkadaş olmalarına rağmen sık sık kavga ediyorlar.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
+    function updateStatsBox() {
+      totalAnswered = totalCorrect + totalWrong;
+      let correctPercent = totalAnswered === 0 ? 0 : Math.round(100 * totalCorrect / totalAnswered);
+      let wrongPercent = totalAnswered === 0 ? 0 : Math.round(100 * totalWrong / totalAnswered);
+      document.getElementById('correctCount').innerText = totalCorrect;
+      document.getElementById('wrongCount').innerText = totalWrong;
+      document.getElementById('correctPercent').innerText = correctPercent;
+      document.getElementById('wrongPercent').innerText = wrongPercent;
+    }
 
+    function renderTest() {
+      const test = tests[currentTest];
+      document.getElementById("testTitle").innerText = test.title;
+      document.getElementById("pageNumber").innerText = currentTest + 1;
 
-  <div id="trotzdem" class="page">
-    <h1>trotzdem</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> ...-e rağmen, ama</p>
-      <p><strong>Türü:</strong> Konjunktionaladverb</p>
-      <p><strong>Kullanımı:</strong> Zıtlık bildirir, fiil ikinci sıradadır.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Er ist krank, trotzdem geht er zur Arbeit.<br>
-        <em>= O hasta ama buna rağmen işe gidiyor.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
+      selected = [];
+      lockedOptions = Array(test.options.length).fill(false);
+      document.getElementById("codeBox").innerText = "";
+      const optionsDiv = document.getElementById("options");
+      optionsDiv.innerHTML = "";
+      test.options.forEach((opt, idx) => {
+        const option = document.createElement("div");
+        option.className = "option";
+        option.innerHTML = `<span class="option-number">${idx+1}.</span> <span>${opt}</span>`;
+        option.onclick = () => handleOptionClick(idx);
+        optionsDiv.appendChild(option);
+      });
+      updateStatsBox();
+    }
 
+    function removeUnderlineFromOption(idx) {
+      const optionsDiv = document.getElementById("options");
+      const optionDiv = optionsDiv.children[idx];
+      optionDiv.style.textDecoration = "none";
+      const spans = optionDiv.querySelectorAll("*");
+      spans.forEach(s => s.style.textDecoration = "none");
+    }
 
-  <div id="deshalb" class="page">
-    <h1>deshalb</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> bu yüzden, ...-den dolayı</p>
-      <p><strong>Türü:</strong> Konjunktionaladverb</p>
-      <p><strong>Kullanımı:</strong> Sebep-sonuç ilişkisi kurar, fiil ikinci sırada yer alır.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Er hat Fieber, deshalb geht er zum Arzt.<br>
-        <em>= Ateşi çıktığı için doktora gidiyor.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
+    function handleOptionClick(idx) {
+      // Eğer test az önce bitti ve kullanıcı tekrar başa döndüyse sayaçları sıfırla
+      if (testJustEnded) {
+        resetStats();
+        testJustEnded = false;
+      }
+      const test = tests[currentTest];
+      if (lockedOptions[idx]) return;
 
+      const correctAnswers = test.correct;
+      const isCorrect = correctAnswers.includes(idx+1);
 
-  <div id="deswegen" class="page">
-    <h1>deswegen</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> bu yüzden, ...-den dolayı</p>
-      <p><strong>Türü:</strong> Konjunktionaladverb</p>
-      <p><strong>Kullanımı:</strong> Sebep bildirir, fiil ikinci sırada olur.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Er hat Fieber, deswegen geht er zum Arzt.<br>
-        <em>= Ateşi çıktığı için doktora gidiyor.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
+      const optionsDiv = document.getElementById("options");
+      const optionDiv = optionsDiv.children[idx];
 
+      optionDiv.classList.add("selected");
+      optionDiv.classList.add(isCorrect ? "correct" : "incorrect");
+      removeUnderlineFromOption(idx);
 
-  <div id="dann" class="page">
-    <h1>dann</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> sonra</p>
-      <p><strong>Türü:</strong> Konjunktionaladverb</p>
-      <p><strong>Kullanımı:</strong> Olayların sırasını belirtir, fiil ikinci sırada olur.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Er macht seine Hausaufgaben, dann geht er ins Kino.<br>
-        <em>= Önce ödevini yapıyor sonra da sinemaya gidiyor.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
+      if (isCorrect) {
+        dogruSes.currentTime = 0;
+        dogruSes.play().catch(e => console.log("Doğru ses çalma hatası:", e));
+        lockedOptions[idx] = true;
+        selected.push(idx+1);
+        totalCorrect++;
+      } else {
+        yanlisSes.currentTime = 0;
+        yanlisSes.play().catch(e => console.log("Yanlış ses çalma hatası:", e));
+        lockedOptions[idx] = true;
+        totalWrong++;
+      }
+      updateStatsBox();
 
+      // Tüm doğru cevaplar seçildiyse kodu göster
+      const sortedSel = selected.slice().sort((a,b) => a-b);
+      const sortedCor = test.correct.slice().sort((a,b) => a-b);
+      if (sortedSel.length === sortedCor.length && sortedSel.every((v,i) => v===sortedCor[i])) {
+        document.getElementById("codeBox").innerText = sortedSel.join("");
+        // Diğer seçeneklere tıklamayı engelle
+        Array.from(optionsDiv.children).forEach((optDiv, i) => {
+          lockedOptions[i] = true;
+          removeUnderlineFromOption(i);
+        });
 
-  <div id="dass" class="page">
-    <h1>dass</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> ...-ini/ni</p>
-      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
-      <p><strong>Kullanımı:</strong> Dolaylı cümlelerde kullanılır, fiil sona gider.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Er sagte, dass er mich besuchen wollte.<br>
-        <em>= Beni ziyaret edeceğini söyledi.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
+        // En son sayfa tamamlanınca sayaçları sıfırlama
+        if (currentTest === tests.length - 1) {
+          setTimeout(() => {
+            testJustEnded = true;
+            resetStats();
+          }, 1400); // 1.4 sn kodu göstersin sonra sıfırlansın
+        }
+      }
+    }
 
-  <!-- dagegen -->
-<div id="dagegen" class="page">
-  <h1>dagegen</h1>
-  <div class="content">
-    <p><strong>Türkçe Anlamı:</strong> buna karşılık, diğer yandan</p>
-    <p><strong>Türü:</strong> Konjunktionaladverb</p>
-    <p><strong>Kullanımı:</strong> Zıtlık bildirir. İki durumu veya görüşü karşılaştırmak için kullanılır. Fiil ikinci sırada yer alır.</p>
-    <div class="example">
-      <strong>Örnek Cümle:</strong><br>
-      Ich liebe Sommer, dagegen mag sie lieber den Winter.<br>
-      <em>= Ben yazı severim, buna karşılık o kışı tercih eder.</em>
-    </div>
-  </div>
-  <a href="javascript:showPage('index')" class="back-button">⬅️</a>
-</div>
+    document.getElementById("prevBtn").onclick = () => {
+      if (currentTest > 0) {
+        currentTest--;
+        renderTest();
+      }
+    };
+    document.getElementById("nextBtn").onclick = () => {
+      if (currentTest < tests.length-1) {
+        currentTest++;
+        renderTest();
+      }
+    };
+    // --- BAŞA DÖN BUTONU EKLENDİ ---
+    document.getElementById("homeBtn").onclick = () => {
+      currentTest = 0;
+      renderTest();
+    };
 
-  <!-- danach -->
-<div id="danach" class="page">
-  <h1>danach</h1>
-  <div class="content">
-    <p><strong>Türkçe Anlamı:</strong> sonra, daha sonra, ondan sonra</p>
-    <p><strong>Türü:</strong> Konjunktionaladverb</p>
-    <p><strong>Kullanımı:</strong> Zaman bildirir. Bir eylemden sonra gelen olayı belirtir. Fiil ikinci sıraya gelir.</p>
-    <div class="example">
-      <strong>Örnek Cümle:</strong><br>
-      Ich habe gegessen, danach bin ich spazieren gegangen.<br>
-      <em>= Yedim, sonra yürüyüşe çıktım.</em>
-    </div>
-  </div>
-  <a href="javascript:showPage('index')" class="back-button">⬅️</a>
-</div>
-
-
-  <div id="damit" class="page">
-    <h1>damit</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> için, böylelikle, diye</p>
-      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
-      <p><strong>Kullanımı:</strong> Amaç bildirir, fiil sona gider.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Er kauft seiner Tochter ein Buch, damit sie lesen lernt.<br>
-        <em>= Okumayı öğrenmesi için kızına kitap alıyor.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
-
-
-  <div id="nachdem" class="page">
-    <h1>nachdem</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> ...-den sonra</p>
-      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
-      <p><strong>Kullanımı:</strong> Bir olaydan sonra gerçekleşen durumu belirtir.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Wir sind spazieren gegangen, nachdem wir gegessen haben.<br>
-        <em>= Yemek yedikten sonra yürüyüş yaptık.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
-
-
-  <div id="solange" class="page">
-    <h1>solange</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> olduğu sürece</p>
-      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
-      <p><strong>Kullanımı:</strong> Zaman bildirir, fiil sona gider.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Solange er bei uns war, hat er nicht geschlafen.<br>
-        <em>= Bizde olduğu sürece hiç uyumadı.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
-
-
-  <div id="während" class="page">
-    <h1>während</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> ...-iken, sırasında</p>
-      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
-      <p><strong>Kullanımı:</strong> İki olayın aynı anda gerçekleştiğini ifade eder.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Während ich frühstücke, lese ich Zeitung.<br>
-        <em>= Kahvaltı ederken gazete okurum.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
-
-
-  <div id="falls" class="page">
-    <h1>falls</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> eğer, -se/-sa</p>
-      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
-      <p><strong>Kullanımı:</strong> Koşul bildirir, fiil sona gider.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Falls es regnet, bleiben wir zu Hause.<br>
-        <em>= Eğer yağmur yağarsa evde kalırız.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
-
-
-  <div id="sooft" class="page">
-    <h1>sooft</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> her ne zaman ...-se</p>
-      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
-      <p><strong>Kullanımı:</strong> Sıklık belirtir, her gerçekleştiğinde anlamı taşır.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Sooft ich ihn sehe, freue ich mich.<br>
-        <em>= Onu her gördüğümde seviniyorum.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
-
-
-  <div id="indem" class="page">
-    <h1>indem</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> ...erek, ...arak</p>
-      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
-      <p><strong>Kullanımı:</strong> Araç/yöntem bildirir, nasıl yapıldığını anlatır.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Er lernt Deutsch, indem er jeden Tag übt.<br>
-        <em>= Her gün pratik yaparak Almanca öğreniyor.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
-
-
-  <div id="sodass" class="page">
-    <h1>sodass</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> öyle ki, bu yüzden</p>
-      <p><strong>Türü:</strong> unterordnende Konjunktion</p>
-      <p><strong>Kullanımı:</strong> Sonuç bildirir, fiil sona gider.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Es war laut, sodass ich nichts hören konnte.<br>
-        <em>= O kadar gürültülüydü ki hiçbir şey duyamadım.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
-
-
-  <div id="außerdem" class="page">
-    <h1>außerdem</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> ayrıca, bunun dışında</p>
-      <p><strong>Türü:</strong> Konjunktionaladverb</p>
-      <p><strong>Kullanımı:</strong> Ek bilgi verir, fiil ikinci sıradadır.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Sie ist müde, außerdem hat sie Kopfschmerzen.<br>
-        <em>= Yorgun, ayrıca başı ağrıyor.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
-
-
-  <div id="also" class="page">
-    <h1>also</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> demek ki, yani</p>
-      <p><strong>Türü:</strong> Konjunktionaladverb</p>
-      <p><strong>Kullanımı:</strong> Sonuç bildirir, fiil ikinci sıradadır.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Also, du willst nicht mitkommen?<br>
-        <em>= Demek ki sen bizimle gelmek istemiyorsun?</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
-
-
-  <div id="allerdings" class="page">
-    <h1>allerdings</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> gerçi, ancak</p>
-      <p><strong>Türü:</strong> Konjunktionaladverb</p>
-      <p><strong>Kullanımı:</strong> Zıtlık veya sınırlama belirtir, fiil ikinci sırada olur.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Er ist intelligent, allerdings etwas faul.<br>
-        <em>= Zeki ama biraz tembel.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
-
-
-  <div id="zwar" class="page">
-    <h1>zwar</h1>
-    <div class="content">
-      <p><strong>Türkçe Anlamı:</strong> gerçi, her ne kadar</p>
-      <p><strong>Türü:</strong> Konjunktionaladverb</p>
-      <p><strong>Kullanımı:</strong> ‘zwar ... aber ...’ yapısında kullanılır.</p>
-      <div class="example">
-        <strong>Örnek Cümle:</strong><br>
-        Er hat zwar viel Geld, aber er ist nicht glücklich.<br>
-        <em>= Gerçi çok parası var ama mutlu değil.</em>
-      </div>
-    </div>
-    <a href="javascript:showPage('index')" class="back-button">←</a>
-  </div>
-  <!-- genauso -->
-<div id="genauso" class="page">
-  <h1>genauso</h1>
-  <div class="content">
-    <p><strong>Türkçe Anlamı:</strong> aynı şekilde, tıpkı</p>
-    <p><strong>Türü:</strong> Konjunktionaladverb</p>
-    <p><strong>Kullanımı:</strong> Eşitlik ve benzerlik bildirir; genellikle "wie" ile kullanılır. Fiil ikinci sırada yer alır.</p>
-    <div class="example">
-      <strong>Örnek Cümle:</strong><br>
-      Er ist genauso groß wie sein Bruder.<br>
-      <em>= O, kardeşi kadar uzun.</em>
-    </div>
-  </div>
-  <a href="javascript:showPage('index')" class="back-button">←</a>
-</div>
-
-<!-- inzwischen -->
-<div id="inzwischen" class="page">
-  <h1>inzwischen</h1>
-  <div class="content">
-    <p><strong>Türkçe Anlamı:</strong> bu arada, o esnada</p>
-    <p><strong>Türü:</strong> Konjunktionaladverb</p>
-    <p><strong>Kullanımı:</strong> Zaman bildirir; iki olay arasındaki süreyi ifade eder. Fiil ikinci sırada yer alır.</p>
-    <div class="example">
-      <strong>Örnek Cümle:</strong><br>
-      Ich koche das Essen, inzwischen deckt er den Tisch.<br>
-      <em>= Ben yemeği pişiriyorum, bu arada o masayı kuruyor.</em>
-    </div>
-  </div>
-  <a href="javascript:showPage('index')" class="back-button">←</a>
-</div>
-
-<!-- jedoch -->
-<div id="jedoch" class="page">
-  <h1>jedoch</h1>
-  <div class="content">
-    <p><strong>Türkçe Anlamı:</strong> ancak, fakat</p>
-    <p><strong>Türü:</strong> Konjunktionaladverb</p>
-    <p><strong>Kullanımı:</strong> Zıtlık bildirir; "aber" bağlacına benzer şekilde kullanılır. Fiil ikinci sırada yer alır.</p>
-    <div class="example">
-      <strong>Örnek Cümle:</strong><br>
-      Er ist sehr intelligent, jedoch manchmal unaufmerksam.<br>
-      <em>= O çok zeki, ancak bazen dikkatsiz.</em>
-    </div>
-  </div>
-  <a href="javascript:showPage('index')" class="back-button">←</a>
-</div>
-
-<!-- schließlich -->
-<div id="schließlich" class="page">
-  <h1>schließlich</h1>
-  <div class="content">
-    <p><strong>Türkçe Anlamı:</strong> en sonunda, nihayet</p>
-    <p><strong>Türü:</strong> Konjunktionaladverb</p>
-    <p><strong>Kullanımı:</strong> Sonuç bildirir; bir olaylar zincirinin sonucunu ifade eder. Fiil ikinci sırada yer alır.</p>
-    <div class="example">
-      <strong>Örnek Cümle:</strong><br>
-      Wir haben lange diskutiert, schließlich haben wir eine Entscheidung getroffen.<br>
-      <em>= Uzun süre tartıştık, en sonunda bir karar verdik.</em>
-    </div>
-  </div>
-  <a href="javascript:showPage('index')" class="back-button">←</a>
-</div>
-
-<!-- später -->
-<div id="später" class="page">
-  <h1>später</h1>
-  <div class="content">
-    <p><strong>Türkçe Anlamı:</strong> daha sonra, sonra</p>
-    <p><strong>Türü:</strong> Konjunktionaladverb</p>
-    <p><strong>Kullanımı:</strong> Zaman bildirir; bir olayın sonrasında geleni ifade eder. Fiil ikinci sırada yer alır.</p>
-    <div class="example">
-      <strong>Örnek Cümle:</strong><br>
-      Ich rufe dich später an.<br>
-      <em>= Seni daha sonra ararım.</em>
-    </div>
-  </div>
-  <a href="javascript:showPage('index')" class="back-button">←</a>
-</div>
-
-<!-- vorher -->
-<div id="vorher" class="page">
-  <h1>vorher</h1>
-  <div class="content">
-    <p><strong>Türkçe Anlamı:</strong> önceden, daha önce</p>
-    <p><strong>Türü:</strong> Konjunktionaladverb</p>
-    <p><strong>Kullanımı:</strong> Zaman bildirir; bir olaydan önceki zamanı ifade eder. Fiil ikinci sırada yer alır.</p>
-    <div class="example">
-      <strong>Örnek Cümle:</strong><br>
-      Vorher habe ich meine Hausaufgaben gemacht.<br>
-      <em>= Önceden ödevlerimi yaptım.</em>
-    </div>
-  </div>
-  <a href="javascript:showPage('index')" class="back-button">←</a>
-</div>
-
-<!-- weder ... noch -->
-<div id="weder_noch" class="page">
-  <h1>weder ... noch</h1>
-  <div class="content">
-    <p><strong>Türkçe Anlamı:</strong> ne ... ne de</p>
-    <p><strong>Türü:</strong> Zweiteilige Konjunktion</p>
-    <p><strong>Kullanımı:</strong> İki olumsuz durumu ifade eder; her iki durum da geçerli değildir. Fiil ikinci sırada yer alır.</p>
-    <div class="example">
-      <strong>Örnek Cümle:</strong><br>
-      Ich mag weder Kaffee noch Tee.<br>
-      <em>= Ne kahve ne de çay severim.</em>
-    </div>
-  </div>
-  <a href="javascript:showPage('index')" class="back-button">←</a>
-</div>
-
-
+    renderTest();
+  </script>
 </body>
 </html>
