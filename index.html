@@ -25,23 +25,40 @@
       margin-bottom: 60px;
       margin-top: 0;
     }
-    /* Yeni eklediğin B2 yazısı için: */
-  .b2-prufung {
-    font-size: 4rem;         /* Yazı büyüklüğü */
-    font-weight: bold;       /* Kalın yazı */
-    color: hsl(51, 91%, 31%);          /* Yazı rengi */
-    letter-spacing: 3px;     /* Harf arası boşluk */
-    text-align: center;      /* Ortala */
-    margin-bottom: 40px;     /* Altta boşluk */
-    text-transform: uppercase; /* Büyük harf */
-  }
-    .btn-row {
-      width: 100%;
-      display: flex;
-      justify-content: flex-end;
-       margin-top: -30px;
+    .b2-prufung {
+      font-size: 4rem;
+      font-weight: bold;
+      color: hsl(51, 91%, 31%);
+      letter-spacing: 3px;
+      text-align: center;
+      margin-bottom: 40px;
+      text-transform: uppercase;
     }
-    .btn-go {
+    .main-rows {
+      width: 90vw;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: -25px;
+    }
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+    .btn-group.left {
+      align-items: flex-start;
+    }
+    .btn-group.right {
+      align-items: flex-end;
+    }
+    .btn-group.center {
+      align-items: center;
+    }
+    .btn-custom {
       font-size: 1.3rem;
       padding: 20px 48px;
       border-radius: 18px;
@@ -53,21 +70,42 @@
       box-shadow: 0 2px 8px #0002;
       transition: background 0.25s;
       letter-spacing: 1.5px;
-      margin-right: 2vw;
-    
+      min-width: 320px;
+      text-align: center;
     }
-    .btn-go:hover {
+    .btn-custom:hover {
       background: #ffe055;
+    }
+    @media (max-width: 900px) {
+      .welcome { font-size: 3rem; }
+      .b2-prufung { font-size: 2rem; }
+      .btn-custom { min-width: 90vw; font-size: 1rem; }
+      .main-rows { flex-direction: column; align-items: center; }
+      .btn-group { align-items: center !important; }
     }
   </style>
 </head>
 <body>
   <div class="welcome">HOŞ GELDİNİZ</div>
   <div class="b2-prufung">B2 PRÜFUNG</div>
-  <div class="btn-row">
-    <button class="btn-go" onclick="window.location.href='quiz.html'">
-      Hörverstehen Teil 1
-    </button>
+  <div class="main-rows">
+    <!-- Sol: Leseverstehen -->
+    <div class="btn-group left">
+      <button class="btn-custom" onclick="window.location.href='lese1.html'">Leseverstehen Teil 1</button>
+      <button class="btn-custom" onclick="window.location.href='lese2.html'">Leseverstehen Teil 2</button>
+      <button class="btn-custom" onclick="window.location.href='lese3.html'">Leseverstehen Teil 3</button>
+    </div>
+    <!-- Orta: Sprachbausteine -->
+    <div class="btn-group center">
+      <button class="btn-custom" onclick="window.location.href='sprach1.html'">Sprachbausteine Teil 1</button>
+      <button class="btn-custom" onclick="window.location.href='sprach2.html'">Sprachbausteine Teil 2</button>
+    </div>
+    <!-- Sağ: Hörverstehen -->
+    <div class="btn-group right">
+      <button class="btn-custom" onclick="window.location.href='quiz.html'">Hörverstehen Teil 1</button>
+      <button class="btn-custom" onclick="window.location.href='quiz2.html'">Hörverstehen Teil 2</button>
+      <button class="btn-custom" onclick="window.location.href='quiz3.html'">Hörverstehen Teil 3</button>
+    </div>
   </div>
 </body>
 </html>
