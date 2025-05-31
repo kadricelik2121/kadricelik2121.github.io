@@ -1,590 +1,111 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>Hörverstehen Teil 1</title>
+  <title>ANA SAYFA</title>
   <style>
     body {
-  font-family: Arial, sans-serif;
-  background: #FFF8E1;
-  margin: 0;
-  padding: 0;
-  width: 100vw;
-  height: 100vh;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  overflow: hidden;
-}
-    .container {
-  background: #FFFBEA;
-  padding: 3vw 3vw 2vw 3vw;
-  border-radius: 18px;
-  box-shadow: 0 2px 12px #0002;
-  margin: 0;
-  width: 100vw;
-  max-width: 100vw;
-  min-width: 100vw;
-  height: 100vh;
-  max-height: 100vh;
-  min-height: 100vh;
-  position: relative;
-  overflow-y: auto;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-}
-
-    .page-number {
-      position: absolute;
-      top: 16px;
-      left: -16px;
-      background: #f3ca7b;
-      color: #7a5e1a;
-      font-size: 1.3rem;
-      font-weight: bold;
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 1px 6px #0002;
-      border: 2px solid #e6bb5c;
-      z-index: 10;
-      user-select: none;
-    }
-    .stats-box {
-      position: absolute;
-      top: 14px;
-      left: 26px;
-      background: #fffbe7;
-      color: #8b7200;
-      border: 1.2px solid #f3ca7b;
-      border-radius: 9px;
-      box-shadow: 0 1px 6px #0001;
-      padding: 5px 9px 4px 8px;
-      font-size: 0.68rem;
-      font-weight: bold;
+      margin: 0;
+      padding: 0;
+      background: #FFF8E1;
+      width: 100vw;
+      height: 100vh;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
-      min-width: 64px;
-      z-index: 10;
-      user-select: none;
-      letter-spacing: 0.4px;
-    }
-    .stats-title {
-      font-size: 0.68rem;
-      color: #bf9000;
-      font-weight: bold;
-      letter-spacing: 0.2px;
-      margin-bottom: 1px;
-    }
-    .stats-row {
-      margin-bottom: 0px;
-      font-size: 0.75rem;
-      display: flex;
-      gap: 5px;
       align-items: center;
+      justify-content: center;
     }
-    .stats-correct {
-      color: #259910;
-      font-size: 0.93rem;
-    }
-    .stats-wrong {
-      color: #b01111;
-      font-size: 0.93rem;
-    }
-    .main-title {
-      font-size: 2.2rem;
+    .welcome {
+      font-size: 8rem;
       font-weight: bold;
+      letter-spacing: 6px;
+      color: #b98d00;
       text-align: center;
-      margin-bottom: 12px;
-      letter-spacing: 1px;
-      text-transform: capitalize;
+      margin-bottom: 60px;
+      margin-top: 0;
     }
-    .test-title {
-      font-size: 2rem;
+    .b2-prufung {
+      font-size: 4rem;
       font-weight: bold;
-      letter-spacing: 2px;
+      color: hsl(51, 91%, 31%);
+      letter-spacing: 3px;
       text-align: center;
-      margin-bottom: 18px;
-      text-transform: capitalize;
+      margin-bottom: 40px;
+      text-transform: uppercase;
     }
-    .code-box {
-      font-size: 2.4rem;
-      font-weight: bold;
-      color: #444;
-      letter-spacing: 5px;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .option, .option * {
-      text-decoration: none !important;
-      outline: none !important;
-      box-shadow: none !important;
-      user-select: none;
-    }
-    .option {
-      background: #fafafa;
-      border: 2px solid #ddd;
-      border-radius: 10px;
-      padding: 13px 12px;
-      margin: 10px 0;
-      cursor: pointer;
-      font-size: 1.07rem;
+    .main-rows {
+      width: 90vw;
       display: flex;
-      align-items: flex-start;
-      transition: background 0.3s, border 0.3s, color 0.3s;
-    }
-    .option.selected.correct {
-      background: #eaffea;
-      border-color: #1cb31c;
-      color: #118011;
-      font-weight: bold;
-    }
-    .option.selected.incorrect {
-      background: #ffeaea;
-      border-color: #ee2222;
-      color: #b01111;
-      font-weight: bold;
-    }
-    .option:focus,
-    .option:active,
-    .option.selected:focus,
-    .option.selected:active,
-    .option span:focus,
-    .option span:active {
-      outline: none !important;
-      text-decoration: none !important;
-      box-shadow: none !important;
-    }
-    .option-number {
-      font-weight: bold;
-      margin-right: 13px;
-      font-size: 1.15rem;
-      flex-shrink: 0;
-      text-decoration: none !important;
-      outline: none !important;
-      user-select: none;
-    }
-    .nav-btns {
-      display: flex;
+      flex-direction: row;
       justify-content: space-between;
-      margin-top: 30px;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: -25px;
+    }
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+    .btn-group.left {
+      align-items: flex-start;
+    }
+    .btn-group.right {
+      align-items: flex-end;
+    }
+    .btn-group.center {
       align-items: center;
     }
-    .nav-btn {
-      background: #eee;
+    .btn-custom {
+      font-size: 1.3rem;
+      padding: 20px 48px;
+      border-radius: 18px;
       border: none;
-      padding: 12px 24px;
-      font-size: 1.2rem;
-      border-radius: 14px;
-      cursor: pointer;
-      transition: background 0.25s;
+      background: #ffd400;
+      color: #543c00;
       font-weight: bold;
-      box-shadow: 0 1px 5px #0001;
-      user-select: none;
-      margin: 0 4px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #0002;
+      transition: background 0.25s;
+      letter-spacing: 1.5px;
+      min-width: 320px;
+      text-align: center;
     }
-    .nav-btn:hover {
-      background: #e1e6fd;
+    .btn-custom:hover {
+      background: #ffe055;
+    }
+    @media (max-width: 900px) {
+      .welcome { font-size: 3rem; }
+      .b2-prufung { font-size: 2rem; }
+      .btn-custom { min-width: 90vw; font-size: 1rem; }
+      .main-rows { flex-direction: column; align-items: center; }
+      .btn-group { align-items: center !important; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="page-number" id="pageNumber">1</div>
-    <div class="stats-box" id="statsBox">
-      <div class="stats-title">İstatistik</div>
-      <div class="stats-row"><span class="stats-correct">✔</span> <span id="correctCount">0</span> <span>Doğru</span></div>
-      <div class="stats-row"><span class="stats-wrong">✗</span> <span id="wrongCount">0</span> <span>Yanlış</span></div>
-      <div class="stats-row">
-        <span>%</span>
-        <span id="correctPercent">0</span>
-        <span>Doğru</span>
-        <span>/</span>
-        <span id="wrongPercent">0</span>
-        <span>Yanlış</span>
-      </div>
+  <div class="welcome">HOŞ GELDİNİZ</div>
+  <div class="b2-prufung">B2 PRÜFUNG</div>
+  <div class="main-rows">
+    <!-- Sol: Leseverstehen -->
+    <div class="btn-group left">
+      <button class="btn-custom" onclick="window.location.href='lese1.html'">Leseverstehen Teil 1</button>
+      <button class="btn-custom" onclick="window.location.href='lese2.html'">Leseverstehen Teil 2</button>
+      <button class="btn-custom" onclick="window.location.href='lese3.html'">Leseverstehen Teil 3</button>
     </div>
-    <div class="main-title">Hörverstehen Teil 1</div>
-    <div class="test-title" id="testTitle"></div>
-    <div class="code-box" id="codeBox"></div>
-    <div id="options"></div>
-    <div class="nav-btns">
-      <button class="nav-btn" id="prevBtn">&#8592; Geri</button>
-      <button class="nav-btn" onclick="window.location.href='index.html'">Ana Sayfa</button>
-      <button class="nav-btn" id="nextBtn">İleri &#8594;</button>
-      
+    <!-- Orta: Sprachbausteine -->
+    <div class="btn-group center">
+      <button class="btn-custom" onclick="window.location.href='sprach1.html'">Sprachbausteine Teil 1</button>
+      <button class="btn-custom" onclick="window.location.href='sprach2.html'">Sprachbausteine Teil 2</button>
+    </div>
+    <!-- Sağ: Hörverstehen -->
+    <div class="btn-group right">
+      <button class="btn-custom" onclick="window.location.href='quiz.html'">Hörverstehen Teil 1</button>
+      <button class="btn-custom" onclick="window.location.href='quiz2.html'">Hörverstehen Teil 2</button>
+      <button class="btn-custom" onclick="window.location.href='quiz3.html'">Hörverstehen Teil 3</button>
     </div>
   </div>
-  <script>
-    // SESLER
-    const dogruSes = new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
-    const yanlisSes = new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg");
-
-    // Test verileri
-    const tests = [
-      // ... senin test sayfaların (aynen bırak) ...
-      {
-        title: "Weniger Vögel",
-        correct: [3,4,5],
-        options: [
-          "Viele Kunden würden für bessere Service Leistungen der Paketdienstw höhere geboren.",
-          "Nach dem Unfall konnten beide Schiffe ihre Fahrt nicht fortsetzen.",
-          "Europaweit gibt es immer weniger Vögel.",
-          "Die Polizei hat auf der Autobahn ein dort verbotenes Fahrzeug entdeckt.",
-          "Bei dem Festival konnte man Konzert an verschiedenen Orten besuchen."
-        ]
-      },
-      {
-        title: "TipTop",
-        correct: [1,4],
-        options: [
-          "Es ist nicht sicher, ob es erneut zu diesem Problem kommen kann.",
-          "Hamburgs Politiker befürworteten den Bau des Einkaufszentrums nicht.",
-          "Zwischen Frankreich und Deutschland wurde ein neuer Hochgeschwindigkeits genommen.",
-          "Die Produkte von TipTop sind in Deutschland nicht mehr so gefragt.",
-          "Ingrid Thieme wird sich an der kommenden WM beteiligen."
-        ]
-      },
-       {
-        title: "Weniger Vögel.",
-        correct: [3,4,5],
-        options: [
-          "Viele Kunden würden für bessere Service Leistungen der Paketdienstw höhere geboren.",
-          "Nach dem Unfall konnten beide Schiffe ihre Fahrt nicht fortsetzen.",
-          "Europaweit gibt es immer weniger Vögel.",
-          "Die Polizei hat auf der Autobahn ein dort verbotenes Fahrzeug entdeckt.",
-          "Bei dem Festival konnte man Konzert an verschiedenen Orten besuchen."
-        ]
-      },
-      {
-        title: "Nicht sicher 1",
-        correct: [1, 4],
-        options: [
-          "Wegen Unwetterschäden wurden Urlauber in einer Notunterkunft untergebracht.",
-          "Sämtliche Waren der Firma Mirella wurden aus den Läden entfernt.",
-          "Das Arbeitsplatzangebot in der Bundesrepublik hat einen Tiefstand erreicht.",
-          "Am 21. Mai ist der Besuch der Sonderausstellung kostenlos.",
-          "Entlaufene Tiere verursachten einen Unfall auf der Autobahn."
-        ]
-      },
-      {
-        title: "Fluggeselschaft DL Rostock",
-        correct: [1, 5],
-        options: [
-          "Kunden der Fluggesellschaft DL äußern Unzufriedenheit.",
-          "Die Preise von Süßwaren wurden dieses Jahr gesenkt, um Käufer zurückzugewinnen.",
-          "Die Sonnenstürme hatten keine negativen Auswirkungen.",
-          "Einer der Kandidaten konnte die Mehrheit der Zuschauer auf seine Seite bringen.",
-          "Das Tiefdruckgebiet \"Helena\" kann morgen im Südwesten Deutschlands Verkehrsprobleme verursachen."
-        ]
-      },
-      {
-        title: "12",
-        correct: [1, 2],
-        options: [
-          "In der Europäischen Union verzeichnet man weniger jugendliche Arbeitslose.",
-          "Das Bundesarbeitsministerium bemüht sich um ausländische Arbeitnehmer bestimmter Berufs.",
-          "Die \"Lange Nacht der Musik\" findet am Odeonsplatz in München statt.",
-          "Im \"Tal der goldenen Mumien\" wurden bisher fast 10.000 Tote gefunden.",
-          "Die Gefahr schwerer Unwetter ist nun vorbei."
-        ]
-      },
-      {
-        title: "Europäischen Union",
-        correct: [1, 2],
-        options: [
-          "In der Europäischen Union verzeichnet man weniger jugendliche Arbeitslose.",
-          "Das Bundesarbeitsministerium bemüht sich um ausländische Arbeitnehmer bestimmter Berufs.",
-          "Die \"Lange Nacht der Musik\" findet am Odeonsplatz in München statt.",
-          "Im \"Tal der goldenen Mumien\" wurden bisher fast 10.000 Tote gefunden.",
-          "Die Gefahr schwerer Unwetter ist nun vorbei."
-        ]
-      },
-      {
-  title: "Unwetterschäden",
-  correct: [1, 4],
-  options: [
-    "Wegen Unwetterschäden wurden Urlauber in einer Notunterkunft untergebracht.",
-    "Sämtliche Waren der Firma Mirella wurden aus den Läden entfernt.",
-    "Das Arbeitsplatzangebot in der Bundesrepublik hat einen Tiefstand erreicht.",
-    "Am 21. Mai ist der Besuch der Sonderausstellung kostenlos.",
-    "Entlaufene Tiere verursachten einen Unfall auf der Autobahn."
-  ]
-},
-{
-  title: "Die Wahlbeteiligung 13",
-  correct: [1, 3],
-  options: [
-    "Die Wahlbeteiligung in Deutschland nimmt wieder zu.",
-    "150 Bauarbeiter müssen entlassen werden.",
-    "Bei der Sportveranstaltung wurden neue Bestzeiten aufgestellt.",
-    "Die Sicherheitslücke beim Online-Banking wurde noch nicht gefunden.",
-    "Kinder können in der Bücherei ihre eigenen Texte vorlesen."
-  ]
-},
-{
-  title: "Lufthansa",
-  correct: [2, 3],
-  options: [
-    "Die Deutsche Lufthansa hat ihre Führungsposition verloren.",
-    "Ein Bonner Sportverein zeigt der Öffentlichkeit sein Angebot.",
-    "Die Rahmenbedingungen in deutschen Pflegeheimen bedürfen dringend einer Änderung.",
-    "Durch moderne Wärmedämmung könnten die Heizkosten deutlich reduziert werden.",
-    "Das Nationale Olympische Komitee hat die Dopingsperre für Tom Sanders aufgehoben."
-  ]
-},
-{
-  title: "Die Stadt Friedrichsberg",
-  correct: [2, 3, 5],
-  options: [
-    "Die Stadt Friedrichsberg lädt zu einer Preisverleihung ein.",
-    "Die Alte brücke ist zum Jahresbeginn wieder befahrbar.",
-    "Der Wanderer wurde verarztet und in Sicherheit gebracht.",
-    "In dem Unternehmen kommt es zu Kündigungen.",
-    "Man kann nach einer Registrierung an einem Gruppenlauf teilnehmen."
-  ]
-},
-{
-  title: "Deutsch schiff",
-  correct: [1, 2, 5],
-  options: [
-    "Ein deutsches Schiff ist am Südpol eingefroren, aber Menschen kamen nicht zu Schaden.",
-    "Die Firma Brain International ist in wirtschaftliche Schwierigkeiten geraten.",
-    "Die Europäische Union will Gesetze zur Kontrolle sozialer Netzwerke erlassen.",
-    "Mit einem neuen Gesetz wollen die österreichischen Banken Sparkonten wieder attraktiver machen.",
-    "Nach den Bürgermeisterwahlen in Bensheim bleibt die CDU weiterhin an der Regierung."
-  ]
-},
-{
-  title: "Auf der Insel Bali",
-  correct: [4, 5],
-  options: [
-    "Auf der Insel Bali wurden neue Maßnahmen zur Müllentsorgung beschlossen.",
-    "In Nordfrankreich wird nach einem entlaufenen Panther gesucht.",
-    "Die Mietervereinigung rät Mieterinnen und Mietern, die Betriebskosten nicht zu bezahlen.",
-    "Der Sekthersteller hat die Pläne für sein Bauvorhaben geändert.",
-    "Die Löscharbeiten sind noch nicht abgeschlossen."
-  ]
-},
-{
-  title: "Alpen",
-  correct: [2, 4, 5],
-  options: [
-    "Wetter lang in den Alpen",
-    "Die Fans, die das Spiel unterstützten, waren überrascht und überrascht",
-    "Eine Familie von Pandas kommt im Park an",
-    "Urlaub in Deutschland und weniger Kosten",
-    "Erzieherinnen verlangen bessere Bezahlung"
-  ]
-},
-{
-  title: "Erdbeben",
-  correct: [1, 5],
-  options: [
-    "Nach dem Erdbeben meldeten viele Bürger Schäden bei Polizei und Feuerwehr.",
-    "Eltern müssen sich neuerdings über den Impfschutz für ihre Kinder beraten lassen.",
-    "Verkehrsbehinderungen drohen in den nächsten Wochen besonders samstags und sonntags.",
-    "Pipelines tragen maßgeblich zur Umweltverschmutzung in Schleswig-Holstein bei.",
-    "Anfang nächster Woche ist mit einer erhöhten Ozonbelastung zu rechnen."
-  ]
-},
-{
-  title: "Bierkonsum",
-  correct: [2, 4],
-  options: [
-    "Der Bierkonsum steigt um 10%.",
-    "Deutsche Einkommen liegen im europäischen Vergleich nur im Mittelfeld.",
-    "Es ist ein Ende des Bahnstreiks in Sicht.",
-    "Es wird Gewalt von Fußballfans auch in Deutschland befürchtet.",
-    "Die leopoldina soll internationale Akademie werden."
-  ]
-},
-{
-  title: "Verbrauch von Bier",
-  correct: [2, 4],
-  options: [
-    "Der Verbrauch von Bier steigt um 10 %",
-    "Deutsche Einkommen liegen im europäischen Vergleich nur im Mittelfeld.",
-    "Es ist ein Ende des Bahnstreiks in Sicht.",
-    "Man befürchtet auch in Deutschland Gewalt von Fußballfans.",
-    "Die Leopoldina eine internationale Akademie werden."
-  ]
-},
-{
-  title: "Frau Jürgens",
-  correct: [3, 4, 5],
-  options: [
-    "Frau Jürgens tritt wegen Streitigkeiten zurück.",
-    "Die Filme werden in den Kinos der Stadt gezeigt.",
-    "Der öffentliche Nahverkehr funktioniert noch nicht störungsfrei.",
-    "Wildes Camping ist im In- und Ausland nur bedingt zugelassen.",
-    "Die Temperaturen steigen in den nächsten Tagen an."
-  ]
-},
-{
-  title: "Wetterlage Alpen",
-  correct: [2, 3],
-  options: [
-    "Die Wetterlage in den Alpen wird sich in den nächsten Tagen verbessern.",
-    "Die Fans des FC neustadt waren von dem Sieg ihrer Mannschaft überrascht.",
-    "Erzieherinnen verlangen eine bessere Bezahlung.",
-    "Im Berliner Zoo gibt eine große Pandafamilie.",
-    "Die Zahl der Deutschland Urlauber ist rückläufig."
-  ]
-},
-{
-  title: "Die Fluggeselschaft",
-  correct: [1, 5],
-  options: [
-    "die Fluggeselschaft DL fligt z. B Rostok nicht mehr an.",
-    "Süßwaren warden dieses Jahr angeboten, um Käufer zurückzugewinnen.",
-    "Die Sonnenstürme hatten keine negativen Auswirkungen.",
-    "Einer der kandidaten konnte die Mehrheit der Zuschauer für sich gewinnen.",
-    "Das Tiefdruckgebiet \"Helena\" kann morgen im SüdWesten Deutschlands Verkehrsprobleme verursachen."
-  ]
-}
-
-
-      //Yeni test eklemek istersen buraya ekle
-    ];
-
-    // Sayaçlar:
-    let totalCorrect = 0;
-    let totalWrong = 0;
-    let totalAnswered = 0;
-
-    let currentTest = 0;
-    let selected = [];
-    let lockedOptions = [];
-    let testJustEnded = false;
-
-    function resetStats() {
-      totalCorrect = 0;
-      totalWrong = 0;
-      totalAnswered = 0;
-      updateStatsBox();
-      testJustEnded = false;
-    }
-
-    function updateStatsBox() {
-      totalAnswered = totalCorrect + totalWrong;
-      let correctPercent = totalAnswered === 0 ? 0 : Math.round(100 * totalCorrect / totalAnswered);
-      let wrongPercent = totalAnswered === 0 ? 0 : Math.round(100 * totalWrong / totalAnswered);
-      document.getElementById('correctCount').innerText = totalCorrect;
-      document.getElementById('wrongCount').innerText = totalWrong;
-      document.getElementById('correctPercent').innerText = correctPercent;
-      document.getElementById('wrongPercent').innerText = wrongPercent;
-    }
-
-    function renderTest() {
-      const test = tests[currentTest];
-      document.getElementById("testTitle").innerText = test.title;
-      document.getElementById("pageNumber").innerText = currentTest + 1;
-
-      selected = [];
-      lockedOptions = Array(test.options.length).fill(false);
-      document.getElementById("codeBox").innerText = "";
-      const optionsDiv = document.getElementById("options");
-      optionsDiv.innerHTML = "";
-      test.options.forEach((opt, idx) => {
-        const option = document.createElement("div");
-        option.className = "option";
-        option.innerHTML = `<span class="option-number">${idx+1}.</span> <span>${opt}</span>`;
-        option.onclick = () => handleOptionClick(idx);
-        optionsDiv.appendChild(option);
-      });
-      updateStatsBox();
-    }
-
-    function removeUnderlineFromOption(idx) {
-      const optionsDiv = document.getElementById("options");
-      const optionDiv = optionsDiv.children[idx];
-      optionDiv.style.textDecoration = "none";
-      const spans = optionDiv.querySelectorAll("*");
-      spans.forEach(s => s.style.textDecoration = "none");
-    }
-
-    function handleOptionClick(idx) {
-      // Eğer test az önce bitti ve kullanıcı tekrar başa döndüyse sayaçları sıfırla
-      if (testJustEnded) {
-        resetStats();
-        testJustEnded = false;
-      }
-      const test = tests[currentTest];
-      if (lockedOptions[idx]) return;
-
-      const correctAnswers = test.correct;
-      const isCorrect = correctAnswers.includes(idx+1);
-
-      const optionsDiv = document.getElementById("options");
-      const optionDiv = optionsDiv.children[idx];
-
-      optionDiv.classList.add("selected");
-      optionDiv.classList.add(isCorrect ? "correct" : "incorrect");
-      removeUnderlineFromOption(idx);
-
-      if (isCorrect) {
-        dogruSes.currentTime = 0;
-        dogruSes.play().catch(e => console.log("Doğru ses çalma hatası:", e));
-        lockedOptions[idx] = true;
-        selected.push(idx+1);
-        totalCorrect++;
-      } else {
-        yanlisSes.currentTime = 0;
-        yanlisSes.play().catch(e => console.log("Yanlış ses çalma hatası:", e));
-        lockedOptions[idx] = true;
-        totalWrong++;
-      }
-      updateStatsBox();
-
-      // Tüm doğru cevaplar seçildiyse kodu göster
-      const sortedSel = selected.slice().sort((a,b) => a-b);
-      const sortedCor = test.correct.slice().sort((a,b) => a-b);
-      if (sortedSel.length === sortedCor.length && sortedSel.every((v,i) => v===sortedCor[i])) {
-        document.getElementById("codeBox").innerText = sortedSel.join("");
-        // Diğer seçeneklere tıklamayı engelle
-        Array.from(optionsDiv.children).forEach((optDiv, i) => {
-          lockedOptions[i] = true;
-          removeUnderlineFromOption(i);
-        });
-
-        // En son sayfa tamamlanınca sayaçları sıfırlama
-        if (currentTest === tests.length - 1) {
-          setTimeout(() => {
-            testJustEnded = true;
-            resetStats();
-          }, 1400); // 1.4 sn kodu göstersin sonra sıfırlansın
-        }
-      }
-    }
-
-    document.getElementById("prevBtn").onclick = () => {
-      if (currentTest > 0) {
-        currentTest--;
-        renderTest();
-      }
-    };
-    document.getElementById("nextBtn").onclick = () => {
-      if (currentTest < tests.length-1) {
-        currentTest++;
-        renderTest();
-      }
-    };
-    // --- BAŞA DÖN BUTONU EKLENDİ ---
-    document.getElementById("homeBtn").onclick = () => {
-      currentTest = 0;
-      renderTest();
-    };
-
-    renderTest();
-  </script>
 </body>
 </html>
