@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>telc Sprachbausteine</title>
+  <style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh; /* Buraya dikkat! */
+    box-sizing: border-box;
+    /* Scroll serbest bırakıldı */
+  }
+  .header {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  h1 {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+  }
+  .page-number {
+    font-size: 14px;
+    color: #666;
+  }
+  .container {
+    border: 2px solid black;
+    padding: 20px;
+    background-color: white;
+    width: 100%;
+    max-width: 1200px;
+    box-sizing: border-box;
+    /* overflow kaldırıldı */
+  }
+  .text {
+    font-size: 15px;
+  }
+  select {
+    padding: 5px;
+    margin: 0 5px;
+    font-size: 12px;
+  }
+  .button-container {
+    margin: 10px 0;
+    text-align: center;
+    width: 100%;
+  }
+  .button {
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 800px;
+    margin-top: 5px;
+  }
+  .nav-buttons button {
+    padding: 6px 12px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .correct {
+    background-color: #c8e6c9;
+  }
+  .incorrect {
+    background-color: #ffcdd2;
+  }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>telc Sprachbausteine, Teil 1</h1>
+    <span id="page-number" class="page-number"></span>
+  </div>
+
+  <div class="container">
+    <div class="text" id="text-container">
+      <!-- İçerik buraya JS ile gelecek -->
+    </div>
+  </div>
+
+  <div class="button-container">
+    <button class="button" onclick="checkAnswers()">Kontrollieren</button>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">⬅️ Geri</button>
+    <button onclick="goHome()">🏠 Anasayfa</button>
+    <button onclick="nextPage()">İleri ➡️</button>
+  </div>
+
+  <script>
+    const pages = [
+      {
+        content: `
+        Hallo Philip,<br><br>
+        nun habe ich mich schon so lange nicht bei dir gemeldet – das tut mir wirklich leid! Ich hatte in den vergangenen Monaten viel Stress, weil ich ja nun studiere und nebenbei noch arbeiten muss,
+        <select id="q21"><option value="">---</option><option value="a">damit</option><option value="b">für</option><option value="c">um</option></select>
+        meine Miete und alles andere bezahlen zu können. Zum Glück macht mir mein Nebenjob wenigstens Spaß. Ich weiß nicht,
+        <select id="q22"><option value="">---</option><option value="a">wann</option><option value="b">wie</option><option value="c">wo</option></select>
+        ich das sonst durchhalten würde. Vielleicht habe ich dir schon erzählt, dass ich abends und am Wochenende in einer Kneipe in der Küche helfe. Das ist zwar oft sehr anstrengend,
+        <select id="q23"><option value="">---</option><option value="a">damit</option><option value="b">denn</option><option value="c">doch</option></select>
+        andererseits ist dauernd was los, es wird nicht langweilig, und meine Kollegen sind total nett. Erinnerst du dich noch an unsere Zeit in der Grundschule? Mit acht Jahren wollte ich ja
+        <select id="q24"><option value="">---</option><option value="a">bestimmt</option><option value="b">unbedingt</option><option value="c">völlig</option></select>
+        Kellnerin werden, weil man da Trinkgeld bekommt. Naja, jetzt bin ich in der Küche gelandet, knapp daneben ist auch vorbei ;) <br><br>
+        Was macht denn deine Ausbildung? Wenn ich
+        <select id="q25"><option value="">---</option><option value="a">dich</option><option value="b">mich</option><option value="c">sich</option></select>
+        nicht täusche, bist du ja in einem halben Jahr schon fertig, oder? Das ist ja nicht mehr lang! <br><br>
+        Neulich habe ich übrigens Tina und Kevin hier in der Nähe der Uni getroffen – die waren ja schon ein Paar,
+        <select id="q26"><option value="">---</option><option value="a">als</option><option value="b">da</option><option value="c">wenn</option></select>
+        wir noch in der Schule gegangen sind, und jetzt will sie tatsächlich heiraten! <br><br>
+        Wie sehen denn deine Pläne für die
+        <select id="q27"><option value="">---</option><option value="a">jetzigen</option><option value="b">kommenden</option><option value="c">letzten</option></select>
+        Wochenenden aus? Wir könnten uns ja vielleicht mal wieder treffen und in Ruhe quatschen – hättest du Lust
+        <select id="q28"><option value="">---</option><option value="a">danach</option><option value="b">darüber</option><option value="c">dazu</option></select>
+        ? <br><br>
+        In meiner Straße hat vor einem Monat ein nettes kleines Café aufgemacht, die haben sowohl sehr leckere Kuchen
+        <select id="q29"><option value="">---</option><option value="a">als</option><option value="b">ebenso</option><option value="c">oder</option></select>
+        auch einige kleine Gerichte zu wirklich günstigen Preisen. Wäre das was für dich? Mail mir doch
+        <select id="q30"><option value="">---</option><option value="a">einen</option><option value="b">einfach</option><option value="c">einzig</option></select>
+        , wenn du magst, ich würde mich freuen! <br><br>
+        Viele Grüße, <br>
+        Tanja
+        `,
+        answers: {
+          q21: 'c',
+          q22: 'b',
+          q23: 'c',
+          q24: 'b',
+          q25: 'b',
+          q26: 'a',
+          q27: 'b',
+          q28: 'c',
+          q29: 'a',
+          q30: 'b'
+        }
+      },
+      {
+        content: `
+        Hallo Maria,<br><br>
+        Bevor Wieder der Arbeitsalltag beginnt, schicke ich dir
+        <select id="q21"><option value="">---</option><option value="a">momentan</option><option value="b">noch</option><option value="c">weiterhin</option></select>
+        rasch einige Zeilen, um dir von unserem Wochenende zu erzählen. Es ist so schade, dass du
+        <select id="q22"><option value="">---</option><option value="a">deswegen</option><option value="b">wegen</option><option value="c">weil</option></select>
+        der Grippe nicht dabei sein konntest!<br><br>
+        <select id="q23"><option value="">---</option><option value="a">abgesehen</option><option value="b">außer</option><option value="c">bis</option></select>
+        auf Mirko sind alle mit dem Zug angereist und wir haben uns schon am Bahnhof getroffen. <br><br>
+        Nachdem wir unser Gepäck abgestellt
+        <select id="q24"><option value="">---</option><option value="a">haben</option><option value="b">hatten</option><option value="c">hätten</option></select>
+        , haben wir gleich einen Rundgang durch den Ort gemacht. Uli wusste viel Interessantes zu erzählen. Sie lebt ja schon einige Jahre dort und hat sich
+        <select id="q25"><option value="">---</option><option value="a">als</option><option value="b">für</option><option value="c">zu</option></select>
+        ausgezeichnete Fremdenführerin erwiesen. <br><br>
+        Besonders beeindruckt hat uns der wunderschöne Park, in dem gerade die Rhododendren blühten. <br><br>
+        Am Abend stand dann die Felsenbühne
+        <select id="q26"><option value="">---</option><option value="a">auf</option><option value="b">in</option><option value="c">aus</option></select>
+        dem Programm. <br><br>
+        Die Wanderung am nächsten Tag war
+        <select id="q27"><option value="">---</option><option value="a">absolut</option><option value="b">ganz</option><option value="c">vollkommen</option></select>
+        anstrengend, aber wunderbar. <br><br>
+        <select id="q28"><option value="">---</option><option value="a">außerdem</option><option value="b">alle</option><option value="c">abwohl</option></select>
+        ziemlich erschöpft, haben wir dann abends noch lange zusammen gegessen. <br><br>
+        Am nächsten Morgen haben wir gemeinsam Frühstück gegessen. Und nächste Mal musst du unbedingt dabei sein.
+        <select id="q29"><option value="">---</option><option value="a">abwohl</option><option value="b">trotzdem</option><option value="c">ungeachtet</option></select>
+        . <br><br>
+        Ich hoffe, dass es dir
+        <select id="q30"><option value="">---</option><option value="a">dürften</option><option value="b">sollten</option><option value="c">konnten</option></select>
+        schon wieder besser geht. <br><br>
+        Liebe Grüße von uns allen, <br>
+        Cem
+        `,
+        answers: {
+          q21: 'b',
+          q22: 'b',
+          q23: 'c',
+          q24: 'b',
+          q25: 'a',
+          q26: 'a',
+          q27: 'b',
+          q28: 'b',
+          q29: 'a',
+          q30: 'b'
+        }
+      },
+      {
+  content: `
+    Liebe Ida,<br><br>
+    nun ist es schon drei Monate her, dass ich nach Frankfurt gezogen bin. Es hat ziemlich lange gedauert, bis ich mich hier eingelebt habe. Am Anfang hatte ich auch gar nicht
+    <select id="q21"><option value="">---</option><option value="a">an</option><option value="b">auf</option><option value="c">wegen</option></select>
+    die neue Stelle und das Leben in der Stadt gewöhnt. <br><br>
+    Dass ich mich für eine neue Arbeitsstelle umgezogen war, hatte mich eine Zeitung sogar ein bisschen geärgert. Ich
+    <select id="q22"><option value="">---</option><option value="a">habe</option><option value="b">hatte</option><option value="c">war</option></select>
+    ja auch täglich mit dem Zug fahren können, statt mir eine Wohnung in der Nähe der Firma zu suchen. <br><br>
+    Zuerst habe ich auch
+    <select id="q23"><option value="">---</option><option value="a">dich</option><option value="b">uns</option><option value="c">mich</option></select>
+    gar nicht richtig wohlgefühlt. Aber nach und nach – mit den Umzugskartons
+    <select id="q24"><option value="">---</option><option value="a">ausgepackt habe</option><option value="b">ausgepackt hatte</option><option value="c">auspackte</option></select>
+    , konnte ich endlich die Stadt richtig erkunden.<br><br>
+    Seit einiger Zeit gefällt es mir in Frankfurt nun richtig gut. Das liegt vor allem
+    <select id="q25"><option value="">---</option><option value="a">an</option><option value="b">auf</option><option value="c">wegen</option></select>
+    , dass ich eine neue Freundin gefunden habe. Annabelle wohnt in derselben Straße wie ich und wir haben uns auf einem Flohmarkt in unserem Stadtviertel kennengelernt. <br><br>
+    Sie hat dort alten Bücher verkauft. Als wir
+    <select id="q26"><option value="">---</option><option value="a">uns</option><option value="b">einander</option><option value="c">miteinander</option></select>
+    ins Gespräch kamen, haben wir festgestellt, dass wir ähnliche Interessen und Hobbys teilen: Sie mag ebenfalls ausgefallene Mode und moderne Kunst und wir gehen nun regelmäßig zusammen ins Schwimmbad. <br><br>
+    Mein Leben sieht nun also ganz anders aus
+    <select id="q27"><option value="">---</option><option value="a">als</option><option value="b">ob</option><option value="c">abwohl</option></select>
+    vor drei Monaten. Mit meiner neuen Stelle bin ich auch zufrieden,
+    <select id="q28"><option value="">---</option><option value="a">eigentlich</option><option value="b">hoffentlich</option><option value="c">sicherlich</option></select>
+    ich oft Überstunden machen muss. Dafür herrscht jedoch ein angenehmes Betriebsklima
+    <select id="q29"><option value="">---</option><option value="a">auf</option><option value="b">in</option><option value="c">mit</option></select>
+    uns in der Abteilung.<br><br>
+    Jetzt habe ich viel von mir erzählt, aber Dich noch gar nicht gefragt, wie es Dir
+    <select id="q30"><option value="">---</option><option value="a">darauf</option><option value="b">daran</option><option value="c">geht</option></select>
+    geht. Gibt es etwas Neues bei Dir? Ich freue mich auf Deine nächste Mail!<br><br>
+    Herzliche Grüße<br>
+    Deine Emilia
+  `,
+  answers: {
+    q21: 'a',
+    q22: 'a',
+    q23: 'c',
+    q24: 'b',
+    q25: 'a',
+    q26: 'a',
+    q27: 'a',
+    q28: 'a',
+    q29: 'b',
+    q30: 'c'
+  }
+}
+    ];
+
+    let currentPage = 0;
+
+    function renderPage() {
+      document.getElementById('text-container').innerHTML = pages[currentPage].content;
+      document.getElementById('page-number').textContent = `Seite ${currentPage + 1}`;
+    }
+
+    function nextPage() {
+      if (currentPage < pages.length - 1) {
+        currentPage++;
+        renderPage();
+      }
+    }
+
+    function prevPage() {
+      if (currentPage > 0) {
+        currentPage--;
+        renderPage();
+      }
+    }
+
+    function goHome() {
+      currentPage = 0;
+      renderPage();
+    }
+
+    function checkAnswers() {
+      const correctAnswers = pages[currentPage].answers;
+      for (let key in correctAnswers) {
+        let select = document.getElementById(key);
+        select.classList.remove('correct', 'incorrect');
+        if (select.value === correctAnswers[key]) {
+          select.classList.add('correct');
+        } else {
+          select.classList.add('incorrect');
+        }
+      }
+    }
+
+    renderPage(); // Başlangıçta ilk sayfayı yükle
+  </script>
+
+</body>
+</html>
