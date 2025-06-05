@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Hörverstehen Teil 2</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #FFF8E1;
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      overflow: hidden;
+    }
+    .container {
+      background: #FFFBEA;
+      padding: 3vw 3vw 2vw 3vw;
+      border-radius: 18px;
+      box-shadow: 0 2px 12px #0002;
+      margin: 0;
+      width: 100vw;
+      max-width: 100vw;
+      min-width: 100vw;
+      height: 100vh;
+      max-height: 100vh;
+      min-height: 100vh;
+      position: relative;
+      overflow-y: auto;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+    .page-number {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: #f3ca7b;
+      color: #7a5e1a;
+      font-size: 1.3rem;
+      font-weight: bold;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 6px #0002;
+      border: 2px solid #e6bb5c;
+      z-index: 10;
+      user-select: none;
+    }
+    .stats-box {
+      position: absolute;
+      top: 14px;
+      left: 26px;
+      background: #fffbe7;
+      color: #8b7200;
+      border: 1.2px solid #f3ca7b;
+      border-radius: 9px;
+      box-shadow: 0 1px 6px #0001;
+      padding: 5px 9px 4px 8px;
+      font-size: 0.68rem;
+      font-weight: bold;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      min-width: 64px;
+      z-index: 10;
+      user-select: none;
+      letter-spacing: 0.4px;
+    }
+    .stats-title {
+      font-size: 0.68rem;
+      color: #bf9000;
+      font-weight: bold;
+      letter-spacing: 0.2px;
+      margin-bottom: 1px;
+    }
+    .stats-row {
+      margin-bottom: 0px;
+      font-size: 0.75rem;
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+    .stats-correct {
+      color: #259910;
+      font-size: 0.93rem;
+    }
+    .stats-wrong {
+      color: #b01111;
+      font-size: 0.93rem;
+    }
+    .main-title {
+      font-size: 2.2rem;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+      text-transform: capitalize;
+    }
+    .test-title {
+      font-size: 2rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-align: center;
+      margin-bottom: 18px;
+      text-transform: capitalize;
+    }
+    .code-box {
+      font-size: 2.4rem;
+      font-weight: bold;
+      color: #444;
+      letter-spacing: 5px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .option, .option * {
+      text-decoration: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+      user-select: none;
+    }
+    .option {
+      background: #fafafa;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      padding: 13px 12px;
+      margin: 10px 0;
+      cursor: pointer;
+      font-size: 1.07rem;
+      display: flex;
+      align-items: flex-start;
+      transition: background 0.3s, border 0.3s, color 0.3s;
+    }
+    .option.selected.correct {
+      background: #eaffea;
+      border-color: #1cb31c;
+      color: #118011;
+      font-weight: bold;
+    }
+    .option.selected.incorrect {
+      background: #ffeaea;
+      border-color: #ee2222;
+      color: #b01111;
+      font-weight: bold;
+    }
+    .option:focus,
+    .option:active,
+    .option.selected:focus,
+    .option.selected:active,
+    .option span:focus,
+    .option span:active {
+      outline: none !important;
+      text-decoration: none !important;
+      box-shadow: none !important;
+    }
+    .option-number {
+      font-weight: bold;
+      margin-right: 13px;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+      text-decoration: none !important;
+      outline: none !important;
+      user-select: none;
+    }
+    .nav-btns {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+      align-items: center;
+    }
+    .nav-btn {
+      background: #eee;
+      border: none;
+      padding: 12px 24px;
+      font-size: 1.2rem;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background 0.25s;
+      font-weight: bold;
+      box-shadow: 0 1px 5px #0001;
+      user-select: none;
+      margin: 0 4px;
+    }
+    .nav-btn:hover {
+      background: #e1e6fd;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="page-number" id="pageNumber">1</div>
+    <div class="stats-box" id="statsBox">
+      <div class="stats-title">İstatistik</div>
+      <div class="stats-row"><span class="stats-correct">✔</span> <span id="correctCount">0</span> <span>Doğru</span></div>
+      <div class="stats-row"><span class="stats-wrong">✗</span> <span id="wrongCount">0</span> <span>Yanlış</span></div>
+      <div class="stats-row">
+        <span>%</span>
+        <span id="correctPercent">0</span>
+        <span>Doğru</span>
+        <span>/</span>
+        <span id="wrongPercent">0</span>
+        <span>Yanlış</span>
+      </div>
+    </div>
+    <div class="main-title">Hörverstehen Teil 2</div>
+    <div class="test-title" id="testTitle"></div>
+    <div class="code-box" id="codeBox"></div>
+    <div id="options"></div>
+    <div class="nav-btns">
+      <button class="nav-btn" id="prevBtn">&#8592; Geri</button>
+      <button class="nav-btn" onclick="window.location.href='index.html'">Ana Sayfa</button>
+      <button class="nav-btn" id="nextBtn">İleri &#8594;</button>
+    </div>
+  </div>
+  <script>
+    // SESLER
+    const dogruSes = new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
+    const yanlisSes = new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg");
+
+    // Sadece 10 seçenekli testlerle örnek (Carina):
+    const tests = [
+      {
+        title: "Carina",
+        correct: [1,3,4,8,9,10], // 46=1, 47=2, 48=3, 49=4, 50=5, 51=6, 52=7, 53=8, 54=9, 55=10
+        options: [
+          "46. Der Berufseinstieg ist in anderen Ländern nicht leicht.",
+          "47. Carina ist ihr Beruf wichtiger als ihr Privatleben.",
+          "48. Carina hat sich der Agentur mit einem Film präsentiert.",
+          "49. Carina musste für einen Film ihr Gewicht stark verändern.",
+          "50. Carina macht lieber gefühlvolle Filme als Action-Filme.",
+          "51. Wegen der vielen Fehlstunden hatte Carina Probleme mit dem Direktor der Schule.",
+          "52. Carinas Eltern haben ihre Tochter von Anfang an unterstützt.",
+          "53. Carina finde den Wechsel zwischen Schule und Drehterminen nicht leicht.",
+          "54. Bei Dialogen darf man auch selbst etwas erfinden.",
+          "55. Carina empfiehlt, sich andere Schauspieler im Theater und in Filmen anzusehen."
+        ]
+      },
+      {
+        title: "Carina",
+        correct: [1,3,4,8,9,10], 
+        options: [
+          "46) Der Berufseinstieg ist in anderen Ländern nicht leicht.",
+          "47) Carina ist ihr Beruf wichtiger als ihr Privatleben.",
+          "48) Carina hat den Agentur mit einem Videofilm Interesse geweckt.",
+          "49) Carina hat für einen Film ein Dait gemacht.",
+          "50) Carina macht lieber gefühlvolle Filme als Action-Filme.",
+          "51) Wegen der vielen Fehlstunden hatte Carina Probleme mit dem Direktor der Schule.",
+          "52) Carinas Eltern haben ihre Tochter von Anfang an unterstützt.",
+          "53) Carina findet den Wechsel zwischen Schule und Drehterminen schwierig.",
+          "54) B  i Dialogen darf man auch selbst etwas erfinden.",
+          "55) Carina empfiehlt, sich andere Schauspieler im Theater und in Filmen anzuschauen."
+  ]
+},
+{
+        title: "Frau Schenk",
+        correct: [1,4,6,7,8], 
+        options: [
+         "46) Frau Schenk hat kurze blondierte Haar.",
+         "47) Angie ist der Künstlername von Frau Schenk.",
+         "48) Frau Schenk lebt seit etwas mehr als zwei Jahren in Bayer.",
+         "49) Der Interview hat keine guten Erinnerungen an seine Aufenthalte in Jugendherberge.",
+         "50) Auch in der modernen Jugendherberge von Frau Schenk gibt es Schlafraum mit mehr als zehn Bette.",
+         "51) Nur bei Schullassen achtet man auf Geschlechtertrennung in den Schlafräume.",
+         "52) Das Angebot an Speisen werden auf die Wünsche der Gäste zugeschnitten.",
+         "53) Schüler aus ländlichen Regionen sind meist unproblematische Gäste.",
+         "54) Das Reiten zählt zu dem Sportprogramm der Jugendherberge.",
+         "55) Frau Schenk muss für ihre Dienstwohnung 800€ bezahle."
+  ]
+},
+{
+        title: "Frau Schenk",
+        correct: [1,4,6,7,8], 
+        options: [
+         "46) Frau Schenk hat kurze blondierte Haar.",
+         "47) Angie ist der Künstlername von Frau Schenk.",
+         "48) Frau Schenk lebt seit etwas mehr als zwei Jahren in Bayer.",
+         "49) Der Interview hat keine guten Erinnerungen an seine Aufenthalte in Jugendherberge.",
+         "50) A uch in der modernen Jugendherberge von Frau Schenk gibt es Schlafraum mit mehr als zehn Bette.",
+         "51) Mädchen und jungen müssen in verschiedenen Schlafräumen schlafen.",
+         "52) In der Jugendherberge wird das Essen den Wünschen der Gästegruppen angepasst.",
+         "53) Schüler aus ländlichen Regionen sind in der Regel anständig.",
+         "54) Das Reiten zählt zu dem Sportprogramm der Jugendherberge.",
+        "55) Frau Schenk muss für ihre Dienstwohnung 800€ bezahle."
+  ]
+},
+
+      {
+  title: "Karimov",
+  correct: [2,5,8,9,10], // doğru şıklar: 47,50,53,54,55 (senin sisteme göre)
+  options: [
+    "46- Herr Karimov hat vor sechs Jahren die Internetplattform ZEITPLAN gegründet.",
+    "47- Die Mitglieder bekommen für ihre Hilfe ein Stunden Guthaben.",
+    "48- Herr Karimov hatte ein eigenes Handwerksunternehmen.",
+    "49- Nach dem Umzug aufs Land, war er auf die Hilfe der Nachbarn angewiesen.",
+    "50- Manchmal erwarten Mitglieder keine Gegenleistung für ihre Arbeit.",
+    "51- Meistens brauchen alleinstehende Frauen Herrn Karimovs Hilfe.",
+    "52- Viele Menschen sehen im ZEITPLAN eine Konkurrenz zu Handwerksbetrieben.",
+    "53- Herr Karimov erledigt nicht so gerne Büroarbeit.",
+    "54- Wer sich bei der Nachbarschaftshilfe einbringen möchte, muss sich persönlich vorstellen.",
+    "55- Herr Karimov brauchte vorübergehend einen Chauffeur."
+  ]
+},
+{
+  title: "Nadine Wagner",
+  correct: [2, 3, 5, 6, 8, 10],
+  options: [
+    "46 Nadine Wagner ist gerade erst von ihrer Weltreise zurückgekehrt.",
+    "47 Sie hatte vor der Weltreise einige Zweifel und Bedenken.",
+    "48 Die Journalistin ist während ihrer Reise auch geflogen.",
+    "49 Sie hat für dieses Abenteuer ihre Stelle gekündigt.",
+    "50 Ihre Freunde waren unterschiedlicher Meinung über ihre Vorhaben.",
+    "51 In Tadschikistan hat sie eine Zeit lang andere Motorradfahrer begleitet.",
+    "52 Sie hat auf der Reise ihr ganzes Erspartes aufgebraucht.",
+    "53 Nadine Wagner hat auf der Reise gelegentlich gearbeitet.",
+    "54 Sie hat am meisten ihre eigene Wohnung vermisst.",
+    "55 Nach ihrer Rückkehr musste sie nicht lange nach einer neuen Arbeit suchen."
+  ]
+},
+{
+  title: "Mallorca",
+  correct: [3, 4, 7],
+  options: [
+    "46 Die Zahl der deutschen Mallorca-Urlaub hat nur leicht abgenommen.",
+    "47 Nach Professor Kirsch achten die Deutschen bei der Wahl ihrer Urlaubsreisen nicht besonders auf die kosten.",
+    "48 Einige Einheimisch in Mallorca haben begonnen, sich gegen das Vordringen der deutschen Sprache zu wehren.",
+    "49 In Mallorca wird der Staat wegen der Umweltbelasungen zu Kasse bitten.",
+    "50 Viele Deutsche haben jetzt Rumänien und Ungarn als Reiseziel entdeckt.",
+    "51 Pfessor Kirsch weist auf günstige Angebote für Golfspieler am Plattensee hin.",
+    "52 Bulgarien hat sich als Urlaubsland sehr positiv entwickelt.",
+    "53 Viele Westdeutsche meiden Bulgarien, weil die Einreisemodalitäten abschreckend sind.",
+    "54 Seit Ende der neunziger Jahre geben die Deutschen mehr Geld für den Urlaub aus.",
+    "55 Durch die Vielzahl aktiver Senioren entsteht eine höhere Nachlrage nach Abenteuerreisen in ferne Länder."
+  ]
+},
+{
+  title: "Mallorca",
+  correct: [3, 4, 7],
+  options: [
+    "46 Die Zahl der deutschen Mallorca-Urlaub hat nur leicht abgenommen.",
+    "47 Nach Professor Kirsch achten die Deutschen bei der Wahl ihrer Urlaubsreisen nicht besonders auf die kosten.",
+    "48 Einige Einheimisch in Mallorca haben begonnen, sich gegen das Vordringen der deutschen Sprache zu wehren.",
+    "49 Für den Einbruch des Tourismus auf Mallorca sind verschiedene Faktoren verantwortlich.",
+    "50 Viele Deutsche haben jetzt Rumänien und Ungarn als Reiseziel entdeckt.",
+    "51 Pfessor Kirsch weist auf günstige Angebote für Golfspieler am Plattensee hin.",
+    "52 Bulgarien hat sich als Urlaubsland sehr positiv entwickelt.",
+    "53 Viele Westdeutsche meiden Bulgarien, weil die Einreisemodalitäten abschreckend sind.",
+    "54 Seit Ende der neunziger Jahre geben die Deutschen mehr Geld für den Urlaub aus.",
+    "55 Durch die Vielzahl aktiver Senioren entsteht eine höhere Nachlrage nach Abenteuerreisen in ferne Länder."
+  ]
+},
+
+{
+  title: "Julia",
+  correct: [1, 3, 4, 5, 8],
+  options: [
+    "Julia hatte an einem Schüleraustausch kein Interesse.",
+    "Die Lehrer in Julias Schule weigerten sich, mit dem Austauschschüler Englisch zu sprechen.",
+    "Frankreich ist als Aufenthaltsland bei Au-pairs nicht sehr gefragt.",
+    "Jula hatte auch darüber nachgedacht, in die Schweiz zu fahren.",
+    "Julia empfiehlt, mit der Gastfamilie einen Vertrag zu schließen.",
+    "Zu Beginn der Au-pair-Bewegung schickten Familien ihre Kinder zum Sprachunterricht in die Schweiz.",
+    "Julia ist der Meinung, dass die Vermittlungskosten zu hoch sind.",
+    "Julia verbrachte mit den Kindern auch Zeit in Paris.",
+    "Es gab am Anfang Momente, in denen sich Julia der Gastfamilie nicht zugehörig fühlte.",
+    "Julia lernt im Sprachkurs mehr Französisch als durch den Kontakt mit der Gastfamilie."
+  ]
+},
+{
+  title: "Professor Steiner",
+  correct: [2, 9, 10],
+  options: [
+    "Professor Steiner ist Heute gar nicht mehr nervös, wenn er moderiern muss.",
+    "Steiner vermittelt den Studerenden nicht nur theoretisches wissen, sondern fordert auch dass es Praktisch angewendet wird.",
+    "Steiner Hobby ist es experimentelle Film zu machen.",
+    "Journalisten sollen Heute auf einzelne Medien spezialisiert sein.",
+    "Sport-Journalist zu werden, ist nach Steiner Ansicht Heute fast ausgeschlossen.",
+    "Jornalisten sollten Lust haben etwas zu entdecken.",
+    "Steiner musste wegen einer Verletzung mit dem fußballspielen aufhören.",
+    "Steiner hat während seines Journalistik-Studiums für das ZDF Fußballspiele moderiert.",
+    "Steiner ist es wichtig, als Moderator den Sportlern gegenüber neutral zu bleiben.",
+    "Steiner rat abiturienten dazu verschiedene Berufliche Möglichkeiten zu testen."
+  ]
+},
+{
+  title: "Professor Steiner",
+  correct: [2, 9, 10],
+  options: [
+    "Professor Steiner ist heute gar nicht mehr nervös, wenn er moderieren muss.",
+    "Steiner möchte, dass die Studierenden das Gelernte auch in der Praxis anwenden können.",
+    "Steiners Hobby ist es, experimentelle Filme zu machen.",
+    "Journalisten sollten heute auf einzelne Medien spezialisiert sein.",
+    "Nach Steiners Ansicht ist der Berufswunsch Sportjournalist heutzutage unrealistisch.",
+    "Journalisten sollten möglichst viele Informationen an die Öffentlichkeit weitergeben.",
+    "Steiner musste wegen einer Verletzung mit dem Fußballspielen aufhören.",
+    "Steiner hat während seines Journalistik-Studiums für das ZDF Fußballspiele kommentiert.",
+    "Steiner legt Wert darauf, als Moderator Sportlern gegenüber neutral zu bleiben.",
+    "Steiner rät Abiturienten dazu, herauszufinden, welcher Beruf am besten zu ihnen passt."
+  ]
+},
+
+{
+  title: "Suza",
+  correct: [1, 3, 4, 8],
+  options: [
+    "Für die Autorin Suza Hotop ist Schreiben Freude und Anstrengung zugleich.",
+    "Suza begann im Alter von zwölf jahren mit ihrem Buch Jenseits von Zaram.",
+    "Am Anfang dachte Suza nicht daran, ihre Geschichte zu veröffentlichen.",
+    "Zuerst Stellte Suza Auszüge ihrer Geschichte ins Internet.",
+    "Begeisterte Nutzer stellten den Kontakt zu einem Verlag her.",
+    "Suza beschreibt bewusst Personen aus ihrem eigenen Umfeld.",
+    "Die Autorin plant im Vorfeld genau, was in der Geschichte passieren wird.",
+    "Suza folgt beim Schreiben keinen besonderen Vorbildern.",
+    "Die junge Frau gab während des Radiointerviews eine Leseprobe.",
+    "Suza braucht immer Ruhe, um schreiben zu können."
+  ]
+},
+{
+  title: "Suza",
+  correct: [1, 3, 4, 7, 8],
+  options: [
+    "Für die Autorin Suza Hotop ist Schreiben Freude und Anstrengung zugleich.",
+    "Suza begann im Alter von zwölf jahren mit ihrem Buch Jenseits von Zaram.",
+    "Am Anfang dachte Suza nicht daran, ihre Geschichte zu veröffentlichen.",
+    "Zuerst stellte Suza Auszüge ihrer Geschichte ins Internet.",
+    "Begeisterte Nutzer stellten den Kontakt zu einem Verlag her.",
+    "Suza beschreibt bewusst Personen aus ihrer meignen Umfeld.",
+    "Die Autorin plant nicht ganz genau, was in der Geschichte passieren wird.",
+    "Suza folgt beim Schreiben keinen besonderen Vorbildern.",
+    "Die junge Frau gab während des Radiointerviews eine Leseprobe.",
+    "Suza braucht immer Ruhe, um schreiben zu können."
+  ]
+},
+
+{
+  title: "In dem Restaurant",
+  correct: [1, 3, 4, 8, 9],
+  options: [
+    "In dem Restaurant gab es einen Wasserschaden.",
+    "Anton Laurito ist bei seinen Großeltern aufgewachsen.",
+    "Im Haus der Großeltern lebten auch andere Kinder.",
+    "Der Stress störte den Studiogast während der Ausbildung nicht.",
+    "Bei neuen Mitarbeitern legt Anton Laurito am meisten Wert auf viel Erfahrung.",
+    "Aussehen und Geschmack der Speisen haben für den Koch den gleichen Stellenwert.",
+    "In der Essschule können Kinder kochen lernen.",
+    "Anton Laurito lehnt Fastfood nicht grundsätzlich ab.",
+    "Der Koch hat eine gesunde Einstellung zum Thema Wettbewerb.",
+    "Zuhause probiert er gerne komplizierte Gerichte aus."
+  ]
+},
+{
+  title: "Frau Schenk",
+  correct: [1, 4, 6, 7, 8],
+  options: [
+    "Frau Schenk hat kurze blondierte Haar.",
+    "Angie ist der Künstlername von Frau Schenk.",
+    "Frau Schenk lebt seit etwas mehr als zwei Jahren in Bayer.",
+    "Der Interview hat keine guten Erinnerungen an seine Aufenthalte in Jugendherberge.",
+    "Auch in der modernen Jugendherberge von Frau Schenk gibt es Schlafraum mit mehr als zehn Bette.",
+    "Nur bei Schullassen achtet man auf Geschlechtstrennung in den Schlafräume.",
+    "Das Angebot an Speisen werden auf die Wünsche der Gäste zugeschnitten.",
+    "Schüler aus ländlichen Regionen sind meist unproblematische Gäste.",
+    "Das Reiten zählt zu dem Sportprogramm der Jugendherberge.",
+    "Frau Schenk muss für ihre Dienstwohnung 800€ bezahle."
+  ]
+},
+{
+  title: "Herr Gasser und Frau Janke",
+  correct: [3, 4, 8, 9, 10],
+  options: [
+    "Herr Gasser und Frau Janke haben zusammen Urlaub im Geiberg gemacht.",
+    "Josef Gasser ist ein gebürtiger Tiroler.",
+    "Die Bergbauern können kaum von verkauf ihrer Produkte leben.",
+    "Auch heute werden die steilen Hänge noch manuell bearbeitet.",
+    "Josef Gasser findet dass man die Bergkandschaft sich selbst über lassen sollte.",
+    "Eva Janke begeistert sich immer noch für Flugreisen.",
+    "Ihren ersten Einsatz auf der Alm hat.",
+    "für frau Janke ist der Erholungswert trotz der Anstrengung sehr hoch.",
+    "Alm helferinin und helfer können viel Fältige Aufgaben übernehmen.",
+    "über die Dauer des Aufenthalt kann man Frei entscheiden."
+  ]
+},
+{
+  "title": "Markus",
+  "correct": [2, 4, 5, 8, 10],
+  "options": [
+    "46 Markus ist schon während des Studiums an eine amerikanische Universität gegangen.",
+    "47 Markus wollte in einem besonders erfolgreichen Team mitarbeiten.",
+    "48 Um eine Stelle in einer amerikanischen Forschergruppe zu bekommen, muss man viel Glück haben.",
+    "49 Markus befindet sich zwischen Ausbildung und Beruf.",
+    "50 Das Studium in Bonn hat Markus sehr gut auf den Auslandsaufenthalt vorbereitet.",
+    "51 Markus hatte nach der Ankunft in den USA sehr viele Schwierigkeiten.",
+    "52 Markus ist nach wie vor sehr in der fremden Umgebung.",
+    "53 Markus ist mit den Arbeitsbedingungen zufrieden.",
+    "54 Markus befürwortet es nicht, dass sich Studenten in der USA früh auf ihre zukünftige Beruf festlegen müssen.",
+    "55 Für Markus ist Vorteil, dass er in Deutschland die Referat und Vortrag halten müsste."
+  ]
+},
+{
+  "title": "Markus",
+  "correct": [2, 4, 5, 8, 10],
+  "options": [
+    "46) Markus ist schon während des Studiums an eine amerikanische Universität gegangen.",
+    "47) Markus wollte in einem besonders erfolgreichen Team mitarbeiten.",
+    "48) Um eine Stelle in einer amerikanischen Forschergruppe zu bekommen, muss man viel Glück haben.",
+    "49) Markus befindet sich zwischen Ausbildung und Beruf.",
+    "50) Markus profitiert in Amerika von Erfahrung, die während Studium sammelt.",
+    "51) Markus hatte nach der Ankunft in den USA sehr viele Schwierigkeiten.",
+    "52) Markus ist immer noch sehr nervös in der fremden Umgebung.",
+    "53) Markus ist mit den Arbeitsbedingungen zufrieden.",
+    "54) Markus befürwortet es nicht, dass sich Studenten in der USA früh auf ihre zukünftige Berufe festlegen müssen.",
+    "55) Für Markus ist vorteil dass er in Deutschland viele Referate und Vorträge halten musste."
+  ]
+},
+
+{
+  title: "Roland hören liga",
+  correct: [2, 3, 5, 8, 9],
+  options: [
+    "Roland Wünschmann Spielt selbst bei Viktoria Köln Fußball.",
+    "Viktoria Köln spielt seit Beginn der Saison in einer höheren Liga.",
+    "Die meisten Spieler der Mannschaft haben schon in der letzten Saison bei Viktoria Köln gespielt.",
+    "Neuzugänge kommen bei Viktoria Köln meist aus ganz unterschiedlichen Mannschaften.",
+    "Die Mannschaft von Viktoria Köln möchte in dieser Saison neue Spieltaktiken ausprobieren.",
+    "Roland Wünschmann wagt die Prognose, dass in dieser Saison der 1. FC Mönchengladbach Meister wird.",
+    "Roland Wünschmann empfindet sein Ehrenamt oft als Bealstung.",
+    "Roland Wünschmann Frau engagiert sich für denselben Verein.",
+    "Herr Wünschmann und der Vereinsvorstand sind meisten einer Meinung.",
+    "Roland Wünschmann hofft auf Verbesserungen in der Nachwuchsförderung."
+  ]
+},
+{
+  title: "Roland spielen",
+  correct: [2, 3, 4, 7, 9, 10],
+  options: [
+    "Roland wünschmann arbeitet Vollzeit als Fußballtrainer bei Viktoria Köln.",
+    "Viktoria Köln möchte nicht nur gegen Mannschaften aus der Verbandsliga spielen.",
+    "Zu Beginn dieser Saison hat ein Spieler Viktoria Köln verlassen.",
+    "Neue Spieler kommen bei Viktoria Köln immer aus der eigenen Jugendmannschaft.",
+    "Die Mannschaft von Viktoria Köln hat Schwächen in der Abwehr.",
+    "Roland wünschmann wagt die Prognose, dass dieser Saison der 1 FC Mönchengladbach Meister wird.",
+    "Roland wünschmann kann seinen Beruf und sein Ehrenamt als Fußballtrainer Problems miteinander vereinbaren.",
+    "Auch die Frau von Ronald wünschmann engagiert sich im Fußball.",
+    "Der vereinsvorstand schätzt Herrn wünschmann Arbeit.",
+    "Roland wünschmann ist mit bisherigen Nachwuchsförderung des Vereins zufrieden."
+  ]
+},
+{
+  title: "Roland aufsteigen",
+  correct: [3, 4, 7, 9],
+  options: [
+    "Roland wünschmann spielt selbst bei Viktoria Köln Fußball.",
+    "Viktoria Köln möchte am Ende der Spielsaison aufsteigen.",
+    "Zu Beginn dieser Saison hat ein Spieler Viktoria Köln verlassen.",
+    "Neue Spieler kommen bei Viktoria Köln immer aus der eigenen Jugendmannschaft.",
+    "Die Mannschaft von Viktoria Köln hat Schwächen in der Abwehr.",
+    "Roland wünschmann wagt die Prognose, dass dieser Saison der 1 FC Mönchengladbach Meister wird.",
+    "Roland wünschmann kann seinen Beruf und sein Ehrenamt als Fußballtrainer miteinander vereinbaren.",
+    "Auch die Frau von Ronald wünschmann engagiert sich im Fußball.",
+    "Der vereinsvorstand schätzt Herrn wünschmann Arbeit.",
+    "Roland wünschmann ist mit bisherigen Nachwuchsförderung des Vereins noch nicht voll zufrieden."
+  ]
+}
+
+
+
+
+
+
+      // Diğer testler de yine aynı şekilde buraya eklenebilir.
+    ];
+
+    // --- BURADAN SONRASI KESİNLİKLE AYNI KALMALI ---
+    let totalCorrect = 0;
+    let totalWrong = 0;
+    let totalAnswered = 0;
+
+    let currentTest = 0;
+    let selected = [];
+    let lockedOptions = [];
+    let testJustEnded = false;
+
+    function resetStats() {
+      totalCorrect = 0;
+      totalWrong = 0;
+      totalAnswered = 0;
+      updateStatsBox();
+      testJustEnded = false;
+    }
+
+    function updateStatsBox() {
+      totalAnswered = totalCorrect + totalWrong;
+      let correctPercent = totalAnswered === 0 ? 0 : Math.round(100 * totalCorrect / totalAnswered);
+      let wrongPercent = totalAnswered === 0 ? 0 : Math.round(100 * totalWrong / totalAnswered);
+      document.getElementById('correctCount').innerText = totalCorrect;
+      document.getElementById('wrongCount').innerText = totalWrong;
+      document.getElementById('correctPercent').innerText = correctPercent;
+      document.getElementById('wrongPercent').innerText = wrongPercent;
+    }
+
+    function renderTest() {
+      const test = tests[currentTest];
+      document.getElementById("testTitle").innerText = test.title;
+      document.getElementById("pageNumber").innerText = currentTest + 1;
+
+      selected = [];
+      lockedOptions = Array(test.options.length).fill(false);
+      document.getElementById("codeBox").innerText = "";
+      const optionsDiv = document.getElementById("options");
+      optionsDiv.innerHTML = "";
+      test.options.forEach((opt, idx) => {
+        const option = document.createElement("div");
+        option.className = "option";
+        option.innerHTML = `<span class="option-number">${idx+1}.</span> <span>${opt}</span>`;
+        option.onclick = () => handleOptionClick(idx);
+        optionsDiv.appendChild(option);
+      });
+      updateStatsBox();
+    }
+
+    function removeUnderlineFromOption(idx) {
+      const optionsDiv = document.getElementById("options");
+      const optionDiv = optionsDiv.children[idx];
+      optionDiv.style.textDecoration = "none";
+      const spans = optionDiv.querySelectorAll("*");
+      spans.forEach(s => s.style.textDecoration = "none");
+    }
+
+    function handleOptionClick(idx) {
+      if (testJustEnded) {
+        resetStats();
+        testJustEnded = false;
+      }
+      const test = tests[currentTest];
+      if (lockedOptions[idx]) return;
+
+      const correctAnswers = test.correct;
+      const isCorrect = correctAnswers.includes(idx+1);
+
+      const optionsDiv = document.getElementById("options");
+      const optionDiv = optionsDiv.children[idx];
+
+      optionDiv.classList.add("selected");
+      optionDiv.classList.add(isCorrect ? "correct" : "incorrect");
+      removeUnderlineFromOption(idx);
+
+      if (isCorrect) {
+        dogruSes.currentTime = 0;
+        dogruSes.play().catch(e => console.log("Doğru ses çalma hatası:", e));
+        lockedOptions[idx] = true;
+        selected.push(idx+1);
+        totalCorrect++;
+      } else {
+        yanlisSes.currentTime = 0;
+        yanlisSes.play().catch(e => console.log("Yanlış ses çalma hatası:", e));
+        lockedOptions[idx] = true;
+        totalWrong++;
+      }
+      updateStatsBox();
+
+      // Tüm doğru cevaplar seçildiyse kodu göster
+      const sortedSel = selected.slice().sort((a,b) => a-b);
+      const sortedCor = test.correct.slice().sort((a,b) => a-b);
+      if (sortedSel.length === sortedCor.length && sortedSel.every((v,i) => v===sortedCor[i])) {
+        document.getElementById("codeBox").innerText = sortedSel.map(x => x === 10 ? 0 : x).join("");
+        Array.from(optionsDiv.children).forEach((optDiv, i) => {
+          lockedOptions[i] = true;
+          removeUnderlineFromOption(i);
+        });
+        if (currentTest === tests.length - 1) {
+          setTimeout(() => {
+            testJustEnded = true;
+            resetStats();
+          }, 1400);
+        }
+      }
+    }
+
+    document.getElementById("prevBtn").onclick = () => {
+      if (currentTest > 0) {
+        currentTest--;
+        renderTest();
+      }
+    };
+    document.getElementById("nextBtn").onclick = () => {
+      if (currentTest < tests.length-1) {
+        currentTest++;
+        renderTest();
+      }
+    };
+    renderTest();
+  </script>
+</body>
+</html>
