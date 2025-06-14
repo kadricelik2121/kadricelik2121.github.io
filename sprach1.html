@@ -4,122 +4,135 @@
   <meta charset="UTF-8">
   <title>telc Sprachbausteine</title>
   <style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 1px;
-    background-color: #f9f9f9;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh; /* Buraya dikkat! */
-    box-sizing: border-box;
-    /* Scroll serbest bırakıldı */
-  }
-  .header {
-    width: 100%;
-    max-width: 1200px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  h1 {
-    font-size: 25px;
-    font-weight: bold;
-    color: #333;
-  }
-  .page-number {
-    font-size: 25px;
-    color: #666;
-  }
-  .container {
-    border: 2px solid black;
-    padding: 20px;
-    background-color: white;
-    width: 100%;
-    max-width: 1200px;
-    box-sizing: border-box;
-    /* overflow kaldırıldı */
-  }
-  .text {
-    font-size: 18px;
-  }
-  select {
-    padding: 5px;
-    margin: 0 5px;
-    font-size: 18px; /* YAZI PUNTOSU 14px YAPILDI */
-    font-weight: bold; 
-    color: black;
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f9f9f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .header {
 
-/* Sadece mobilde */
-@media (max-width: 768px) {
-  select {
-    font-size: 18px;
-    color: black;
-    font-weight: bold;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 10px;
 }
 
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  flex: 1;
+  text-align: left;
 }
 
-  }
-  .button-container {
-    margin: 10px 0;
-    text-align: center;
-    width: 100%;
-  }
-  .button {
-    padding: 12px 18px;
-    font-size: 18px;
-    cursor: pointer;
-  }
-  .nav-buttons {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 800px;
-    margin-top: 5px;
-  }
-  .nav-buttons button {
-    padding: 12px 18px;
-    font-size: 18px;
-    cursor: pointer;
-  }
-  .correct {
-    background-color: #0bda12b9;
-  }
-  .incorrect {
-    background-color: #fc0019be;
-  }
-  }
+#scoreboard {
+  font-size: 16px;
+  font-weight: bold;
+  flex: 1;
+  text-align: center;
+}
+
+.page-number {
+  font-size: 20px;
+  color: #666;
+  flex: 1;
+  text-align: right;
+}
+
+    }
+    .scoreboard {
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      margin: 10px 0;
+      width: 100%;
+    }
+    .container {
+      border: 2px solid black;
+      padding: 20px;
+      background-color: white;
+      width: 100%;
+      max-width: 1200px;
+      box-sizing: border-box;
+    }
+    .text {
+      font-size: 18px;
+    }
+    select {
+      padding: 5px;
+      margin: 0 5px;
+      font-size: 18px;
+      font-weight: bold;
+      color: black;
+    }
+    .button-container {
+      margin: 10px 0;
+      text-align: center;
+      width: 100%;
+    }
+    .button {
+      padding: 18px 30px;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 800px;
+      margin-top: 10px;
+    }
+    .nav-buttons button {
+      padding: 14px 24px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .correct {
+      background-color: #0bda12b9;
+    }
+    .incorrect {
+      background-color: #fc0019be;
+    }
   </style>
 </head>
 <body>
 
   <div class="header">
-    <h1>telc Sprachbausteine, Teil 1</h1>
-    <span id="page-number" class="page-number"></span>
+  <div class="title">telc Sprachbausteine Teil 1</div>
+  <div id="scoreboard">
+    ✅ Doğru Cevap: <span id="correctCount">0</span>
+    &nbsp;&nbsp;&nbsp;
+    ❌ Yanlış Cevap: <span id="incorrectCount">0</span>
   </div>
+  <div class="page-number" id="page-number"></div>
+</div>
 
   <div class="container">
     <div class="text" id="text-container">
-      <!-- İçerik buraya JS ile gelecek -->
+      <!-- İçerik buraya gelecek -->
     </div>
-  </div>
-
-  <div class="button-container">
-    <button class="button" onclick="checkAnswers()">Kontrollieren</button>
   </div>
 
   <div class="nav-buttons">
     <button onclick="prevPage()">⬅️ Geri</button>
-  <button onclick="window.location.href='index.html'">🏠 Anasayfa</button>
+    <button onclick="goHome()">🏠 Anasayfa</button>
     <button onclick="nextPage()">İleri ➡️</button>
   </div>
 
-  <script>
-    const pages = [
+<script>
+  let correctTotal = 0;
+  let incorrectTotal = 0;
+  let alreadyChecked = {};
+
+  const pages = [
       {
         content: `
         Hallo Philip,<br><br>
@@ -1506,65 +1519,94 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     ];
 
-    let currentPage = 0;
+  let currentPage = 0;
 
-    function renderPage() {
-      document.getElementById('text-container').innerHTML = pages[currentPage].content;
-      document.getElementById('page-number').textContent = `Seite ${currentPage + 1}`;
-    }
+  function renderPage() {
+    document.getElementById('text-container').innerHTML = pages[currentPage].content;
+    document.getElementById('page-number').textContent = `Seite ${currentPage + 1}`;
+    setupAnswerTracking();
+  }
 
-    function nextPage() {
-      if (currentPage < pages.length - 1) {
-        currentPage++;
-        renderPage();
-      }
-    }
-
-    function prevPage() {
-      if (currentPage > 0) {
-        currentPage--;
-        renderPage();
-      }
-    }
-
-    function goHome() {
-      currentPage = 0;
+  function nextPage() {
+    if (currentPage < pages.length - 1) {
+      currentPage++;
       renderPage();
     }
+  }
 
-    function checkAnswers() {
-      const correctAnswers = pages[currentPage].answers;
-      for (let key in correctAnswers) {
-        let select = document.getElementById(key);
-        select.classList.remove('correct', 'incorrect');
-        if (select.value === correctAnswers[key]) {
-          select.classList.add('correct');
-        } else {
-          select.classList.add('incorrect');
-        }
+  function prevPage() {
+    if (currentPage > 0) {
+      currentPage--;
+      renderPage();
+    }
+  }
+
+  function goHome() {
+    currentPage = 0;
+    resetScoreboard();
+    renderPage();
+  }
+
+  function setupAnswerTracking() {
+    const currentAnswers = pages[currentPage].answers;
+
+    for (const key in currentAnswers) {
+      const select = document.getElementById(key);
+      if (select && !select.dataset.listenerAdded) {
+        select.addEventListener('change', () => {
+          const userAnswer = select.value;
+          const correctAnswer = currentAnswers[key];
+
+          select.classList.remove("correct", "incorrect");
+
+          if (userAnswer === "") return;
+
+          const keyId = `${currentPage}_${key}`;
+          if (!alreadyChecked[keyId]) {
+            if (userAnswer === correctAnswer) {
+              correctTotal++;
+              select.classList.add("correct");
+            } else {
+              incorrectTotal++;
+              select.classList.add("incorrect");
+            }
+            alreadyChecked[keyId] = true;
+            updateScoreboard();
+          } else {
+            if (userAnswer === correctAnswer) {
+              select.classList.add("correct");
+            } else {
+              select.classList.add("incorrect");
+            }
+          }
+        });
+        select.dataset.listenerAdded = "true";
       }
     }
+  }
 
-    renderPage(); // Başlangıçta ilk sayfayı yükle
-  </script>
+  function updateScoreboard() {
+    document.getElementById("correctCount").innerText = correctTotal;
+    document.getElementById("incorrectCount").innerText = incorrectTotal;
+  }
+
+  function resetScoreboard() {
+    correctTotal = 0;
+    incorrectTotal = 0;
+    alreadyChecked = {};
+    updateScoreboard();
+  }
+function goHomeAndRedirect() {
+  resetScoreboard();  // Sayaç sıfırlanır
+  window.location.href = "index.html"; // Anasayfaya yönlendirir
+}
+
+  document.addEventListener("DOMContentLoaded", () => {
+    renderPage();
+  });
+</script>
 
 </body>
 </html>
