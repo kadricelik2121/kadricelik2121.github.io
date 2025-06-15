@@ -1600,7 +1600,7 @@
   }
 function goHomeAndRedirect() {
   resetScoreboard();  // Sayaç sıfırlanır
-  <button class="button" onclick="goHomeAndRedirect()">🏠 Anasayfa</button>
+  window.location.href = "index.html"; // Anasayfaya yönlendirir
 }
 
   document.addEventListener("DOMContentLoaded", () => {
