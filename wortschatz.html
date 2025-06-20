@@ -56,6 +56,9 @@
     Ana Sayfaya Dön
   </button>
 </div>
+<button id="readButton" onclick="startStopReading()" style="position: fixed; top: 10px; left: 10px; padding: 10px 16px; font-size: 14px; z-index: 1000;">
+  🔊 Sesli Dinle / Durdur
+</button>
 
 
 
@@ -1627,6 +1630,55 @@ window.onload = () => {
 function goHome() {
   window.location.href = "index.html";
 }
+
+let isReading = false;
+let readIndex = 0;
+let readInterval;
+
+function startStopReading() {
+  if (!isReading) {
+    isReading = true;
+    readIndex = 0;
+    const shuffled = shuffleArray([...words]); // kelimeleri karıştır
+    readWords(shuffled);
+  } else {
+    isReading = false;
+    window.speechSynthesis.cancel(); // konuşmayı durdur
+    clearTimeout(readInterval);
+  }
+}
+
+function readWords(list) {
+  if (!isReading || readIndex >= list.length) return;
+
+  const w = list[readIndex];
+  const sentences = [
+    w.word,
+    w.correct,
+    w.example
+  ];
+
+  let sIndex = 0;
+
+  function speakNext() {
+    if (!isReading || sIndex >= sentences.length) {
+      readIndex++;
+      readInterval = setTimeout(() => readWords(list), 2000); // bir sonraki kelimeye geç
+      return;
+    }
+
+    const utter = new SpeechSynthesisUtterance(sentences[sIndex]);
+    utter.lang = sIndex === 1 ? "tr-TR" : "de-DE"; // anlam Türkçe, diğerleri Almanca
+    window.speechSynthesis.speak(utter);
+    sIndex++;
+    utter.onend = () => {
+      setTimeout(speakNext, 1200); // cümleler arası bekleme
+    };
+  }
+
+  speakNext();
+}
+
 
 </script>
 </body>
