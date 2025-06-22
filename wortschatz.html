@@ -9,25 +9,10 @@ body {
   padding: 20px;
 }
 
-  html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
-  overflow: hidden; /* scroll olmasın */
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-}
 
-.options, .stats-box, .word-display, #exampleSentence, #questionText {
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-
-  h1 {
-    font-size: 28px; /* Daha küçük başlık */
-    color: #0055aa;  /* Mavi tonlu renk */
+   h1 {
+    font-size: 22px;
+    margin-bottom: 10px;
   }
 
   .question {
@@ -37,9 +22,8 @@ body {
   }
 
   .word-display {
-    font-size: 40px;
-    font-weight: bold;
-    margin-bottom: 10px;
+    margin-top: 15px;
+    margin-bottom: 25px;
   }
 
   #exampleSentence {
@@ -62,7 +46,8 @@ body {
 .option {
   width: 250px;
   height: 80px;
-  padding: 20px;
+  gap: 15;
+  padding: 0 10px;
   border: 3px solid #8a8a8ada;
   border-radius: 10px;
   cursor: pointer;
@@ -85,9 +70,13 @@ body {
     background-color: #f7c5c5;
     border-color: red;
   }
+  @media screen and (max-width: 768px) {
+ 
+  }
 
 #speaker {
   display: inline-block;
+   margin: 20px 0;
   padding: 10px 30px;
   font-size: 24px;
   background: linear-gradient(to bottom, #6d6c68, #b8b7b4);
@@ -119,9 +108,10 @@ body {
       text-align: left;
       }
 
-    .stats-box div {
-      margin: 5px 0;
- }
+    .stats-box {
+    top: 10px;
+    right: 10px;
+  }
  
  #readButton {
     position: fixed;
@@ -145,7 +135,7 @@ body {
     transform: translateY(2px);
   }
   #exampleSentence {
-  min-height: 20px;        /* Yer açar, kutular kaymaz */
+  min-height: 50px;        /* Yer açar, kutular kaymaz */
   margin: 10px 0;
   color: #444;
   transition: opacity 0.5s ease;
@@ -173,7 +163,7 @@ body {
 <div id="speaker">🔊</div>
 <div id="exampleSentence"></div>
 <div class="question" id="questionText">Kelime oynatılıyor...</div>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 
 
 <div class="options" id="optionsContainer"></div>
@@ -181,7 +171,7 @@ body {
 <div style="text-align: center; margin-top: 0px;">
   
   
- <div style="position: fixed; bottom: 5px; left: 50%; transform: translateX(-50%); z-index: 1000;">
+ <div style="position: fixed; bottom: 20px; left: 20px;">
   <button onclick="goHome()" style="padding: 12px 24px; font-size: 18px; background-color: #7e7d7b88; color: white; border: none; border-radius: 8px; cursor: pointer;">
     Ana Sayfaya Dön
   </button>
@@ -1688,38 +1678,42 @@ function shuffleArray(array) {
 
 
 let germanVoice = null;
+let turkishVoice = null;
+
 function setGermanVoice() {
   const voices = speechSynthesis.getVoices();
   germanVoice = voices.find(v => v.lang === "de-DE");
   turkishVoice = voices.find(v => v.lang === "tr-TR");
 }
 
-
 function playTurkishAudio(text) {
+  speechSynthesis.cancel(); // Önceki sesi kes
   const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "tr-TR"; // Türk aksanı zorunlu
-   utterance.rate = 0.8;
-  const turkishVoice = speechSynthesis.getVoices().find(v => v.lang === "tr-TR");
-  if (turkishVoice) utterance.voice = turkishVoice;
+  utterance.lang = "tr-TR";
+  utterance.rate = 0.8;
+  if (turkishVoice) {
+    utterance.voice = turkishVoice;
+  } else {
+    const fallback = speechSynthesis.getVoices().find(v => v.lang === "tr-TR");
+    if (fallback) utterance.voice = fallback;
+  }
   speechSynthesis.speak(utterance);
 }
 
-
 function playAudio(text) {
-  const utterance = new SpeechSynthesisUtterance(" " + text);
+  speechSynthesis.cancel(); // Önceki sesi kes
+  const utterance = new SpeechSynthesisUtterance(" " + text); // baştaki boşluk iPhone için
   utterance.lang = "de-DE";
   utterance.rate = 0.8;
-
   if (germanVoice) {
     utterance.voice = germanVoice;
   } else {
     const fallback = speechSynthesis.getVoices().find(v => v.lang === "de-DE");
     if (fallback) utterance.voice = fallback;
   }
-
-  speechSynthesis.cancel();
   speechSynthesis.speak(utterance);
 }
+
 
 
 let correctCount = 0;
@@ -1801,12 +1795,9 @@ document.getElementById("speaker").onclick = () => {
 };
 
 window.onload = () => {
-  window.speechSynthesis.onvoiceschanged = () => {
-    setGermanVoice();
-  };
-
-  setGermanVoice(); // Sayfa açıldığında hemen sesleri ayarla
-  nextWord();       // İlk kelimeyi başlat
+  window.speechSynthesis.onvoiceschanged = setGermanVoice;
+  setGermanVoice();
+  nextWord(); // varsa kelimeyi başlatan fonksiyonun
 };
 
 
