@@ -62,17 +62,18 @@ body {
 .option {
   width: 250px;
   height: 80px;
-  padding: 20px;
+  padding: 10px;
   border: 3px solid #8a8a8ada;
   border-radius: 10px;
   cursor: pointer;
-  font-size: 30px;
+  font-size: 16px;
   transition: 0.3s;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   word-wrap: break-word;
+  margin: 6px;
 }
 
 
@@ -138,6 +139,8 @@ body {
     cursor: pointer;
     z-index: 10000;
     transition: all 0.2s ease-in-out;
+    margin-top: 10px;
+    margin-bottom: 10px;
   }
 
   #readButton:active {
@@ -145,8 +148,8 @@ body {
     transform: translateY(2px);
   }
   #exampleSentence {
-  min-height: 20px;        /* Yer açar, kutular kaymaz */
-  margin: 10px 0;
+  min-height: 10px;        /* Yer açar, kutular kaymaz */
+  margin: 5px 0 10px 0;
   color: #444;
   transition: opacity 0.5s ease;
   opacity: 0;              /* Başta görünmez */
@@ -156,6 +159,13 @@ body {
   opacity: 1;              /* Görünecek hâle geçer */
 }
 
+#goHome {
+  position: fixed;
+  bottom: 60px; /* Yukarı alınmış konum */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+}
 
    
 </style>
@@ -175,7 +185,8 @@ body {
   
   
  <div style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000;">
-  <button onclick="goHome()" style="padding: 12px 24px; font-size: 18px; background-color: #7e7d7b88; color: white; border: none; border-radius: 8px; cursor: pointer;">
+ <div id="goHome">
+  <button onclick="goHome()" style="padding: 12px 24px; font-size: 18px; background-color: #ccc; border: none; border-radius: 10px;">
     Ana Sayfaya Dön
   </button>
 </div>
