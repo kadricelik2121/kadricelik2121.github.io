@@ -9,21 +9,6 @@ body {
   padding: 20px;
 }
 
-  html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
-  overflow: hidden; /* scroll olmasın */
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-}
-
-.options, .stats-box, .word-display, #exampleSentence, #questionText {
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
 
   h1 {
     font-size: 28px; /* Daha küçük başlık */
@@ -43,7 +28,7 @@ body {
   }
 
   #exampleSentence {
-    font-size: 22px;
+    font-size: 28px;
     font-style: italic;
     margin: 15px 0;
     color: #444;
@@ -62,18 +47,17 @@ body {
 .option {
   width: 250px;
   height: 80px;
-  padding: 10px;
+  padding: 20px;
   border: 3px solid #8a8a8ada;
   border-radius: 10px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 30px;
   transition: 0.3s;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   word-wrap: break-word;
-  margin: 6px;
 }
 
 
@@ -139,8 +123,6 @@ body {
     cursor: pointer;
     z-index: 10000;
     transition: all 0.2s ease-in-out;
-    margin-top: 10px;
-    margin-bottom: 10px;
   }
 
   #readButton:active {
@@ -148,8 +130,8 @@ body {
     transform: translateY(2px);
   }
   #exampleSentence {
-  min-height: 10px;        /* Yer açar, kutular kaymaz */
-  margin: 5px 0 10px 0;
+  min-height: 20px;        /* Yer açar, kutular kaymaz */
+  margin: 10px 0;
   color: #444;
   transition: opacity 0.5s ease;
   opacity: 0;              /* Başta görünmez */
@@ -158,14 +140,14 @@ body {
 #exampleSentence.visible {
   opacity: 1;              /* Görünecek hâle geçer */
 }
-
-#goHome {
-  position: fixed;
-  bottom: 60px; /* Yukarı alınmış konum */
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
+#wordDisplay {
+  font-size: 40px; /* Veya 40px, 44px yapabilirsin */
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  margin: 10px 0;
 }
+
 
    
 </style>
@@ -176,7 +158,7 @@ body {
 <div id="speaker">🔊</div>
 <div id="exampleSentence"></div>
 <div class="question" id="questionText">Kelime oynatılıyor...</div>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 
 
 <div class="options" id="optionsContainer"></div>
@@ -184,9 +166,8 @@ body {
 <div style="text-align: center; margin-top: 0px;">
   
   
- <div style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000;">
- <div id="goHome">
-  <button onclick="goHome()" style="padding: 12px 24px; font-size: 18px; background-color: #ccc; border: none; border-radius: 10px;">
+ <div style="position: fixed; bottom: 20px; left: 20px;">
+  <button onclick="goHome()" style="padding: 12px 24px; font-size: 18px; background-color: #7e7d7b88; color: white; border: none; border-radius: 8px; cursor: pointer;">
     Ana Sayfaya Dön
   </button>
 </div>
@@ -1747,7 +1728,7 @@ function nextWord() {
   document.getElementById("questionText").innerText = "Kelimenin Türkçesi";
   document.getElementById("wordDisplay").innerText = current.word;
  const sentenceBox = document.getElementById("exampleSentence");
-sentenceBox.textContent = "Örnek cümle buraya";  // örnek cümle
+sentenceBox.textContent = "...........";  // örnek cümle
 sentenceBox.classList.add("visible");
 
 
