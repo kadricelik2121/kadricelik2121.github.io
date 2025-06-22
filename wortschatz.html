@@ -1,160 +1,45 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Almanca Kelime Oyunu</title>
 <style>
-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: start;
-  min-height: 100vh;
-  background-color: #fff;
-  padding: 20px;
-}
-
-
-   h1 {
-    font-size: 22px;
-    margin-bottom: 10px;
-  }
-
-  .question {
-    margin: 20px 0;
-    font-size: 24px;
-    font-weight: bold;
-  }
-
+    
+  body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+  .question { margin: 20px 0; font-size: 24px; font-weight: bold; }
   .word-display {
-    margin-top: 15px;
-    margin-bottom: 25px;
+    font-size: 40px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    
+    
   }
-
   #exampleSentence {
-    font-size: 28px;
+    font-size: 22px;
     font-style: italic;
     margin: 15px 0;
     color: #444;
   }
-
-.options {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  justify-content: center;
-  max-width: 600px;
-  margin-top: 0;  /* 🔼 Buradaki üst boşluğu 20px yaptık */
-}
-
-
-.option {
-  width: 250px;
-  height: 80px;
-  gap: 15;
-  padding: 0 10px;
-  border: 3px solid #8a8a8ada;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 30px;
-  transition: 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  word-wrap: break-word;
-}
-
-
-  .option.correct {
-    background-color: #c8f7c5;
-    border-color: green;
+  .options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(140px, 1fr));
+    gap: 20px;
+    justify-content: center;
+    max-width: 500px;
+    margin: 0 auto;
   }
-
-  .option.incorrect {
-    background-color: #f7c5c5;
-    border-color: red;
-  }
-  @media screen and (max-width: 768px) {
- 
-  }
-
-#speaker {
-  display: inline-block;
-   margin: 20px 0;
-  padding: 10px 30px;
-  font-size: 24px;
-  background: linear-gradient(to bottom, #6d6c68, #b8b7b4);
-  border: 2px solid #242321;
-  border-radius: 10px;
-  box-shadow: 0 4px #1b1b19;
-  font-weight: bold;
-  color: #111;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  text-align: center;
-}
-
-#speaker:active {
-  box-shadow: 0 2px #a88734;
-  transform: translateY(2px);
-}
-      .stats-box {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      background: #f0f0f0;
-      padding: 10px 15px;
-      border: 2px solid #888;
-      border-radius: 10px;
-      font-size: 14px;
-      z-index: 999;
-      box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
-      text-align: left;
-      }
-
-    .stats-box {
-    top: 10px;
-    right: 10px;
-  }
- 
- #readButton {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    padding: 6px 12px;
-    font-size: 16px;
-    background: linear-gradient(to bottom, #a3a29f, #7a7a78);
-    border: 2px solid #b8b5af;
+  .option {
+    padding: 20px;
+    border: 3px solid #ccc;
     border-radius: 10px;
-    box-shadow: 0 3px #868685;
-    color: #111;
-    font-weight: bold;
     cursor: pointer;
-    z-index: 10000;
-    transition: all 0.2s ease-in-out;
+    font-size: 22px;
+    transition: 0.3s;
   }
-
-  #readButton:active {
-    box-shadow: 0 2px #a88734;
-    transform: translateY(2px);
-  }
-  #exampleSentence {
-  min-height: 50px;        /* Yer açar, kutular kaymaz */
-  margin: 10px 0;
-  color: #444;
-  transition: opacity 0.5s ease;
-  opacity: 0;              /* Başta görünmez */
-}
-
-#exampleSentence.visible {
-  opacity: 1;              /* Görünecek hâle geçer */
-}
-#wordDisplay {
-  font-size: 40px; /* Veya 40px, 44px yapabilirsin */
-  font-weight: bold;
-  color: #333;
-  text-align: center;
-  margin: 10px 0;
-}
-
-
-   
+  .option.correct { background-color: #c8f7c5; border-color: green; }
+  .option.incorrect { background-color: #f7c5c5; border-color: red; }
+  #speaker { font-size: 40px; cursor: pointer; margin: 10px 0; }
 </style>
 </head>
 <body>
@@ -163,26 +48,17 @@ body {
 <div id="speaker">🔊</div>
 <div id="exampleSentence"></div>
 <div class="question" id="questionText">Kelime oynatılıyor...</div>
-
-
-
 <div class="options" id="optionsContainer"></div>
-
-<div style="text-align: center; margin-top: 0px;">
+<div style="text-align: center; margin-top: 40px;">
   
-  
- <div style="position: fixed; bottom: 20px; left: 20px;">
-  <button onclick="goHome()" style="padding: 12px 24px; font-size: 18px; background-color: #7e7d7b88; color: white; border: none; border-radius: 8px; cursor: pointer;">
+ <div style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000;">
+  <button onclick="goHome()" style="padding: 12px 24px; font-size: 18px; background-color: #d1ac33; color: white; border: none; border-radius: 8px; cursor: pointer;">
     Ana Sayfaya Dön
   </button>
 </div>
-<button id="readButton" onclick="startStopReading()">🔊 Sesli Dinle / Durdur</button>
+<button id="readButton" onclick="startStopReading()" style="position: fixed; top: 10px; left: 10px; padding: 10px 16px; font-size: 14px; z-index: 1000;">
+  🔊 Sesli Dinle / Durdur
 </button>
- <div class="stats-box" id="statsBox">
-    <div>✅ Doğru: <span id="correctCount">0</span></div>
-    <div>❌ Yanlış: <span id="incorrectCount">0</span></div>
-    <div>📚 Öğrenilen: <span id="learnedToday">0</span></div>
-  </div>
 
 
 
@@ -1670,63 +1546,27 @@ if (todaysWords.length > 0) {
 }
 
 let currentIndex = -1;
-const gecikmeSuresi = 4000
+
 function shuffleArray(array) {
   return array.sort(() => Math.random() - 0.5);
 }
 
-
-
 let germanVoice = null;
-let turkishVoice = null;
 
-function setGermanVoice() {
-  const voices = speechSynthesis.getVoices();
-  germanVoice = voices.find(v => v.lang === "de-DE");
-  turkishVoice = voices.find(v => v.lang === "tr-TR");
-}
-
-function playTurkishAudio(text) {
-  speechSynthesis.cancel(); // Önceki sesi kes
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "tr-TR";
-  utterance.rate = 0.8;
-  if (turkishVoice) {
-    utterance.voice = turkishVoice;
-  } else {
-    const fallback = speechSynthesis.getVoices().find(v => v.lang === "tr-TR");
-    if (fallback) utterance.voice = fallback;
-  }
-  speechSynthesis.speak(utterance);
-}
+window.speechSynthesis.onvoiceschanged = () => {
+  const voices = window.speechSynthesis.getVoices();
+  germanVoice = voices.find(voice => voice.lang === "de-DE" || voice.lang.startsWith("de"));
+};
 
 function playAudio(text) {
-  speechSynthesis.cancel(); // Önceki sesi kes
-  const utterance = new SpeechSynthesisUtterance(" " + text); // baştaki boşluk iPhone için
+  const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = "de-DE";
-  utterance.rate = 0.8;
+  utterance.rate = 0.8; // 🔈 Ses hızı burada ayarlandı
   if (germanVoice) {
     utterance.voice = germanVoice;
-  } else {
-    const fallback = speechSynthesis.getVoices().find(v => v.lang === "de-DE");
-    if (fallback) utterance.voice = fallback;
   }
-  speechSynthesis.speak(utterance);
+  window.speechSynthesis.speak(utterance);
 }
-
-
-
-let correctCount = 0;
-let incorrectCount = 0;
-let learnedToday = 0;
-
-
-function updateStats() {
-  document.getElementById("correctCount").innerText = correctCount;
-  document.getElementById("incorrectCount").innerText = incorrectCount;
-  document.getElementById("learnedToday").innerText = learnedToday;
-}
-
 
 
 function nextWord() {
@@ -1734,12 +1574,9 @@ function nextWord() {
   const current = wordsToShow[currentIndex];
   const options = shuffleArray([current.correct, ...current.options]);
 
-  document.getElementById("questionText").innerText = "Kelimenin Türkçesi";
+  document.getElementById("questionText").innerText = "Kelimenin Türkçesi:";
   document.getElementById("wordDisplay").innerText = current.word;
- const sentenceBox = document.getElementById("exampleSentence");
-sentenceBox.textContent = "...........";  // örnek cümle
-sentenceBox.classList.add("visible");
-
+  document.getElementById("exampleSentence").innerText = "";
 
   const container = document.getElementById("optionsContainer");
   container.innerHTML = "";
@@ -1752,14 +1589,8 @@ sentenceBox.classList.add("visible");
       if (opt === current.correct) {
         btn.classList.add("correct");
         document.getElementById("exampleSentence").innerText = current.example;
-        document.getElementById("exampleSentence").classList.add("visible");
-
         playAudio(current.example);
         new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg").play();
-         correctCount++;
-        learnedToday++;
-        updateStats();
-        setTimeout(nextWord, 5000);
 
         // 🔁 TEKRAR ARALIĞINI GÜNCELLE
         const prev = progressData[current.word] || { interval: 0 };
@@ -1776,11 +1607,10 @@ sentenceBox.classList.add("visible");
         };
         localStorage.setItem("progressData", JSON.stringify(progressData));
 
+        setTimeout(nextWord, 3000);
       } else {
         btn.classList.add("incorrect");
         new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg").play();
-        incorrectCount++;
-        updateStats();
       }
     };
     container.appendChild(btn);
@@ -1795,13 +1625,8 @@ document.getElementById("speaker").onclick = () => {
 };
 
 window.onload = () => {
-  window.speechSynthesis.onvoiceschanged = setGermanVoice;
-  setGermanVoice();
-  nextWord(); // varsa kelimeyi başlatan fonksiyonun
+  nextWord();
 };
-
-
-
 function goHome() {
   window.location.href = "index.html";
 }
@@ -1827,45 +1652,29 @@ function readWords(list) {
   if (!isReading || readIndex >= list.length) return;
 
   const w = list[readIndex];
-  const sentences = [w.word, w.correct, w.example];
+  const sentences = [
+    w.word,
+    w.correct,
+    w.example
+  ];
+
   let sIndex = 0;
 
-function speakNext() {
-  if (!isReading || sIndex >= sentences.length) {
-    readIndex++;
-    readInterval = setTimeout(() => readWords(list), 1000); // bir sonraki kelimeye geç
-    return;
+  function speakNext() {
+    if (!isReading || sIndex >= sentences.length) {
+      readIndex++;
+      readInterval = setTimeout(() => readWords(list), 2000); // bir sonraki kelimeye geç
+      return;
+    }
+
+    const utter = new SpeechSynthesisUtterance(sentences[sIndex]);
+    utter.lang = sIndex === 1 ? "tr-TR" : "de-DE"; // anlam Türkçe, diğerleri Almanca
+    window.speechSynthesis.speak(utter);
+    sIndex++;
+    utter.onend = () => {
+      setTimeout(speakNext, 1200); // cümleler arası bekleme
+    };
   }
-
-  const utter = new SpeechSynthesisUtterance(sentences[sIndex]);
-utter.lang = sIndex === 1 ? "tr-TR" : "de-DE";
-
-
-if (utter.lang === "de-DE" && germanVoice) {
-  utter.voice = germanVoice;
-  utter.rate = 0.9;
-}
-
-if (utter.lang === "tr-TR" && turkishVoice) {
-  utter.voice = turkishVoice;
-  utter.rate = 0.8;
-}
-
-
-
-  // Önceki sesi iptal et → yavaşlamayı önler
-  speechSynthesis.cancel();
-
-  if (utter.lang === "de-DE" && germanVoice) {
-    utter.voice = germanVoice;
-  }
-
-  window.speechSynthesis.speak(utter);
-  sIndex++;
-  utter.onend = () => {
-    setTimeout(speakNext, 1000);
-  };
-}
 
   speakNext();
 }
