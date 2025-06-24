@@ -71,6 +71,8 @@
   <div class="zurueck-zentrale-box">
   <a href="index.html" class="zurueck-button">🏠 Ana sayfaya dön</a>
 </div>
+<div id="currentSentence" style="font-size: 34px; font-weight: bold; margin-top: 20px; text-align: center;"></div>
+
 
   <script>
     const sentences = [
@@ -957,16 +959,25 @@
     let speakingLoop;
 
     function speakRandomSentence() {
-      if (!isSpeaking) return;
-      let sentence = sentences[Math.floor(Math.random() * sentences.length)];
-      let utterance = new SpeechSynthesisUtterance(sentence);
-      utterance.lang = 'de-DE';
-      synth.speak(utterance);
-      utterance.onend = () => {
-        let delaySeconds = parseInt(document.getElementById('delayInput').value) || 0;
-        speakingLoop = setTimeout(speakRandomSentence, delaySeconds * 1000);
-      };
-    }
+  if (!isSpeaking) return;
+
+  let sentence = sentences[Math.floor(Math.random() * sentences.length)];
+  let utterance = new SpeechSynthesisUtterance(sentence);
+  utterance.lang = 'de-DE';
+  utterance.rate = 0.90; // Daha yavaş konuşma
+
+  // Cümleyi büyük puntolu olarak ekranda göster
+  document.getElementById("currentSentence").textContent = sentence;
+
+  synth.speak(utterance);
+
+  utterance.onend = () => {
+    let delaySeconds = parseInt(document.getElementById('delayInput').value) || 0;
+    speakingLoop = setTimeout(speakRandomSentence, delaySeconds * 1000);
+  };
+}
+
+
 
     function toggleSpeech() {
       if (!isSpeaking) {
