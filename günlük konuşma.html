@@ -44,7 +44,7 @@
   display: inline-block;
   padding: 12px 24px;
   font-size: 18px;
-  background-color: #3498db;
+  background-color: #db343c;
   color: white;
   border: none;
   border-radius: 8px;
@@ -55,6 +55,43 @@
 .zurueck-button:hover {
   background-color: #2c80b4;
 }
+
+.home-button {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #007BFF;
+  color: white;
+  padding: 12px 24px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 30px;
+  text-decoration: none;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+  z-index: 9999;
+  transition: background-color 0.3s ease;
+}
+.home-button:hover {
+  background-color: #0056b3;
+}
+
+
+  #toggleModeBtn {
+    position: fixed;
+    top: 15px;         /* Sayfanın üstünden 60px aşağı */
+    right: 10px;       /* Sağdan 10px içeride */
+    font-size: 14px;   /* Daha küçük font */
+    padding: 7px 14px; /* Daha küçük kutu boyutu */
+    z-index: 1000;
+    cursor: pointer;
+     color: rgb(24, 22, 22);
+      background-color: #bdbcbc;
+  }
+</style>
+
+
+
 
   </style>
 </head>
@@ -69,12 +106,23 @@
     <span class="mic">🎤</span> Konuşmaya Başla
   </button>
   <div class="zurueck-zentrale-box">
-  <a href="index.html" class="zurueck-button">🏠 Ana sayfaya dön</a>
+<a href="index.html" class="home-button">🏠 Ana Sayfaya Dön</a>
+
 </div>
 <div id="currentSentence" style="font-size: 34px; font-weight: bold; margin-top: 20px; text-align: center;"></div>
+<!-- Okunan cümle büyük punto ile gösterilecek alan -->
+<h2 id="currentSentence" style="margin-top: 20px; font-size: 24px; color: darkblue;"></h2>
+
+<!-- Mod değiştirme butonu -->
+<button id="toggleModeBtn" onclick="toggleReadingMode()">Mod: Sıralı</button>
 
 
   <script>
+      let isSpeaking = false;
+  let synth = window.speechSynthesis;
+  let speakingLoop;
+  let isRandomMode = false;
+  let currentIndex = 0;
     const sentences = [
   "Wie spät ist es?",
   "Ich habe heute viel zu tun.",
@@ -933,63 +981,50 @@
   "Das zeigt, wie sehr wir daran gewöhnt sind."
 ];
 
+  function toggleReadingMode() {
+    isRandomMode = !isRandomMode;
+    const btn = document.getElementById("toggleModeBtn");
+    btn.textContent = isRandomMode ? "Mod: Rastgele" : "Mod: Sıralı";
+  }
 
+  function speakRandomSentence() {
+    if (!isSpeaking) return;
 
+    synth.cancel(); // iPhone için önemli
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    let isSpeaking = false;
-    let synth = window.speechSynthesis;
-    let speakingLoop;
-
-    function speakRandomSentence() {
-  if (!isSpeaking) return;
-
-  let sentence = sentences[Math.floor(Math.random() * sentences.length)];
-  let utterance = new SpeechSynthesisUtterance(sentence);
-  utterance.lang = 'de-DE';
-  utterance.rate = 0.90; // Daha yavaş konuşma
-
-  // Cümleyi büyük puntolu olarak ekranda göster
-  document.getElementById("currentSentence").textContent = sentence;
-
-  synth.speak(utterance);
-
-  utterance.onend = () => {
-    let delaySeconds = parseInt(document.getElementById('delayInput').value) || 0;
-    speakingLoop = setTimeout(speakRandomSentence, delaySeconds * 1000);
-  };
-}
-
-
-
-    function toggleSpeech() {
-      if (!isSpeaking) {
-        isSpeaking = true;
-        speakRandomSentence();
-      } else {
-        isSpeaking = false;
-        synth.cancel();
-        clearTimeout(speakingLoop);
-      }
+    let sentence;
+    if (isRandomMode) {
+      sentence = sentences[Math.floor(Math.random() * sentences.length)];
+    } else {
+      if (currentIndex >= sentences.length) currentIndex = 0;
+      sentence = sentences[currentIndex];
+      currentIndex++;
     }
-  </script>
 
+    let utterance = new SpeechSynthesisUtterance(sentence);
+    utterance.lang = 'de-DE';
+    utterance.rate = 0.93;
+
+    document.getElementById("currentSentence").textContent = sentence;
+
+    synth.speak(utterance);
+
+    utterance.onend = () => {
+      let delaySeconds = parseInt(document.getElementById('delayInput').value) || 0;
+      speakingLoop = setTimeout(speakRandomSentence, delaySeconds * 1000);
+    };
+  }
+
+  function toggleSpeech() {
+    if (!isSpeaking) {
+      isSpeaking = true;
+      speakRandomSentence();
+    } else {
+      isSpeaking = false;
+      synth.cancel();
+      clearTimeout(speakingLoop);
+    }
+  }
+</script>
 </body>
 </html>
