@@ -1,46 +1,235 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Almanca Kelime Oyunu</title>
 <style>
-    
-  body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-  .question { margin: 20px 0; font-size: 24px; font-weight: bold; }
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  min-height: 100vh;
+  background-color: #fff;
+  padding: 20px;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* scroll olmasın */
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+.options, .stats-box, .word-display, #exampleSentence, #questionText {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+h1 {
+  font-size: 28px; /* Daha küçük başlık */
+  color: #0055aa;  /* Mavi tonlu renk */
+}
+
+.question {
+  margin: 20px 0;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.word-display {
+  font-size: 40px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+#exampleSentence {
+  font-size: 28px;
+  font-style: italic;
+  margin: 15px 0;
+  color: #444;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  justify-content: center;
+  max-width: 600px;
+  margin-top: 0;  /* 🔼 Buradaki üst boşluğu 20px yaptık */
+}
+
+.option {
+  width: 250px;
+  height: 80px;
+  padding: 20px;
+  border: 3px solid #8a8a8ada;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 30px;
+  transition: 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  word-wrap: break-word;
+}
+
+.option.correct {
+  background-color: #c8f7c5;
+  border-color: green;
+}
+
+.option.incorrect {
+  background-color: #f7c5c5;
+  border-color: red;
+}
+
+#speaker {
+  display: inline-block;
+  padding: 10px 30px;
+  font-size: 24px;
+  background: linear-gradient(to bottom, #6d6c68, #b8b7b4);
+  border: 2px solid #242321;
+  border-radius: 10px;
+  box-shadow: 0 4px #1b1b19;
+  font-weight: bold;
+  color: #111;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-align: center;
+}
+
+#speaker:active {
+  box-shadow: 0 2px #a88734;
+  transform: translateY(2px);
+}
+
+.stats-box {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: #f0f0f0;
+  padding: 10px 15px;
+  border: 2px solid #888;
+  border-radius: 10px;
+  font-size: 14px;
+  z-index: 999;
+  box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+  text-align: left;
+}
+
+.stats-box div {
+  margin: 5px 0;
+}
+
+#readButton {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  padding: 6px 12px;
+  font-size: 16px;
+  background: linear-gradient(to bottom, #a3a29f, #7a7a78);
+  border: 2px solid #b8b5af;
+  border-radius: 10px;
+  box-shadow: 0 3px #868685;
+  color: #111;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 10000;
+  transition: all 0.2s ease-in-out;
+}
+
+#readButton:active {
+  box-shadow: 0 2px #a88734;
+  transform: translateY(2px);
+}
+
+#exampleSentence {
+  min-height: 20px;        /* Yer açar, kutular kaymaz */
+  margin: 10px 0;
+  color: #444;
+  transition: opacity 0.5s ease;
+  opacity: 0;              /* Başta görünmez */
+}
+
+#exampleSentence.visible {
+  opacity: 1;              /* Görünecek hâle geçer */
+}
+
+#wordDisplay {
+  font-size: 40px; /* Veya 40px, 44px yapabilirsin */
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  margin: 10px 0;
+}
+
+/* ------------ MOBİL UYUMLULUK (600px ve altı için) ------------- */
+@media (max-width: 600px) {
+
+  /* Genel body padding küçült */
+  body {
+    padding: 10px !important;
+  }
+
+  /* Başlık ve metin boyutları küçülür */
+  h1 {
+    font-size: 22px !important;
+  }
+
+  .question {
+    font-size: 18px !important;
+    margin: 15px 0 !important;
+  }
+
   .word-display {
-    font-size: 40px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    
-    
+    font-size: 28px !important;
+    margin-bottom: 8px !important;
   }
+
   #exampleSentence {
-    font-size: 22px;
-    font-style: italic;
-    margin: 15px 0;
-    color: #444;
+    font-size: 18px !important;
+    margin: 10px 0 !important;
   }
-  .options {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(140px, 1fr));
-    gap: 20px;
-    justify-content: center;
-    max-width: 500px;
-    margin: 0 auto;
-  }
+
+  /* Buton ve seçenek kutuları küçült */
   .option {
-    padding: 20px;
-    border: 3px solid #ccc;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 22px;
-    transition: 0.3s;
+    width: 100% !important;  /* Tam genişlik */
+    height: 60px !important;
+    padding: 12px !important;
+    font-size: 20px !important;
   }
-  .option.correct { background-color: #c8f7c5; border-color: green; }
-  .option.incorrect { background-color: #f7c5c5; border-color: red; }
-  #speaker { font-size: 40px; cursor: pointer; margin: 10px 0; }
+
+  /* .options grid 1 sütuna düşür */
+  .options {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    max-width: 100% !important;
+  }
+
+  /* Konteyner genişlik ayarı */
+  .stats-box {
+    font-size: 12px !important;
+    padding: 8px 10px !important;
+  }
+
+  #readButton {
+    font-size: 14px !important;
+    padding: 5px 10px !important;
+  }
+
+  #speaker {
+    font-size: 18px !important;
+    padding: 8px 20px !important;
+  }
+
+  /* Word display ve örnek cümle genişliği tam */
+  #wordDisplay, #exampleSentence {
+    font-size: 24px !important;
+  }
+
+}
 </style>
+
 </head>
 <body>
 <h1 style="font-size: 26px; color: #e07109;">Kelime Oyunu</h1>
@@ -48,17 +237,36 @@
 <div id="speaker">🔊</div>
 <div id="exampleSentence"></div>
 <div class="question" id="questionText">Kelime oynatılıyor...</div>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
 <div class="options" id="optionsContainer"></div>
-<div style="text-align: center; margin-top: 40px;">
+
+<div style="text-align: center; margin-top: 0px;">
   
- <div style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000;">
-  <button onclick="goHome()" style="padding: 12px 24px; font-size: 18px; background-color: #d1ac33; color: white; border: none; border-radius: 8px; cursor: pointer;">
+  
+ <div style="position: fixed; bottom: 5px; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; z-index: 1000;">
+
+  <button id="prevBtn" style="padding: 12px 24px; font-size: 18px; background-color: #7e7d7b88; color: white; border: none; border-radius: 8px; cursor: pointer;">
+    ← Geri
+  </button>
+
+  <button onclick="goHome()" style="padding: 12px 24px; font-size: 18px; background-color: #7e7d7b88; color: white; border: none; border-radius: 8px; cursor: pointer;">
     Ana Sayfaya Dön
   </button>
+
+  <button id="nextBtn" style="padding: 12px 24px; font-size: 18px; background-color: #7e7d7b88; color: white; border: none; border-radius: 8px; cursor: pointer;">
+    İleri →
+  </button>
+
 </div>
-<button id="readButton" onclick="startStopReading()" style="position: fixed; top: 10px; left: 10px; padding: 10px 16px; font-size: 14px; z-index: 1000;">
-  🔊 Sesli Dinle / Durdur
+<button id="readButton" onclick="startStopReading()">🔊 Sesli Dinle / Durdur</button>
 </button>
+ <div class="stats-box" id="statsBox">
+    <div>✅ Doğru: <span id="correctCount">0</span></div>
+    <div>❌ Yanlış: <span id="incorrectCount">0</span></div>
+    <div>📚 Öğrenilen: <span id="learnedToday">0</span></div>
+  </div>
 
 
 
@@ -69,6 +277,504 @@
 }
 const words = [
 
+{ word: "Arbeitsvertrag und Kündigung", correct: "iş sözleşmesi ve fesih", options: ["çalışma izni", "meslek", "tatil"], example: "Er hat den Arbeitsvertrag unterschrieben." },
+{ word: "Arbeitszeiten", correct: "çalışma saatleri", options: ["yemek saatleri", "telefon saatleri", "tatil günleri"], example: "Die Arbeitszeiten sind flexibel." },
+{ word: "Artikelbezeichnung", correct: "ürün tanımı", options: ["kargo takip", "fatura bilgisi", "giriş kodu"], example: "Die Artikelbezeichnung steht auf dem Etikett." },
+{ word: "Aufträge und Bestellungen", correct: "siparişler ve talepler", options: ["müşteriler", "paketler", "ürünler"], example: "Wir bearbeiten alle Aufträge und Bestellungen täglich." },
+{ word: "Ausbildung", correct: "mesleki eğitim", options: ["okul tatili", "uygulama indirimi", "ders arası"], example: "Er macht eine Ausbildung zum Elektriker." },
+{ word: "Auskunft geben", correct: "bilgi vermek", options: ["hediye vermek", "hata yapmak", "izin almak"], example: "Können Sie mir bitte Auskunft geben?" },
+{ word: "Ausnahmegenehmigung", correct: "istisna izni", options: ["geçici adres", "ek süre", "toplantı kararı"], example: "Wir brauchen eine Ausnahmegenehmigung für das Projekt." },
+{ word: "Ausschreibung", correct: "ihale, ilan", options: ["sözleşme", "borç", "kural"], example: "Die Firma hat eine neue Stelle zur Ausschreibung gebracht." },
+{ word: "Barzahlung", correct: "nakit ödeme", options: ["veresiye", "kredi başvurusu", "çek"], example: "Nur Barzahlung ist möglich." },
+{ word: "Beförderung", correct: "terfi", options: ["izin", "görev", "şikayet"], example: "Sie freut sich über ihre Beförderung." },
+{ word: "Beispielsatz / Notizen", correct: "örnek cümle / notlar", options: ["telefon numarası", "yol tarifi", "yemek listesi"], example: "Bitte schreiben Sie einen Beispielsatz dazu." },
+{ word: "Beratung", correct: "danışmanlık", options: ["hizmet", "bilet", "kargo"], example: "Wir bieten eine kostenlose Beratung an." },
+{ word: "Berechtigung", correct: "yetki", options: ["uyarı", "itiraz", "kontrol"], example: "Sie haben keine Berechtigung für diesen Zugang." },
+{ word: "Beruf und Ausbildung", correct: "meslek ve eğitim", options: ["şehir ve tatil", "ders ve sınav", "kredi ve harcama"], example: "Beruf und Ausbildung sind wichtig für die Zukunft." },
+{ word: "Beruf und Familie miteinander vereinbaren", correct: "iş ve aileyi uzlaştırmak", options: ["tatil planlamak", "ev değiştirmek", "çocuk okula yazdırmak"], example: "Viele Eltern möchten Beruf und Familie miteinander vereinbaren." },
+{ word: "Berufliche Anerkennung", correct: "mesleki tanınma", options: ["tatil hakkı", "vergi indirimi", "yol yardımı"], example: "Die berufliche Anerkennung ist wichtig für ausländische Abschlüsse." },
+{ word: "Berufsausbildung", correct: "mesleki eğitim", options: ["izin belgesi", "görev mektubu", "ikramiye"], example: "Sie macht eine duale Berufsausbildung." },
+{ word: "Berufsbeschreibungen", correct: "meslek tanımları", options: ["çalışma kartı", "giriş saati", "izin formu"], example: "Im Buch gibt es viele Berufsbeschreibungen." },
+{ word: "Berufserfahrung", correct: "meslek deneyimi", options: ["sınav sonucu", "başvuru formu", "görev listesi"], example: "Ich habe fünf Jahre Berufserfahrung." },
+{ word: "Bescheid geben", correct: "haber vermek", options: ["izin almak", "borç istemek", "şikayet etmek"], example: "Ich gebe dir später Bescheid." },
+{ word: "Beschwerden (Pl.) beantworten", correct: "şikayetleri yanıtlamak", options: ["yardım çağırmak", "bilgi istemek", "dosya açmak"], example: "Die Mitarbeiter müssen die Beschwerden beantworten." },
+{ word: "Besprechung", correct: "görüşme, toplantı", options: ["tatil", "ödeme", "soru"], example: "Heute haben wir eine wichtige Besprechung." },
+{ word: "Besprechungen", correct: "toplantılar", options: ["eğitimler", "yemekler", "evraklar"], example: "Besprechungen finden jeden Montag statt." },
+{ word: "Besprechungsunterlagen", correct: "toplantı belgeleri", options: ["alışveriş listesi", "tatil planı", "öğle menüsü"], example: "Bitte bringen Sie die Besprechungsunterlagen mit." },
+{ word: "Bestellen", correct: "sipariş vermek", options: ["davet etmek", "oy vermek", "ara vermek"], example: "Ich möchte eine Pizza bestellen." },
+{ word: "Betreuung", correct: "bakım, ilgilenme", options: ["öğretim", "yönlendirme", "sunum"], example: "Die Betreuung der Kinder ist sehr gut." },
+{ word: "Betriebsvereinbarungen", correct: "şirket içi anlaşmalar", options: ["yemek listeleri", "tatil belgeleri", "müşteri şikayetleri"], example: "Die Betriebsvereinbarungen regeln die Arbeitszeit." },
+{ word: "Bewerbungs(an)schreiben", correct: "başvuru mektubu", options: ["öğrenci belgesi", "pasaport", "telefon listesi"], example: "Ein gutes Bewerbungsschreiben ist sehr wichtig." },
+{ word: "Bewertung", correct: "değerlendirme", options: ["teslimat", "ödeme", "sigorta"], example: "Die Bewertung des Kurses war positiv." },
+{ word: "Bezahlen", correct: "ödemek", options: ["imzalamak", "iletmek", "kaydetmek"], example: "Ich muss die Rechnung heute bezahlen." },
+{ word: "Blutung", correct: "kanama", options: ["yorgunluk", "öksürük", "sıcaklık"], example: "Die Blutung wurde schnell gestoppt." },
+{ word: "Branchen", correct: "sektörler", options: ["şehirler", "kişiler", "ürünler"], example: "In welchen Branchen arbeiten Sie?" },
+{ word: "Buchhaltung", correct: "muhasebe", options: ["nakliye", "sigorta", "fatura"], example: "Die Buchhaltung kontrolliert alle Rechnungen." },
+{ word: "Bürobedarf", correct: "ofis malzemeleri", options: ["yemek listesi", "personel", "sigorta"], example: "Wir bestellen neuen Bürobedarf." },
+{ word: "Büroräume", correct: "ofis odaları", options: ["telefonlar", "toplantılar", "faks makineleri"], example: "Die Büroräume sind modern eingerichtet." },
+{ word: "Checkliste", correct: "kontrol listesi", options: ["çalışma saati", "bilgi formu", "menü"], example: "Bitte füllen Sie die Checkliste aus." },
+{ word: "Datenschutz", correct: "veri koruma", options: ["trafik kontrolü", "sağlık sigortası", "kredi kartı"], example: "Datenschutz ist in Europa sehr wichtig." },
+{ word: "Dauerauftrag", correct: "otomatik ödeme talimatı", options: ["sipariş kağıdı", "gönderi kutusu", "telefon rehberi"], example: "Ich habe einen Dauerauftrag für die Miete." },
+{ word: "Dienstleistungen", correct: "hizmetler", options: ["ürünler", "ofisler", "işçiler"], example: "Unsere Firma bietet viele Dienstleistungen an." },
+{ word: "Doppelzimmer", correct: "çift kişilik oda", options: ["tek kişilik oda", "banyo", "mutfak"], example: "Wir haben ein Doppelzimmer reserviert." },
+{ word: "Durchwahl", correct: "dahili numara", options: ["bina numarası", "oda kodu", "posta kutusu"], example: "Hier ist meine Durchwahl." },
+{ word: "E-Mail-Adresse", correct: "e-posta adresi", options: ["ev adresi", "telefon numarası", "ofis ismi"], example: "Bitte geben Sie Ihre E-Mail-Adresse an." },
+{ word: "Eingangsbestätigung", correct: "alındı teyidi", options: ["ödeme belgesi", "sigorta kartı", "fatura kodu"], example: "Sie bekommen eine Eingangsbestätigung per E-Mail." },
+{ word: "Einkommensteuer", correct: "gelir vergisi", options: ["motor vergisi", "kira", "elektrik ücreti"], example: "Die Einkommensteuer ist jedes Jahr fällig." },
+{ word: "Einladung", correct: "davet", options: ["hediye", "borç", "izin"], example: "Ich habe eine Einladung zur Hochzeit bekommen." },
+{ word: "Einleitung", correct: "giriş", options: ["özet", "sonuç", "başvuru"], example: "Die Einleitung war sehr informativ." },
+{ word: "Einspruch", correct: "itiraz", options: ["destek", "kabul", "tavsiye"], example: "Ich lege Einspruch gegen die Entscheidung ein." },
+{ word: "Empfänger", correct: "alıcı", options: ["görevli", "postacı", "gönderici"], example: "Der Empfänger hat das Paket erhalten." },
+{ word: "Empfehlung", correct: "tavsiye", options: ["şikayet", "itiraz", "ret"], example: "Er hat eine gute Empfehlung geschrieben." },
+{ word: "Entfernung", correct: "mesafe", options: ["hız", "yön", "şehir"], example: "Die Entfernung zur Arbeit beträgt 10 km." },
+{ word: "Fremdsprachenkenntnisse", correct: "yabancı dil bilgisi", options: ["adres bilgisi", "kimlik bilgisi", "ehliyet"], example: "Sie hat sehr gute Fremdsprachenkenntnisse." },
+{ word: "Frist", correct: "süre, son tarih", options: ["ödeme", "dilekçe", "dosya"], example: "Die Frist endet morgen." },
+{ word: "Führerschein", correct: "ehliyet", options: ["pasaport", "kimlik", "ruhsat"], example: "Ich habe meinen Führerschein vor 5 Jahren gemacht." },
+{ word: "Geburtsdatum", correct: "doğum tarihi", options: ["adres", "meslek", "kimlik numarası"], example: "Bitte geben Sie Ihr Geburtsdatum an." },
+{ word: "Gehalt", correct: "maaş", options: ["bütçe", "borç", "prim"], example: "Er bekommt ein gutes Gehalt." },
+{ word: "Gehaltsabrechnung", correct: "maaş bordrosu", options: ["fiş", "kira sözleşmesi", "izin belgesi"], example: "Die Gehaltsabrechnung wird monatlich erstellt." },
+{ word: "Gehörschutz", correct: "kulak koruması", options: ["gözlük", "kask", "maske"], example: "In der Werkstatt ist Gehörschutz Pflicht." },
+{ word: "Geräteprüfung", correct: "cihaz kontrolü", options: ["sigorta", "temizlik", "kayıt"], example: "Die Geräteprüfung findet einmal jährlich statt." },
+{ word: "Geburtsdatum", correct: "doğum tarihi", options: ["adres", "meslek", "kimlik numarası"], example: "Bitte geben Sie Ihr Geburtsdatum an." },
+{ word: "Gehalt", correct: "maaş", options: ["bütçe", "borç", "prim"], example: "Er bekommt ein gutes Gehalt." },
+{ word: "Gehaltsabrechnung", correct: "maaş bordrosu", options: ["fiş", "kira sözleşmesi", "izin belgesi"], example: "Die Gehaltsabrechnung wird monatlich erstellt." },
+{ word: "Gehörschutz", correct: "kulak koruması", options: ["gözlük", "kask", "maske"], example: "In der Werkstatt ist Gehörschutz Pflicht." },
+{ word: "Geräteprüfung", correct: "cihaz kontrolü", options: ["sigorta", "temizlik", "kayıt"], example: "Die Geräteprüfung findet einmal jährlich statt." },
+{ word: "Gesamtbetrag", correct: "toplam tutar", options: ["aylık gelir", "borç", "fiyat farkı"], example: "Bitte überweisen Sie den Gesamtbetrag." },
+{ word: "Gesprächsnotiz", correct: "görüşme notu", options: ["telefon numarası", "kayıt cihazı", "başvuru formu"], example: "Ich habe eine Gesprächsnotiz gemacht." },
+{ word: "Gesprächsverlauf", correct: "görüşme süreci", options: ["toplantı odası", "dosya arşivi", "yemek listesi"], example: "Der Gesprächsverlauf war sehr positiv." },
+{ word: "Gesundheitskarte", correct: "sağlık kartı", options: ["kimlik kartı", "oturma izni", "randevu kağıdı"], example: "Bitte bringen Sie Ihre Gesundheitskarte mit." },
+{ word: "Gewohnheit", correct: "alışkanlık", options: ["heves", "öncelik", "gereklilik"], example: "Rauchen ist eine schlechte Gewohnheit." },
+{ word: "Hausmeister", correct: "apartman görevlisi", options: ["öğrenci", "kiracı", "bekçi"], example: "Der Hausmeister kümmert sich um Reparaturen." },
+{ word: "Hebebühne", correct: "kaldırma platformu", options: ["araç", "raf", "bina"], example: "Die Hebebühne wird für Wartungsarbeiten verwendet." },
+{ word: "Herkunft", correct: "köken", options: ["gidiş", "hedef", "iş"], example: "Die Herkunft des Produkts ist Deutschland." },
+{ word: "Hinweis", correct: "bilgi / uyarı", options: ["reklam", "fatura", "telefon"], example: "Ein wichtiger Hinweis steht auf dem Zettel." },
+{ word: "Hochdruckreiniger", correct: "basınçlı temizleyici", options: ["çamaşır makinesi", "ütü", "elektrik süpürgesi"], example: "Der Hochdruckreiniger entfernt den Schmutz effektiv." },
+{ word: "Gewohnheit", correct: "alışkanlık", options: ["fırsat", "karar", "tatil"], example: "Rauchen ist eine schlechte Gewohnheit." },
+{ word: "Gleitzeit", correct: "esnek çalışma saati", options: ["haftalık tatil", "yıllık izin", "gece vardiyası"], example: "In unserer Firma gibt es Gleitzeit." },
+{ word: "Gültigkeit", correct: "geçerlilik", options: ["ödeme", "ceza", "kayıt"], example: "Der Ausweis hat eine Gültigkeit von fünf Jahren." },
+{ word: "Halbtagsstelle", correct: "yarı zamanlı iş", options: ["tam gün iş", "geçici görev", "haftalık toplantı"], example: "Sie arbeitet in einer Halbtagsstelle." },
+{ word: "Handwerker", correct: "zanaatkâr", options: ["şoför", "sekreter", "doktor"], example: "Ein Handwerker hat das Problem behoben." },
+{ word: "Gesamtbetrag", correct: "toplam tutar", options: ["aylık gelir", "borç", "fiyat farkı"], example: "Bitte überweisen Sie den Gesamtbetrag." },
+{ word: "Gesprächsnotiz", correct: "görüşme notu", options: ["telefon numarası", "kayıt cihazı", "başvuru formu"], example: "Ich habe eine Gesprächsnotiz gemacht." },
+{ word: "Gesprächsverlauf", correct: "görüşme süreci", options: ["toplantı odası", "dosya arşivi", "yemek listesi"], example: "Der Gesprächsverlauf war sehr positiv." },
+{ word: "Gesundheitskarte", correct: "sağlık kartı", options: ["kimlik kartı", "oturma izni", "randevu kağıdı"], example: "Bitte bringen Sie Ihre Gesundheitskarte mit." },
+{ word: "Gewohnheit", correct: "alışkanlık", options: ["alışveriş", "alışveriş listesi", "alış noktası"], example: "Rauchen ist eine schlechte Gewohnheit." },
+{ word: "Geburtsdatum", correct: "doğum tarihi", options: ["adres", "meslek", "kimlik numarası"], example: "Bitte geben Sie Ihr Geburtsdatum an." },
+{ word: "Gehalt", correct: "maaş", options: ["bütçe", "borç", "prim"], example: "Er bekommt ein gutes Gehalt." },
+{ word: "Gehaltsabrechnung", correct: "maaş bordrosu", options: ["fiş", "kira sözleşmesi", "izin belgesi"], example: "Die Gehaltsabrechnung wird monatlich erstellt." },
+{ word: "Gehörschutz", correct: "kulak koruması", options: ["gözlük", "kask", "maske"], example: "In der Werkstatt ist Gehörschutz Pflicht." },
+{ word: "Geräteprüfung", correct: "cihaz kontrolü", options: ["sigorta", "temizlik", "kayıt"], example: "Die Geräteprüfung findet einmal jährlich statt." },
+{ word: "Gesamtbetrag", correct: "toplam tutar", options: ["aylık gelir", "borç", "fiyat farkı"], example: "Bitte überweisen Sie den Gesamtbetrag." },
+{ word: "Gesprächsnotiz", correct: "görüşme notu", options: ["telefon numarası", "kayıt cihazı", "başvuru formu"], example: "Ich habe eine Gesprächsnotiz gemacht." },
+{ word: "Gesprächsverlauf", correct: "görüşme süreci", options: ["toplantı odası", "dosya arşivi", "yemek listesi"], example: "Der Gesprächsverlauf war sehr positiv." },
+{ word: "Gesundheitskarte", correct: "sağlık kartı", options: ["kimlik kartı", "oturma izni", "randevu kağıdı"], example: "Bitte bringen Sie Ihre Gesundheitskarte mit." },
+{ word: "Gewohnheit", correct: "alışkanlık", options: ["heves", "öncelik", "gereklilik"], example: "Rauchen ist eine schlechte Gewohnheit." },
+{ word: "Gleitzeit", correct: "esnek çalışma saati", options: ["fazla mesai", "izin günü", "resmi tatil"], example: "Wir haben in der Firma Gleitzeit." },
+{ word: "Gratifikation", correct: "prim, ikramiye", options: ["maaş", "tatil", "izin"], example: "Die Mitarbeiter erhalten eine Gratifikation." },
+{ word: "Grundkenntnisse", correct: "temel bilgiler", options: ["şifre", "izin belgesi", "giriş seviyesi"], example: "Er hat Grundkenntnisse in Excel." },
+{ word: "Grundsteuer", correct: "emlak vergisi", options: ["trafik cezası", "su faturası", "gelir vergisi"], example: "Die Grundsteuer wird jährlich bezahlt." },
+{ word: "Gutschein", correct: "kupon", options: ["çek", "makbuz", "bilet"], example: "Ich habe einen Gutschein für das Restaurant." },
+{ word: "Händedesinfektion", correct: "el dezenfeksiyonu", options: ["sabun", "eldiven", "şampuan"], example: "Händedesinfektion ist wichtig im Krankenhaus." },
+{ word: "Haftpflichtversicherung", correct: "sorumluluk sigortası", options: ["trafik sigortası", "emeklilik sigortası", "mal sigortası"], example: "Jeder sollte eine Haftpflichtversicherung haben." },
+{ word: "Handout", correct: "el broşürü", options: ["afiş", "reklam", "form"], example: "Die Teilnehmer bekommen ein Handout." },
+{ word: "Hausordnung", correct: "apartman kuralları", options: ["kira sözleşmesi", "ev planı", "komşuluk ilişkisi"], example: "Die Hausordnung muss eingehalten werden." },
+{ word: "Hauswirtschaft", correct: "ev ekonomisi", options: ["mimarlık", "ev temizliği", "inşaat yönetimi"], example: "Sie unterrichtet Hauswirtschaft in der Schule." },
+{ word: "Hautschutz", correct: "cilt koruması", options: ["güneş kremi", "maske", "eldiven"], example: "In der Pflege ist Hautschutz sehr wichtig." },
+{ word: "Heilmittel", correct: "tedavi aracı", options: ["merhem", "ilaç", "serum"], example: "Der Arzt verschreibt ein Heilmittel." },
+{ word: "Hinweis", correct: "uyarı, işaret", options: ["etiket", "not", "liste"], example: "Ein wichtiger Hinweis steht im Vertrag." },
+{ word: "Homepage", correct: "web sitesi", options: ["reklam", "e-posta", "veri tabanı"], example: "Die Homepage der Firma ist modern." },
+{ word: "Honorar", correct: "ücret (serbest meslek)", options: ["prim", "maaş", "bağış"], example: "Das Honorar wird nach Stunden bezahlt." },
+{ word: "Hospitation", correct: "gözlem (mesleki)", options: ["muayene", "tatbikat", "staj"], example: "Ich mache eine Hospitation in der Klinik." },
+{ word: "Hotelreservierung", correct: "otel rezervasyonu", options: ["uçak bileti", "konferans kaydı", "pasaport"], example: "Die Hotelreservierung war erfolgreich." },
+{ word: "Informationsveranstaltung", correct: "bilgilendirme toplantısı", options: ["mezuniyet töreni", "eğitim gezisi", "iş görüşmesi"], example: "Morgen ist eine Informationsveranstaltung." },
+{ word: "Inhalt", correct: "içerik", options: ["şekil", "başlık", "konu"], example: "Der Inhalt der Schulung ist sehr wichtig." },
+{ word: "Instandhaltung", correct: "bakım-onarım", options: ["yenileme", "temizlik", "onarım belgesi"], example: "Die Instandhaltung erfolgt jährlich." },
+{ word: "Integration", correct: "uyum, entegrasyon", options: ["kurs", "katılım", "iletişim"], example: "Sprachkurse fördern die Integration." },
+{ word: "Internetverbindung", correct: "internet bağlantısı", options: ["modem", "veri", "ağ kablosu"], example: "Die Internetverbindung ist heute schlecht." },
+{ word: "Jahresabrechnung", correct: "yıllık hesap", options: ["fatura", "rapor", "bilanço"], example: "Die Jahresabrechnung kommt im Januar." },
+{ word: "Jahresurlaub", correct: "yıllık izin", options: ["haftalık izin", "bayram tatili", "resmi tatil"], example: "Mein Jahresurlaub beginnt im August." },
+{ word: "Jobcenter", correct: "iş merkezi", options: ["işveren", "meslek okulu", "vergi dairesi"], example: "Das Jobcenter hilft bei der Arbeitssuche." },
+{ word: "Kaffeemaschine", correct: "kahve makinesi", options: ["su ısıtıcısı", "buzdolabı", "fırın"], example: "Die Kaffeemaschine ist kaputt." },
+{ word: "Kalender", correct: "takvim", options: ["saat", "günlük", "not defteri"], example: "Ich trage alle Termine in den Kalender ein." },
+{ word: "Kaution", correct: "depozito", options: ["sigorta", "avans", "fatura"], example: "Die Kaution beträgt 500 Euro." },
+{ word: "Kaufvertrag", correct: "satış sözleşmesi", options: ["kira sözleşmesi", "fatura", "ödeme planı"], example: "Bitte unterschreiben Sie den Kaufvertrag." },
+{ word: "Kennzeichen", correct: "plaka", options: ["ruhsat", "ehliyet", "motor"], example: "Das Auto hat ein neues Kennzeichen." },
+{ word: "Kindergeld", correct: "çocuk parası", options: ["öğrenci kredisi", "doğum yardımı", "aile yardımı"], example: "Familien bekommen Kindergeld." },
+{ word: "Kleidung", correct: "giysi", options: ["aksesuar", "forma", "ceket"], example: "Saubere Kleidung ist wichtig im Beruf." },
+{ word: "Kopfhörer", correct: "kulaklık", options: ["hoparlör", "mikrofon", "radyo"], example: "Ich höre Musik mit Kopfhörern." },
+{ word: "Kopiergerät", correct: "fotokopi cihazı", options: ["yazıcı", "tarayıcı", "bilgisayar"], example: "Das Kopiergerät funktioniert nicht." },
+{ word: "Krankenkasse", correct: "sağlık sigortası", options: ["emeklilik", "vergi dairesi", "işsizlik kurumu"], example: "Ich bin bei der AOK Krankenkasse." },
+{ word: "Krankmeldung", correct: "hastalık bildirimi", options: ["muayene sonucu", "rapor", "randevu"], example: "Er hat eine Krankmeldung vom Arzt." },
+{ word: "Kündigung", correct: "işten çıkarma / fesih", options: ["izin", "sözleşme", "tatil dilekçesi"], example: "Ich habe die Kündigung erhalten." },
+{ word: "Kurzbewerbung", correct: "kısa başvuru", options: ["niyet mektubu", "mülakat formu", "özgeçmiş"], example: "Bitte schicken Sie eine Kurzbewerbung." },
+{ word: "Kurzfristigkeit", correct: "kısa süreli olma", options: ["acelecilik", "plansızlık", "belirsizlik"], example: "Die kurzfristige Änderung war notwendig." },
+{ word: "Lager", correct: "depo", options: ["raf", "stok", "taşıma"], example: "Die Ware liegt im Lager." },
+{ word: "Lagerbestand", correct: "stok durumu", options: ["ürün listesi", "nakliye", "fiyat"], example: "Der Lagerbestand wird täglich geprüft." },
+{ word: "Laufzeit", correct: "süre, vade", options: ["son tarih", "başlangıç", "ücret"], example: "Die Laufzeit des Vertrags beträgt zwei Jahre." },
+{ word: "Lebenslauf", correct: "özgeçmiş", options: ["niyet mektubu", "başvuru formu", "referans"], example: "Bitte schicken Sie Ihren Lebenslauf mit." },
+{ word: "Leistung", correct: "performans, hizmet", options: ["fiyat", "kalite", "süre"], example: "Die Leistung der Maschine ist sehr gut." },
+{ word: "Lieferadresse", correct: "teslimat adresi", options: ["fatura adresi", "e-posta", "posta kodu"], example: "Die Lieferadresse steht auf der Rechnung." },
+{ word: "Lieferant", correct: "tedarikçi", options: ["müşteri", "depo", "taşıyıcı"], example: "Unser Lieferant kommt aus Hamburg." },
+{ word: "Liefertermin", correct: "teslimat tarihi", options: ["sipariş saati", "fatura günü", "ödeme tarihi"], example: "Der Liefertermin ist der 15. Juni." },
+{ word: "Lohn", correct: "ücret", options: ["prim", "kira", "sigorta"], example: "Der Lohn wird am Monatsende gezahlt." },
+{ word: "Lohnsteuer", correct: "gelir vergisi", options: ["katma değer vergisi", "vergi kartı", "stopaj"], example: "Die Lohnsteuer wird automatisch abgezogen." },
+{ word: "Lohnsteuerkarte", correct: "vergi kartı", options: ["ehliyet", "kimlik kartı", "sigorta kartı"], example: "Ich habe meine Lohnsteuerkarte abgegeben." },
+{ word: "Lohnsteuerklasse", correct: "vergi sınıfı", options: ["vergi numarası", "giriş kodu", "meslek grubu"], example: "Ich bin in Lohnsteuerklasse I." },
+{ word: "Mahlzeit", correct: "öğün", options: ["kahvaltı", "menü", "porsiyon"], example: "Das Mittagessen ist eine warme Mahlzeit." },
+{ word: "Mangel", correct: "eksik, kusur", options: ["fazlalık", "hata", "yanlışlık"], example: "Das Produkt hatte einen Mangel." },
+{ word: "Mängelanzeige", correct: "kusur bildirimi", options: ["şikayet formu", "fatura", "ürün etiketi"], example: "Bitte schreiben Sie eine Mängelanzeige." },
+{ word: "Mehrarbeit", correct: "fazla mesai", options: ["ek iş", "tatil günü", "gece vardiyası"], example: "Für die Mehrarbeit gibt es einen Ausgleich." },
+{ word: "Mehrwertsteuer", correct: "katma değer vergisi", options: ["gelir vergisi", "stopaj", "ödeme planı"], example: "Die Mehrwertsteuer beträgt 19 Prozent." },
+{ word: "Meldebescheinigung", correct: "ikamet belgesi", options: ["kimlik fotokopisi", "kira sözleşmesi", "hesap dökümü"], example: "Ich brauche eine Meldebescheinigung." },
+{ word: "Meldepflicht", correct: "bildirme zorunluluğu", options: ["yoklama", "kontrol", "izin"], example: "Es besteht Meldepflicht beim Amt." },
+{ word: "Mietvertrag", correct: "kira sözleşmesi", options: ["satış belgesi", "kontrat", "ödeme makbuzu"], example: "Der Mietvertrag gilt für ein Jahr." },
+{ word: "Mitarbeitergespräch", correct: "çalışan görüşmesi", options: ["toplantı", "eğitim", "mülakat"], example: "Das Mitarbeitergespräch findet morgen statt." },
+{ word: "Mitteilung", correct: "bildiri, duyuru", options: ["ilan", "reklam", "mevzuat"], example: "Wir haben eine Mitteilung vom Amt erhalten." },
+{ word: "Möbelmontage", correct: "mobilya montajı", options: ["ambalaj", "kurulum", "boyama"], example: "Die Möbelmontage dauert zwei Stunden." },
+{ word: "Mülltrennung", correct: "çöp ayrıştırma", options: ["temizlik", "geri dönüşüm", "çöp toplama"], example: "In Deutschland ist Mülltrennung wichtig." },
+{ word: "Nebenkosten", correct: "ek masraflar", options: ["kira", "vergi", "maaş"], example: "Die Nebenkosten betragen 150 Euro." },
+{ word: "Nettolohn", correct: "net maaş", options: ["brüt maaş", "ücret", "prim"], example: "Mein Nettolohn ist höher als letztes Jahr." },
+{ word: "Notdienst", correct: "acil servis", options: ["ambulans", "randevu", "nöbet"], example: "Der Zahnarzt hat heute Notdienst." },
+{ word: "Notrufnummer", correct: "acil çağrı numarası", options: ["polis numarası", "danışma hattı", "ambulans numarası"], example: "Die Notrufnummer ist 112." },
+{ word: "Nummernschilder", correct: "plaka levhaları", options: ["ehliyet", "araba ruhsatı", "sigorta kağıdı"], example: "Die Nummernschilder sind neu." },
+{ word: "Öffnungszeiten", correct: "açılış saatleri", options: ["kapanış saatleri", "çalışma günü", "randevu"], example: "Die Öffnungszeiten sind von 8 bis 18 Uhr." },
+{ word: "Ordner", correct: "klasör", options: ["dosya", "kalem", "zarf"], example: "Die Dokumente sind im Ordner abgelegt." },
+{ word: "Pausenregelung", correct: "mola düzenlemesi", options: ["çalışma süresi", "öğle arası", "vardiya planı"], example: "Die Pausenregelung gilt für alle." },
+{ word: "Personalausweis", correct: "kimlik kartı", options: ["ehliyet", "pasaport", "ikamet belgesi"], example: "Bitte zeigen Sie Ihren Personalausweis." },
+{ word: "Pfand", correct: "depozito", options: ["ücret", "fatura", "makbuz"], example: "Für die Flasche zahlt man Pfand." },
+{ word: "Pflegeversicherung", correct: "bakım sigortası", options: ["emeklilik sigortası", "hastalık sigortası", "kaza sigortası"], example: "Die Pflegeversicherung ist verpflichtend." },
+{ word: "Pflicht", correct: "zorunluluk", options: ["hak", "izin", "hakediş"], example: "Pünktlichkeit ist eine Pflicht." },
+{ word: "Postleitzahl", correct: "posta kodu", options: ["telefon kodu", "adres", "ilçe"], example: "Meine Postleitzahl ist 35390." },
+{ word: "Praktikum", correct: "staj", options: ["kurs", "iş", "görev"], example: "Ich mache ein Praktikum im Krankenhaus." },
+{ word: "Preisanfrage", correct: "fiyat sorgusu", options: ["fatura", "indirim", "sipariş"], example: "Wir haben eine Preisanfrage geschickt." },
+{ word: "Preiserhöhung", correct: "fiyat artışı", options: ["fiyat indirimi", "yeni ürün", "ek vergi"], example: "Die Preiserhöhung gilt ab Juli." },
+{ word: "Preisnachlass", correct: "indirim", options: ["hediye", "vergi iadesi", "ödeme"], example: "Der Händler gibt einen Preisnachlass." },
+{ word: "Quittung", correct: "makbuz", options: ["fatura", "bilet", "form"], example: "Ich brauche eine Quittung für den Kauf." },
+{ word: "Rabatt", correct: "indirim", options: ["vergi", "ek ücret", "komisyon"], example: "Heute gibt es 20% Rabatt." },
+{ word: "Ratenzahlung", correct: "taksitle ödeme", options: ["nakit ödeme", "havale", "çek"], example: "Wir bieten Ratenzahlung an." },
+{ word: "Rechnungsbetrag", correct: "fatura tutarı", options: ["vergi tutarı", "toplam ödeme", "indirim oranı"], example: "Der Rechnungsbetrag ist 230 Euro." },
+{ word: "Rechnungskopie", correct: "fatura kopyası", options: ["orijinal fatura", "irsaliye", "makbuz"], example: "Bitte senden Sie uns eine Rechnungskopie." },
+{ word: "Rechtsberatung", correct: "hukuki danışmanlık", options: ["avukat ücreti", "dava", "mahkeme"], example: "Die Rechtsberatung ist kostenlos." },
+{ word: "Reinigungskraft", correct: "temizlik görevlisi", options: ["gözetmen", "bakıcı", "çamaşırcı"], example: "Die Reinigungskraft kommt jeden Morgen." },
+{ word: "Reisepass", correct: "pasaport", options: ["vize", "kimlik", "bilet"], example: "Mein Reisepass ist abgelaufen." },
+{ word: "Reparatur", correct: "tamir", options: ["onarım", "temizlik", "değişim"], example: "Die Reparatur dauert zwei Tage." },
+{ word: "Reservierung", correct: "rezervasyon", options: ["sipariş", "başvuru", "bilet"], example: "Ich habe eine Reservierung für heute Abend." },
+{ word: "Rezeption", correct: "resepsiyon", options: ["danışma", "giriş", "lobi"], example: "Bitte melden Sie sich an der Rezeption." },
+{ word: "Rückmeldung", correct: "geri dönüş", options: ["cevap", "şikayet", "bildirim"], example: "Wir freuen uns auf Ihre Rückmeldung." },
+{ word: "Rücksprache", correct: "danışma, görüşme", options: ["toplantı", "yazışma", "randevu"], example: "Ich muss Rücksprache mit meinem Chef halten." },
+{ word: "Rücktritt", correct: "istifa, geri çekilme", options: ["ayrılma", "emeklilik", "izin"], example: "Der Rücktritt des Trainers kam überraschend." },
+{ word: "Schaden", correct: "zarar", options: ["hasar", "kayıp", "kaza"], example: "Der Schaden wird von der Versicherung gedeckt." },
+{ word: "Schichtarbeit", correct: "vardiyalı çalışma", options: ["haftalık çalışma", "tatil mesaisi", "saatlik iş"], example: "Schichtarbeit ist körperlich anstrengend." },
+{ word: "Schlüssel", correct: "anahtar", options: ["kilit", "kapı", "kilitleme"], example: "Ich habe meinen Schlüssel verloren." },
+{ word: "Schulung", correct: "eğitim", options: ["kurs", "seminer", "ders"], example: "Die Schulung beginnt um 9 Uhr." },
+{ word: "Schutzbrille", correct: "koruyucu gözlük", options: ["eldiven", "maske", "baret"], example: "Bei der Arbeit ist eine Schutzbrille Pflicht." },
+{ word: "Schweißen", correct: "kaynak yapmak", options: ["zımparalamak", "kesmek", "boyamak"], example: "Er lernt das Schweißen in der Ausbildung." },
+{ word: "Selbstständigkeit", correct: "bağımsızlık", options: ["özgürlük", "özgüven", "bağlılık"], example: "Selbstständigkeit ist im Beruf wichtig." },
+{ word: "Servicekraft", correct: "servis personeli", options: ["garson", "sekreter", "aşçı"], example: "Die Servicekraft war sehr freundlich." },
+{ word: "Sozialversicherung", correct: "sosyal sigorta", options: ["emeklilik", "sağlık sigortası", "işsizlik sigortası"], example: "Jeder Arbeitnehmer hat eine Sozialversicherung." },
+{ word: "Sperrmüll", correct: "büyük çöp", options: ["gıda atığı", "evsel atık", "geri dönüşüm"], example: "Der Sperrmüll wird morgen abgeholt." },
+{ word: "Sprachförderung", correct: "dil desteği", options: ["eğitim kursu", "dil okulu", "öğretmen desteği"], example: "Es gibt ein Programm zur Sprachförderung." },
+{ word: "Sprachkenntnisse", correct: "dil bilgisi", options: ["dil eğitimi", "dil sertifikası", "sözlük bilgisi"], example: "Seine Sprachkenntnisse sind sehr gut." },
+{ word: "Stellenausschreibung", correct: "iş ilanı", options: ["iş başvurusu", "pozisyon", "mülakat"], example: "Ich habe eine interessante Stellenausschreibung gefunden." },
+{ word: "Steuerbescheid", correct: "vergi bildirimi", options: ["vergi iadesi", "vergi cezası", "vergi makbuzu"], example: "Der Steuerbescheid kommt im März." },
+{ word: "Steuererklärung", correct: "vergi beyanı", options: ["vergi ödeme", "vergi borcu", "vergi kartı"], example: "Ich mache meine Steuererklärung online." },
+{ word: "Stundenlohn", correct: "saat ücreti", options: ["günlük ücret", "maaş", "prim"], example: "Der Stundenlohn beträgt 12 Euro." },
+{ word: "Stundenzettel", correct: "saat çizelgesi", options: ["vardiya listesi", "giriş çıkış defteri", "izin formu"], example: "Tragen Sie Ihre Zeiten im Stundenzettel ein." },
+{ word: "Suchtberatung", correct: "bağımlılık danışmanlığı", options: ["psikolojik destek", "aile danışmanlığı", "kariyer danışmanlığı"], example: "Die Suchtberatung hilft Betroffenen." },
+{ word: "Tagesablauf", correct: "günlük plan", options: ["iş planı", "haftalık program", "saat çizelgesi"], example: "Mein Tagesablauf beginnt um 6 Uhr." },
+{ word: "Tarifvertrag", correct: "toplu iş sözleşmesi", options: ["maaş anlaşması", "çalışma belgesi", "sendika sözleşmesi"], example: "Der Tarifvertrag wurde neu verhandelt." },
+{ word: "Teilzeit", correct: "yarı zamanlı çalışma", options: ["geçici iş", "vardiya sistemi", "haftalık çalışma"], example: "Sie arbeitet in Teilzeit." },
+{ word: "Termin", correct: "randevu", options: ["toplantı", "görüşme", "plan"], example: "Ich habe einen Termin beim Arzt." },
+{ word: "Terminabsage", correct: "randevu iptali", options: ["gecikme", "erteleme", "ret"], example: "Ich habe eine Terminabsage erhalten." },
+{ word: "Terminbestätigung", correct: "randevu onayı", options: ["kabul mektubu", "randevu kartı", "randevu mektubu"], example: "Die Terminbestätigung kam per E-Mail." },
+{ word: "Terminbuchung", correct: "randevu rezervasyonu", options: ["randevu talebi", "online randevu", "randevu takibi"], example: "Die Terminbuchung ist online möglich." },
+{ word: "Terminverschiebung", correct: "randevu değişikliği", options: ["iptal", "yenileme", "teyit"], example: "Es gab eine Terminverschiebung." },
+{ word: "Tätigkeit", correct: "faaliyet", options: ["çalışma", "iş alanı", "proje"], example: "Seine Tätigkeit umfasst viele Aufgaben." },
+{ word: "Teilnahme", correct: "katılım", options: ["üyelik", "gönüllülük", "başvuru"], example: "Die Teilnahme ist freiwillig." },
+{ word: "Teilnahmebescheinigung", correct: "katılım belgesi", options: ["sertifika", "kurs belgesi", "başarı belgesi"], example: "Sie erhalten eine Teilnahmebescheinigung." },
+{ word: "Testat", correct: "onay, belge", options: ["diploma", "not belgesi", "rapor"], example: "Das Testat wurde ausgestellt." },
+{ word: "Tätigkeitsbeschreibung", correct: "görev tanımı", options: ["iş listesi", "yetki belgesi", "sorumluluk yazısı"], example: "Die Tätigkeitsbeschreibung ist sehr genau." },
+{ word: "Thema", correct: "konu", options: ["başlık", "ders", "içerik"], example: "Das Thema des Kurses ist Gesundheit." },
+{ word: "Überweisung", correct: "havale", options: ["ödeme", "çek", "fatura"], example: "Ich mache eine Überweisung für die Miete." },
+{ word: "Umfrage", correct: "anket", options: ["görüşme", "test", "araştırma"], example: "Wir machen eine Umfrage zur Zufriedenheit." },
+{ word: "Umzug", correct: "taşınma", options: ["yerleşme", "ev değişikliği", "düzenleme"], example: "Der Umzug findet nächste Woche statt." },
+{ word: "Unfallversicherung", correct: "kaza sigortası", options: ["araç sigortası", "ev sigortası", "hayat sigortası"], example: "Die Unfallversicherung schützt im Beruf." },
+{ word: "Unterschrift", correct: "imza", options: ["onay", "para", "belge"], example: "Bitte geben Sie Ihre Unterschrift." },
+{ word: "Urlaub", correct: "tatil", options: ["izin", "hafta sonu", "mola"], example: "Ich nehme im Juli Urlaub." },
+{ word: "USt-IdNr.", correct: "KDV kimlik numarası", options: ["vergi numarası", "fatura numarası", "kimlik numarası"], example: "Die USt-IdNr. steht auf der Rechnung." },
+{ word: "Verabredung", correct: "randevulaşma", options: ["sözleşme", "buluşma", "konuşma"], example: "Ich habe eine Verabredung mit einem Freund." },
+{ word: "Verantwortung", correct: "sorumluluk", options: ["görev", "yükümlülük", "yetki"], example: "Er übernimmt viel Verantwortung." },
+{ word: "Verdienst", correct: "kazanç", options: ["maaş", "gelir", "ek ödeme"], example: "Ihr Verdienst ist angemessen." },
+{ word: "Reparatur", correct: "tamir", options: ["onarım", "kontrol", "inşaat"], example: "Die Reparatur dauert zwei Tage." },
+{ word: "Reservierung", correct: "rezervasyon", options: ["bilet", "planlama", "ön ödeme"], example: "Ich habe eine Reservierung für heute Abend." },
+{ word: "Rezeption", correct: "resepsiyon", options: ["danışma", "ofis", "giriş"], example: "Bitte melden Sie sich an der Rezeption." },
+{ word: "Rückmeldung", correct: "geri dönüş", options: ["cevap", "bilgi", "onay"], example: "Wir freuen uns auf Ihre Rückmeldung." },
+{ word: "Rücksprache", correct: "danışma, görüşme", options: ["karar", "randevu", "onay"], example: "Ich muss Rücksprache mit meinem Chef halten." },
+{ word: "Rücktritt", correct: "istifa, geri çekilme", options: ["emeklilik", "ayrılma", "değişim"], example: "Der Rücktritt des Trainers kam überraschend." },
+{ word: "Schaden", correct: "zarar", options: ["kayıp", "risk", "bozulma"], example: "Der Schaden wird von der Versicherung gedeckt." },
+{ word: "Schichtarbeit", correct: "vardiyalı çalışma", options: ["fazla mesai", "hafta sonu çalışması", "esnek zamanlı iş"], example: "Schichtarbeit ist körperlich anstrengend." },
+{ word: "Schlüssel", correct: "anahtar", options: ["kilit", "kapı", "çilingir"], example: "Ich habe meinen Schlüssel verloren." },
+{ word: "Schulung", correct: "eğitim", options: ["kurs", "çalışma", "bilgilendirme"], example: "Die Schulung beginnt um 9 Uhr." },
+{ word: "Schutzbrille", correct: "koruyucu gözlük", options: ["iş elbisesi", "eldiven", "baret"], example: "Bei der Arbeit ist eine Schutzbrille Pflicht." },
+{ word: "Schweißen", correct: "kaynak yapmak", options: ["delmek", "kesmek", "zımparalamak"], example: "Er lernt das Schweißen in der Ausbildung." },
+{ word: "Selbstständigkeit", correct: "bağımsızlık", options: ["girişimcilik", "kararlılık", "özgüven"], example: "Selbstständigkeit ist im Beruf wichtig." },
+{ word: "Servicekraft", correct: "servis personeli", options: ["garson", "müşteri temsilcisi", "temizlikçi"], example: "Die Servicekraft war sehr freundlich." },
+{ word: "Sozialversicherung", correct: "sosyal sigorta", options: ["emeklilik sigortası", "işsizlik sigortası", "sağlık sigortası"], example: "Jeder Arbeitnehmer hat eine Sozialversicherung." },
+{ word: "Sperrmüll", correct: "büyük çöp", options: ["inşaat atığı", "evsel atık", "metal hurda"], example: "Der Sperrmüll wird morgen abgeholt." },
+{ word: "Sprachförderung", correct: "dil desteği", options: ["kurs", "ders", "rehberlik"], example: "Es gibt ein Programm zur Sprachförderung." },
+{ word: "Sprachkenntnisse", correct: "dil bilgisi", options: ["dil yeterliliği", "sözlük bilgisi", "konuşma düzeyi"], example: "Seine Sprachkenntnisse sind sehr gut." },
+{ word: "Stellenausschreibung", correct: "iş ilanı", options: ["iş duyurusu", "personel ihtiyacı", "başvuru formu"], example: "Ich habe eine interessante Stellenausschreibung gefunden." },
+{ word: "Steuerbescheid", correct: "vergi bildirimi", options: ["vergi belgesi", "maliye yazısı", "ödeme talebi"], example: "Der Steuerbescheid kommt im März." },
+{ word: "Steuererklärung", correct: "vergi beyanı", options: ["vergi ödeme", "vergi indirimi", "vergi iadesi"], example: "Ich mache meine Steuererklärung online." },
+{ word: "Stundenlohn", correct: "saat ücreti", options: ["aylık ücret", "haftalık ücret", "maaş"], example: "Der Stundenlohn beträgt 12 Euro." },
+{ word: "Stundenzettel", correct: "saat çizelgesi", options: ["çalışma saati formu", "vardiye listesi", "çalışma planı"], example: "Tragen Sie Ihre Zeiten im Stundenzettel ein." },
+{ word: "Verfügbarkeit", correct: "mevcudiyet", options: ["erteleme", "izin", "hata"], example: "Die Verfügbarkeit der Artikel ist begrenzt." },
+{ word: "Verhalten", correct: "davranış", options: ["kural", "durum", "teklif"], example: "Sein Verhalten war vorbildlich." },
+{ word: "Verkauf", correct: "satış", options: ["ödeme", "ürün", "alış"], example: "Der Verkauf beginnt um 10 Uhr." },
+{ word: "Verkäufer", correct: "satıcı", options: ["müşteri", "kasiyer", "görevli"], example: "Der Verkäufer war sehr freundlich." },
+{ word: "Verkehrsmittel", correct: "ulaşım aracı", options: ["tren istasyonu", "yol", "otopark"], example: "Busse und Bahnen sind öffentliche Verkehrsmittel." },
+{ word: "Verlobung", correct: "nişan", options: ["evlilik", "kutlama", "düğün"], example: "Ihre Verlobung wurde groß gefeiert." },
+{ word: "Vermieter", correct: "ev sahibi", options: ["kiracı", "komşu", "mimar"], example: "Der Vermieter möchte mehr Miete." },
+{ word: "Vermittlung", correct: "aracılık", options: ["anlaşma", "danışma", "bilgi"], example: "Die Vermittlung der Stelle war erfolgreich." },
+{ word: "Verschiebung", correct: "erteleme", options: ["iptal", "hata", "uzatma"], example: "Die Verschiebung des Termins war nötig." },
+{ word: "Versicherung", correct: "sigorta", options: ["güvence", "şirket", "fatura"], example: "Ich habe eine Haftpflichtversicherung." },
+{ word: "Verspätung", correct: "gecikme", options: ["iptal", "arıza", "bekleme"], example: "Der Zug hat 10 Minuten Verspätung." },
+{ word: "Vertrag", correct: "sözleşme", options: ["anlaşma", "yasa", "kural"], example: "Ich habe den Vertrag unterschrieben." },
+{ word: "Vertretung", correct: "vekalet", options: ["yönetim", "gözetim", "yerine geçme"], example: "Ich mache heute die Vertretung für Herrn Müller." },
+{ word: "Verwendung", correct: "kullanım", options: ["içerik", "görev", "amaç"], example: "Die Verwendung ist nur für den internen Gebrauch." },
+{ word: "Verweis", correct: "uyarı", options: ["izin", "talimat", "şikayet"], example: "Der Schüler bekam einen Verweis." },
+{ word: "Verzeihung", correct: "af, özür", options: ["teşekkür", "izin", "rica"], example: "Verzeihung, das war mein Fehler." },
+{ word: "Verzögerung", correct: "gecikme", options: ["iptal", "engelleme", "yavaşlama"], example: "Es gab eine Verzögerung bei der Lieferung." },
+{ word: "Vollzeit", correct: "tam zamanlı", options: ["yarı zamanlı", "serbest", "öğrenci"], example: "Ich arbeite in Vollzeit." },
+{ word: "Vorgesetzte", correct: "amir", options: ["çalışan", "arkadaş", "sekreter"], example: "Der Vorgesetzte entscheidet über den Urlaub." },
+{ word: "Vormittag", correct: "öğleden önce", options: ["sabah", "öğlen", "akşam"], example: "Am Vormittag habe ich frei." },
+{ word: "Vorrat", correct: "stok", options: ["ürün", "malzeme", "liste"], example: "Der Vorrat reicht für eine Woche." },
+{ word: "Vorschrift", correct: "kural, yönetmelik", options: ["plan", "anlaşma", "yasak"], example: "Bitte beachten Sie die Vorschriften." },
+{ word: "Vorstellungsgespräch", correct: "iş görüşmesi", options: ["sınav", "toplantı", "eğitim"], example: "Das Vorstellungsgespräch war erfolgreich." },
+{ word: "Wartung", correct: "bakım", options: ["onarım", "kontrol", "yenileme"], example: "Die Maschine braucht eine Wartung." },
+{ word: "Rechtversicherung", correct: "hukuk sigortası", options: ["mal sigortası", "ev sigortası", "araç sigortası"], example: "Ich habe eine Rechtsschutzversicherung abgeschlossen." },
+{ word: "Vereinbarung", correct: "anlaşma", options: ["talimat", "sözleşme", "başvuru"], example: "Wir haben eine schriftliche Vereinbarung getroffen." },
+{ word: "Warteschlange", correct: "sıra", options: ["gecikme", "iş", "tatil"], example: "Die Warteschlange ist sehr lang." },
+{ word: "Weiterbildung", correct: "ileri eğitim", options: ["çalışma", "iş değişimi", "sertifika"], example: "Ich mache eine Weiterbildung zum Meister." },
+{ word: "Weitergabe", correct: "iletişim", options: ["paylaşım", "aktarım", "erişim"], example: "Die Weitergabe der Daten ist verboten." },
+{ word: "Werkzeug", correct: "alet", options: ["cihaz", "malzeme", "şablon"], example: "Ich brauche Werkzeug für die Reparatur." },
+{ word: "Widerspruch", correct: "itiraz", options: ["kabul", "onay", "izin"], example: "Ich lege Widerspruch gegen den Bescheid ein." },
+{ word: "Wohnsitz", correct: "ikametgah", options: ["adres", "şehir", "pasaport"], example: "Mein Wohnsitz ist jetzt in Frankfurt." },
+{ word: "Wunsch", correct: "dilek, istek", options: ["teklif", "hedef", "amaç"], example: "Ich habe einen Wunsch frei." },
+{ word: "Zahlungsart", correct: "ödeme şekli", options: ["ödeme tarihi", "kart", "nakit"], example: "Welche Zahlungsart bevorzugen Sie?" },
+{ word: "Zahlungserinnerung", correct: "ödeme hatırlatması", options: ["borç", "makbuz", "fatura"], example: "Sie erhalten eine Zahlungserinnerung." },
+{ word: "Zeitarbeit", correct: "geçici iş", options: ["tam zamanlı iş", "freelance", "tatil"], example: "Ich arbeite bei einer Zeitarbeitsfirma." },
+{ word: "Zeitarbeitsfirma", correct: "geçici iş firması", options: ["sigorta firması", "banka", "market"], example: "Die Zeitarbeitsfirma sucht neue Mitarbeiter." },
+{ word: "Zeitarbeitskräfte", correct: "geçici işçiler", options: ["çalışanlar", "ofis personeli", "gönüllüler"], example: "Viele Zeitarbeitskräfte sind flexibel." },
+{ word: "Zeitraum", correct: "zaman aralığı", options: ["takvim", "günlük", "haftalık"], example: "Der Zeitraum beträgt drei Monate." },
+{ word: "Zeugnis", correct: "karne, belge", options: ["sertifika", "rapor", "izin"], example: "Ich brauche ein Arbeitszeugnis." },
+{ word: "Zulassung", correct: "kabul, ruhsat", options: ["giriş", "izin", "başvuru"], example: "Er hat die Zulassung zur Prüfung erhalten." },
+{ word: "Zusammenarbeit", correct: "iş birliği", options: ["ortaklık", "şirket", "plan"], example: "Die Zusammenarbeit war sehr erfolgreich." },
+{ word: "Zusatzversicherung", correct: "ek sigorta", options: ["sağlık sigortası", "emeklilik", "kasko"], example: "Ich habe eine Zusatzversicherung abgeschlossen." },
+{ word: "Zusendung", correct: "gönderim", options: ["ulaştırma", "paket", "kargo"], example: "Die Zusendung erfolgt per Post." },
+{ word: "Zuständigkeit", correct: "sorumluluk alanı", options: ["yetki", "görev", "bölge"], example: "Die Zuständigkeit liegt beim Amt." },
+{ word: "Zuverlässigkeit", correct: "güvenilirlik", options: ["hız", "sadakat", "bilgi"], example: "Zuverlässigkeit ist eine wichtige Eigenschaft." },
+{ word: "Zweck", correct: "amaç", options: ["hedef", "neden", "konu"], example: "Der Zweck der Bescheinigung ist klar." },
+{ word: "Zweifel", correct: "şüphe", options: ["korku", "endişe", "gerçeklik"], example: "Ich habe keinen Zweifel an seiner Ehrlichkeit." },
+{ word: "Zylinder", correct: "silindir", options: ["motor", "vida", "şekil"], example: "Der Zylinder ist beschädigt." },
+{ word: "Zahlungsziel", correct: "ödeme süresi", options: ["vade", "limit", "tutar"], example: "Das Zahlungsziel beträgt 14 Tage." },
+{ word: "Abgabe", correct: "teslim, vergi", options: ["izin", "talep", "kural"], example: "Die Abgabe muss bis Freitag erfolgen." },
+{ word: "Abkürzung", correct: "kısaltma", options: ["uzatma", "özet", "slogan"], example: "z.B. ist eine Abkürzung für ‚zum Beispiel‘." },
+{ word: "Absage", correct: "ret, iptal", options: ["onay", "randevu", "davet"], example: "Ich habe eine Absage für die Bewerbung bekommen." },
+{ word: "Anlage", correct: "ek, tesis", options: ["form", "bina", "ilan"], example: "Die Anlage wurde dem Schreiben beigefügt." },
+{ word: "Anrede", correct: "hitap", options: ["selamlama", "kapanış", "konu"], example: "Die Anrede im Brief lautet: Sehr geehrte Damen und Herren." },
+{ word: "Anstieg", correct: "artış", options: ["azalma", "düşüş", "durum"], example: "Ein Anstieg der Preise ist zu erwarten." },
+{ word: "Anzahl", correct: "sayı, miktar", options: ["toplam", "oran", "adet"], example: "Die Anzahl der Teilnehmer ist begrenzt." },
+{ word: "Anzeige", correct: "ilan, şikayet", options: ["haber", "reklam", "posta"], example: "Ich habe eine Anzeige in der Zeitung gelesen." },
+{ word: "Arbeitsmittel", correct: "çalışma aracı", options: ["iş arkadaşı", "bilgisayar", "ekip"], example: "Computer sind wichtige Arbeitsmittel." },
+{ word: "Arbeitszeitkonto", correct: "çalışma saatleri hesabı", options: ["yıllık izin", "ücret hesabı", "çalışma çizelgesi"], example: "Das Arbeitszeitkonto zeigt meine Überstunden." },
+{ word: "Aufbewahrung", correct: "saklama", options: ["temizlik", "koruma", "paketleme"], example: "Die Aufbewahrung von Lebensmitteln muss kühl erfolgen." },
+{ word: "Aufenthaltstitel", correct: "oturma izni", options: ["kimlik", "vize", "izin belgesi"], example: "Ich habe einen Aufenthaltstitel für drei Jahre." },
+{ word: "Aufgabe", correct: "görev", options: ["sorumluluk", "etkinlik", "iş tanımı"], example: "Meine Aufgabe ist die Betreuung der Kunden." },
+{ word: "Auflösung", correct: "fesih", options: ["bitirme", "bitiş", "bozma"], example: "Die Auflösung des Vertrags war notwendig." },
+{ word: "Ausbildungssystem", correct: "eğitim sistemi", options: ["okul", "kurs", "yöntem"], example: "Das duale Ausbildungssystem ist in Deutschland verbreitet." },
+{ word: "Ausdruck", correct: "ifade", options: ["konu", "tarz", "yazım"], example: "Der Ausdruck ist unhöflich." },
+{ word: "Aushang", correct: "ilan panosu", options: ["duyuru", "kağıt", "etiket"], example: "Ein neuer Aushang hängt im Flur." },
+{ word: "Aussage", correct: "açıklama, ifade", options: ["cevap", "soru", "teklif"], example: "Die Aussage des Zeugen war eindeutig." },
+{ word: "Auswahl", correct: "seçim", options: ["karar", "tercih", "sıralama"], example: "Die Auswahl an Produkten ist groß." },
+{ word: "Auszug", correct: "özet, taşınma", options: ["giriş", "sonuç", "taslak"], example: "Der Auszug aus der Wohnung erfolgt im Mai." },
+{ word: "Batterie", correct: "pil", options: ["fiş", "ampul", "kablo"], example: "Die Batterie ist leer." },
+{ word: "Bedarf", correct: "ihtiyaç", options: ["arz", "üretim", "talimat"], example: "Wir haben Bedarf an neuen Mitarbeitern." },
+{ word: "Begründung", correct: "gerekçe", options: ["sonuç", "sebep", "açıklama"], example: "Bitte geben Sie eine Begründung an." },
+{ word: "Behörde", correct: "resmi makam", options: ["büro", "sistem", "idare"], example: "Die Behörde bearbeitet meinen Antrag." },
+{ word: "Beitrag", correct: "katkı, aidat", options: ["ek", "vergi", "fatura"], example: "Der monatliche Beitrag beträgt 20 Euro." },
+{ word: "Belastung", correct: "yük", options: ["destek", "kaldıraç", "güç"], example: "Die körperliche Belastung ist hoch." },
+{ word: "Benachrichtigung", correct: "bilgilendirme", options: ["itiraz", "talimat", "dosya"], example: "Ich bekam eine Benachrichtigung per E-Mail." },
+{ word: "Bereich", correct: "alan", options: ["konu", "çalışma", "bölüm"], example: "Ich arbeite im Bereich Marketing." },
+{ word: "Bericht", correct: "rapor", options: ["plan", "bilgi", "not"], example: "Der Bericht ist sehr ausführlich." },
+{ word: "Berufsberatung", correct: "meslek danışmanlığı", options: ["iş görüşmesi", "kariyer", "formasyon"], example: "Die Berufsberatung hilft bei der Berufswahl." },
+{ word: "Beschäftigung", correct: "istihdam", options: ["işsizlik", "başvuru", "iş gücü"], example: "Die Beschäftigung ist auf 20 Stunden begrenzt." },
+{ word: "Bescheinigung", correct: "belge", options: ["sertifika", "kimlik", "etiket"], example: "Ich brauche eine ärztliche Bescheinigung." },
+{ word: "Besichtigung", correct: "gezme, inceleme", options: ["görüşme", "ziyaret", "başvuru"], example: "Die Besichtigung der Wohnung ist morgen." },
+{ word: "Bestätigung", correct: "onay", options: ["iptal", "cevap", "geri dönüş"], example: "Ich habe eine Bestätigung erhalten." },
+{ word: "Bestellung", correct: "sipariş", options: ["fatura", "kargo", "paket"], example: "Die Bestellung wird heute geliefert." },
+{ word: "Bezahlung", correct: "ödeme", options: ["fiyat", "vergi", "ücret"], example: "Die Bezahlung erfolgt per Überweisung." },
+{ word: "Bewerber", correct: "başvuran", options: ["katılımcı", "aday", "çalışan"], example: "Die Bewerberin hat gute Qualifikationen." },
+{ word: "Bezug", correct: "bağlantı, temin", options: ["içerik", "ilişki", "süreç"], example: "Ich nehme Bezug auf Ihr Schreiben." },
+{ word: "Bürgeramt", correct: "vatandaşlık işleri dairesi", options: ["vergi ofisi", "nüfus dairesi", "polis"], example: "Das Bürgeramt hat neue Öffnungszeiten." },
+{ word: "Bürgersteig", correct: "kaldırım", options: ["yaya geçidi", "sokak", "yol"], example: "Gehen Sie bitte auf dem Bürgersteig." },
+{ word: "Dauer", correct: "süre", options: ["takvim", "randevu", "zaman"], example: "Die Dauer des Kurses beträgt drei Monate." },
+{ word: "Drucker", correct: "yazıcı", options: ["tarayıcı", "bilgisayar", "fare"], example: "Der Drucker funktioniert nicht." },
+{ word: "Durchschnitt", correct: "ortalama", options: ["puan", "yüzde", "sayı"], example: "Der Durchschnitt liegt bei 80 Punkten." },
+{ word: "Ehepartner", correct: "eş", options: ["anne", "baba", "çocuk"], example: "Der Ehepartner muss den Vertrag auch unterschreiben." },
+{ word: "Einbürgerung", correct: "vatandaşlığa geçiş", options: ["oturma izni", "başvuru", "kimlik"], example: "Er beantragt die Einbürgerung." },
+{ word: "Einführung", correct: "giriş, tanıtım", options: ["başlangıç", "gelişme", "eğitim"], example: "Die Einführung war sehr informativ." },
+{ word: "Einrichtung", correct: "kurum, döşeme", options: ["ofis", "okul", "düzen"], example: "Die Einrichtung ist modern." },
+{ word: "Einsatz", correct: "görev, kullanım", options: ["yetki", "hareket", "çalışma"], example: "Der Einsatz erfolgt morgen." },
+{ word: "Einstellung", correct: "istihdam, ayar", options: ["plan", "başlangıç", "süre"], example: "Die Einstellung erfolgt zum 1. Juli." },
+{ word: "Einverständnis", correct: "rıza, onay", options: ["şüphe", "itiraz", "görüşme"], example: "Ich gebe mein Einverständnis zur Datenverarbeitung." },
+{ word: "Empfang", correct: "karşılama, resepsiyon", options: ["form", "toplantı", "izin"], example: "Bitte melden Sie sich am Empfang." },
+{ word: "Empfehlungsschreiben", correct: "tavsiye mektubu", options: ["izin belgesi", "belge", "rapor"], example: "Der Lehrer schrieb ein Empfehlungsschreiben." },
+{ word: "Entgelt", correct: "ücret", options: ["vergi", "sigorta", "ödeme şekli"], example: "Das Entgelt wird monatlich gezahlt." },
+{ word: "Entlassungspapiere", correct: "işten çıkarma belgeleri", options: ["başvuru", "kimlik", "giriş kartı"], example: "Die Entlassungspapiere bekam er per Post." },
+{ word: "Entsorgung", correct: "atık bertarafı", options: ["sigorta", "bakım", "ulaşım"], example: "Die Entsorgung erfolgt durch die Stadt." },
+{ word: "Erhebung", correct: "anket, veri toplama", options: ["öneri", "kullanım", "hak"], example: "Die Erhebung dauerte zwei Wochen." },
+{ word: "Erinnerungsschreiben", correct: "hatırlatma yazısı", options: ["rapor", "ödeme", "dilekçe"], example: "Ich habe ein Erinnerungsschreiben erhalten." },
+{ word: "Erklärung", correct: "açıklama", options: ["şikayet", "karar", "onay"], example: "Die Erklärung ist logisch." },
+{ word: "Erlaubnisschein", correct: "izin belgesi", options: ["başvuru", "sertifika", "anlaşma"], example: "Ich habe einen Erlaubnisschein vom Amt." },
+{ word: "Erreichbarkeit", correct: "ulaşılabilirlik", options: ["geçiş", "dolaşım", "görüşme"], example: "Meine Erreichbarkeit ist tagsüber gegeben." },
+{ word: "Erstattung", correct: "geri ödeme", options: ["sigorta", "anlaşma", "izin"], example: "Die Erstattung der Kosten erfolgt später." },
+{ word: "Fachkraft", correct: "uzman eleman", options: ["aday", "çalışan", "çırak"], example: "Wir suchen eine Fachkraft für Lagerlogistik." },
+{ word: "Fachrichtung", correct: "uzmanlık alanı", options: ["konu", "bölüm", "çalışma"], example: "Meine Fachrichtung ist Maschinenbau." },
+{ word: "Fahrzeug", correct: "araç", options: ["alet", "kilit", "sigorta"], example: "Das Fahrzeug ist neu." },
+{ word: "Feier", correct: "kutlama", options: ["tatil", "tatil günü", "izin"], example: "Die Feier war sehr schön." },
+{ word: "Feiertagsregelung", correct: "resmî tatil düzenlemesi", options: ["sigorta", "tatil belgesi", "izin günü"], example: "Die Feiertagsregelung wird im Tarifvertrag geregelt." },
+{ word: "Festnetz", correct: "sabit hat", options: ["telefon numarası", "çağrı merkezi", "internet"], example: "Bitte rufen Sie mich im Festnetz an." },
+{ word: "Formular", correct: "form", options: ["dilekçe", "kağıt", "belge"], example: "Bitte füllen Sie das Formular aus." },
+{ word: "Fristverlängerung", correct: "süre uzatımı", options: ["erteleme", "rapor", "düzenleme"], example: "Ich brauche eine Fristverlängerung." },
+{ word: "Führungskraft", correct: "yönetici", options: ["çalışan", "denetmen", "uzman"], example: "Die Führungskraft hat viel Verantwortung." },
+{ word: "Gebrauchsgegenstand", correct: "kullanım eşyası", options: ["araç", "eşya", "belge"], example: "Das ist ein alltäglicher Gebrauchsgegenstand." },
+{ word: "Gebühr", correct: "ücret", options: ["ceza", "katkı", "vergi"], example: "Die Gebühr beträgt 15 Euro." },
+{ word: "Gegenstand", correct: "nesne", options: ["eşya", "kişi", "araç"], example: "Dieser Gegenstand gehört mir." },
+{ word: "Genehmigung", correct: "izin, onay", options: ["belge", "görüş", "karar"], example: "Für das Bauprojekt brauchen wir eine Genehmigung." },
+{ word: "Gespräch", correct: "konuşma", options: ["toplantı", "çalışma", "mesaj"], example: "Das Gespräch war sehr hilfreich." },
+{ word: "Gewerkschaft", correct: "sendika", options: ["bakanlık", "komite", "danışmanlık"], example: "Die Gewerkschaft fordert höhere Löhne." },
+{ word: "Gewerbeanmeldung", correct: "iş yeri kaydı", options: ["iş ilanı", "başvuru", "vergi formu"], example: "Die Gewerbeanmeldung erfolgt beim Amt." },
+{ word: "Gültigkeit", correct: "geçerlilik", options: ["doğruluk", "güven", "kabul"], example: "Der Ausweis hat eine Gültigkeit von 5 Jahren." },
+{ word: "Hausarzt", correct: "aile doktoru", options: ["uzman doktor", "acil doktoru", "cerrah"], example: "Mein Hausarzt ist sehr freundlich." },
+{ word: "Hausaufgabe", correct: "ev ödevi", options: ["rapor", "proje", "çalışma kağıdı"], example: "Die Hausaufgabe ist bis Montag abzugeben." },
+{ word: "Hausbesuch", correct: "ev ziyareti", options: ["hasta ziyareti", "görüşme", "randevu"], example: "Der Arzt macht einen Hausbesuch." },
+{ word: "Hausverwaltung", correct: "bina yönetimi", options: ["ev sahibi", "görevli", "tamirci"], example: "Die Hausverwaltung kümmert sich um Reparaturen." },
+{ word: "Heizkosten", correct: "ısıtma giderleri", options: ["su gideri", "elektrik", "kira"], example: "Die Heizkosten sind in der Miete enthalten." },
+{ word: "Hilfskraft", correct: "yardımcı eleman", options: ["usta", "işveren", "danışman"], example: "Wir suchen eine Hilfskraft für das Lager." },
+{ word: "Hinweisblatt", correct: "bilgilendirme kağıdı", options: ["form", "cevap anahtarı", "makale"], example: "Lesen Sie bitte das Hinweisblatt sorgfältig." },
+{ word: "Hochschule", correct: "yüksekokul", options: ["lise", "kurs", "akademi"], example: "Er studiert an einer Hochschule." },
+{ word: "Höhe", correct: "miktar, yükseklik", options: ["genişlik", "hacim", "uzunluk"], example: "Die Höhe der Kosten beträgt 300 Euro." },
+{ word: "Impfbescheinigung", correct: "aşı belgesi", options: ["kimlik", "giriş belgesi", "kayıt belgesi"], example: "Für die Reise brauche ich eine Impfbescheinigung." },
+{ word: "Immatrikulationsbescheinigung", correct: "kayıt belgesi", options: ["izin belgesi", "diploma", "katılım sertifikası"], example: "Die Immatrikulationsbescheinigung ist notwendig." },
+  { word: "Gebühr", correct: "ücret", options: ["ceza", "katkı", "vergi"], example: "Die Gebühr beträgt 15 Euro." },
+  { word: "Gegenstand", correct: "nesne", options: ["eşya", "kişi", "araç"], example: "Dieser Gegenstand gehört mir." },
+  { word: "Genehmigung", correct: "izin, onay", options: ["belge", "görüş", "karar"], example: "Für das Bauprojekt brauchen wir eine Genehmigung." },
+  { word: "Gespräch", correct: "konuşma", options: ["toplantı", "çalışma", "mesaj"], example: "Das Gespräch war sehr hilfreich." },
+  { word: "Gewerkschaft", correct: "sendika", options: ["bakanlık", "komite", "danışmanlık"], example: "Die Gewerkschaft fordert höhere Löhne." },
+  { word: "Gewerbeanmeldung", correct: "iş yeri kaydı", options: ["iş ilanı", "başvuru", "vergi formu"], example: "Die Gewerbeanmeldung erfolgt beim Amt." },
+  { word: "Gültigkeit", correct: "geçerlilik", options: ["doğruluk", "güven", "kabul"], example: "Der Ausweis hat eine Gültigkeit von 5 Jahren." },
+  { word: "Hausarzt", correct: "aile doktoru", options: ["uzman doktor", "acil doktoru", "cerrah"], example: "Mein Hausarzt ist sehr freundlich." },
+  { word: "Hausaufgabe", correct: "ev ödevi", options: ["rapor", "proje", "çalışma kağıdı"], example: "Die Hausaufgabe ist bis Montag abzugeben." },
+  { word: "Hausbesuch", correct: "ev ziyareti", options: ["hasta ziyareti", "görüşme", "randevu"], example: "Der Arzt macht einen Hausbesuch." },
+  { word: "Hausverwaltung", correct: "bina yönetimi", options: ["ev sahibi", "görevli", "tamirci"], example: "Die Hausverwaltung kümmert sich um Reparaturen." },
+  { word: "Heizkosten", correct: "ısıtma giderleri", options: ["su gideri", "elektrik", "kira"], example: "Die Heizkosten sind in der Miete enthalten." },
+  { word: "Hilfskraft", correct: "yardımcı eleman", options: ["usta", "işveren", "danışman"], example: "Wir suchen eine Hilfskraft für das Lager." },
+  { word: "Hinweisblatt", correct: "bilgilendirme kağıdı", options: ["form", "cevap anahtarı", "makale"], example: "Lesen Sie bitte das Hinweisblatt sorgfältig." },
+  { word: "Hochschule", correct: "yüksekokul", options: ["lise", "kurs", "akademi"], example: "Er studiert an einer Hochschule." },
+  { word: "Höhe", correct: "miktar, yükseklik", options: ["genişlik", "hacim", "uzunluk"], example: "Die Höhe der Kosten beträgt 300 Euro." },
+  { word: "Impfbescheinigung", correct: "aşı belgesi", options: ["kimlik", "giriş belgesi", "kayıt belgesi"], example: "Für die Reise brauche ich eine Impfbescheinigung." },
+  { word: "Immatrikulationsbescheinigung", correct: "kayıt belgesi", options: ["izin belgesi", "diploma", "katılım sertifikası"], example: "Die Immatrikulationsbescheinigung ist notwendig." },
+  { word: "Industrie", correct: "sanayi", options: ["ticaret", "inşaat", "nakliye"], example: "Die Industrie wächst schnell." },
+  { word: "Information", correct: "bilgi", options: ["belge", "haber", "tavsiye"], example: "Ich brauche mehr Information über den Kurs." },
+  { word: "Informationsblatt", correct: "bilgi formu", options: ["beyanname", "broşür", "makale"], example: "Das Informationsblatt erklärt alle Details." },
+  { word: "Informationsmaterial", correct: "bilgi materyali", options: ["cihaz", "talimat", "test"], example: "Wir verschicken Informationsmaterial per Post." },
+  { word: "Inhaber", correct: "sahip", options: ["çalışan", "müşteri", "yetkili"], example: "Der Inhaber des Geschäfts ist sehr nett." },
+  { word: "Instandsetzung", correct: "onarım", options: ["yıkım", "temizlik", "kurulum"], example: "Die Instandsetzung dauert zwei Wochen." },
+  { word: "Integrationskurs", correct: "uyum kursu", options: ["dil kursu", "meslek kursu", "üniversite"], example: "Viele Migranten besuchen einen Integrationskurs." },
+  { word: "Intensivkurs", correct: "yoğun kurs", options: ["uzaktan eğitim", "haftalık kurs", "atölye"], example: "Der Intensivkurs dauert vier Wochen." },
+  { word: "Internetanschluss", correct: "internet bağlantısı", options: ["telefon hattı", "modem", "anten"], example: "Wir haben einen schnellen Internetanschluss." },
+  { word: "Internetanbieter", correct: "internet sağlayıcısı", options: ["televizyon", "operatör", "kablolama"], example: "Unser Internetanbieter bietet gute Tarife." },
+  { word: "Inventarliste", correct: "demirbaş listesi", options: ["alışveriş listesi", "ihtiyaç listesi", "malzeme fişi"], example: "Die Inventarliste wird aktualisiert." },
+  { word: "Investition", correct: "yatırım", options: ["tasarruf", "ödeme", "masraf"], example: "Die Investition hat sich gelohnt." },
+  { word: "Jobangebot", correct: "iş teklifi", options: ["staj", "tanıtım", "eğitim"], example: "Ich habe ein neues Jobangebot bekommen." },
+  { word: "Jobvermittlung", correct: "iş bulma hizmeti", options: ["şirket", "fuar", "aracılık"], example: "Die Jobvermittlung hilft Arbeitslosen." },
+  { word: "Jugendamt", correct: "gençlik dairesi", options: ["belediye", "aile bakanlığı", "okul müdürlüğü"], example: "Das Jugendamt kümmert sich um Kinderrechte." },
+  { word: "Jugendarbeit", correct: "gençlik çalışması", options: ["iş deneyimi", "gönüllülük", "çocuk bakımı"], example: "Er ist in der Jugendarbeit tätig." },
+  { word: "Jugendherberge", correct: "gençlik yurdu", options: ["otel", "yurt", "pansiyon"], example: "Wir übernachten in einer Jugendherberge." },
+  { word: "Jugendschutz", correct: "gençleri koruma", options: ["güvenlik", "yasaklama", "kontrol"], example: "Der Jugendschutz ist sehr wichtig." },
+  { word: "Justiz", correct: "adalet", options: ["mahkeme", "polis", "savcılık"], example: "Die Justiz prüft den Fall." },
+  { word: "Kaltmiete", correct: "kira (ısıtmasız)", options: ["toplam kira", "gider", "katkı payı"], example: "Die Kaltmiete beträgt 500 Euro." },
+  { word: "Kaltwasser", correct: "soğuk su", options: ["temiz su", "musluk suyu", "içme suyu"], example: "Das Kaltwasser ist sehr kalt." },
+  { word: "Kantine", correct: "kantin", options: ["market", "büfe", "mutfak"], example: "Ich esse mittags in der Kantine." },
+  { word: "Karriere", correct: "kariyer", options: ["iş", "eğitim", "plan"], example: "Er plant eine Karriere im Finanzwesen." },
+  { word: "Kasse", correct: "kasa", options: ["banka", "çekmece", "dolap"], example: "Bitte zahlen Sie an der Kasse." },
+  { word: "Lageplan", correct: "konum planı", options: ["yol haritası", "proje dosyası", "bina planı"], example: "Im Lageplan ist das Gebäude markiert." },
+  { word: "Landratsamt", correct: "ilçe idaresi", options: ["şehir merkezi", "nüfus dairesi", "mahkeme binası"], example: "Das Landratsamt befindet sich am Marktplatz." },
+  { word: "Lehrgang", correct: "kurs", options: ["seminer", "konferans", "çalışma belgesi"], example: "Der Lehrgang dauert zwei Monate." },
+  { word: "Leistungsnachweis", correct: "başarı belgesi", options: ["katılım belgesi", "deneme kâğıdı", "mezuniyet formu"], example: "Ich habe den Leistungsnachweis abgegeben." },
+  { word: "Leitung", correct: "yönetim", options: ["eğitim", "katılım", "bağlantı"], example: "Die Leitung hat das Projekt vorgestellt." },
+  { word: "Lieferung", correct: "teslimat", options: ["kargo", "paket", "nakliye"], example: "Die Lieferung erfolgt morgen." },
+  { word: "Lohnabrechnung", correct: "maaş bordrosu", options: ["vergi hesaplaması", "sigorta belgesi", "çalışma saatleri"], example: "Ich habe meine Lohnabrechnung erhalten." },
+  { word: "Lohnsteuerbescheinigung", correct: "vergi belgesi", options: ["gelir raporu", "sigorta formu", "gider fişi"], example: "Die Lohnsteuerbescheinigung kommt per Post." },
+  { word: "Mängelliste", correct: "eksik listesi", options: ["alışveriş listesi", "yapılacaklar", "çalışma planı"], example: "Die Mängelliste wird überprüft." },
+  { word: "Maßnahme", correct: "önlem", options: ["yasak", "teklif", "proje"], example: "Die Maßnahme soll die Sicherheit erhöhen." },
+  { word: "Material", correct: "malzeme", options: ["cihaz", "araç", "ürün"], example: "Das Material ist sehr hochwertig." },
+  { word: "Meldezettel", correct: "kayıt formu", options: ["başvuru kağıdı", "adres belgesi", "izin kâğıdı"], example: "Bitte bringen Sie den Meldezettel mit." },
+  { word: "Mietbescheinigung", correct: "kira belgesi", options: ["kira kontratı", "mülkiyet tapusu", "ödeme makbuzu"], example: "Ich brauche eine Mietbescheinigung für das Amt." },
+  { word: "Mitgliedsbescheinigung", correct: "üyelik belgesi", options: ["kimlik", "yetki belgesi", "başvuru kartı"], example: "Die Mitgliedsbescheinigung ist beigefügt." },
+  { word: "Müllabfuhr", correct: "çöp toplama", options: ["geri dönüşüm", "temizlik", "çöp kutusu"], example: "Die Müllabfuhr kommt donnerstags." },
+  { word: "Muster", correct: "örnek", options: ["şablon", "prototip", "model"], example: "Dieses Muster gefällt mir gut." },
+  { word: "Nebeneinkommen", correct: "ek gelir", options: ["ana maaş", "vergi iadesi", "tasarruf"], example: "Ich habe ein kleines Nebeneinkommen." },
+  { word: "Nebenjob", correct: "ek iş", options: ["iş teklifi", "haftalık görev", "meslek eğitimi"], example: "Er hat einen Nebenjob als Kellner." },
+  { word: "Nebentätigkeit", correct: "ek faaliyet", options: ["hobi", "gönüllülük", "geçici görev"], example: "Die Nebentätigkeit muss genehmigt werden." },
+  { word: "Notarzt", correct: "acil doktor", options: ["aile hekimi", "nöbetçi doktor", "ambulans şoförü"], example: "Der Notarzt kam sehr schnell." },
+  { word: "Notaufnahme", correct: "acil servis", options: ["klinik", "muayenehane", "ambulans"], example: "Die Notaufnahme war überfüllt." },
+  { word: "Notendurchschnitt", correct: "not ortalaması", options: ["puan aralığı", "başarı düzeyi", "mezuniyet belgesi"], example: "Mein Notendurchschnitt ist 2,3." },
+  { word: "Nutzername", correct: "kullanıcı adı", options: ["şifre", "e-posta", "kimlik numarası"], example: "Bitte geben Sie Ihren Nutzernamen ein." },
+  { word: "Öffentliche Verkehrsmittel", correct: "toplu taşıma araçları", options: ["şehir otobüsü", "taksi", "servis"], example: "Ich fahre mit öffentlichen Verkehrsmitteln." },
+  { word: "Papiere", correct: "evraklar", options: ["makbuzlar", "kartlar", "kimlikler"], example: "Ich habe alle Papiere dabei." },
+  { word: "Personenstand", correct: "nüfus durumu", options: ["vatandaşlık", "doğum tarihi", "ikamet adresi"], example: "Mein Personenstand ist ledig." },
+  { word: "Pflegekraft", correct: "bakım elemanı", options: ["temizlikçi", "doktor", "hasta"], example: "Die Pflegekraft ist sehr freundlich." },
+  { word: "Pflegestufe", correct: "bakım seviyesi", options: ["hasta durumu", "rapor düzeyi", "tedavi süresi"], example: "Sie hat Pflegestufe 2." },
+  { word: "Prüfungsbescheinigung", correct: "sınav belgesi", options: ["katılım belgesi", "diploma", "rapor"], example: "Die Prüfungsbescheinigung ist gültig." },
+  { word: "Quittungsbeleg", correct: "makbuz", options: ["fatura", "ödeme fişi", "çek"], example: "Ich brauche einen Quittungsbeleg." },
+  { word: "Rathaus", correct: "belediye binası", options: ["hükümet binası", "mahkeme", "nüfus dairesi"], example: "Das Rathaus ist bis 16 Uhr geöffnet." },
+  { word: "Rechtsanwalt", correct: "avukat", options: ["savcı", "hakim", "memur"], example: "Ich habe einen Termin beim Rechtsanwalt." },
+  { word: "Rechnungsadresse", correct: "fatura adresi", options: ["teslimat adresi", "ikamet adresi", "firma adresi"], example: "Bitte prüfen Sie die Rechnungsadresse." },
+  { word: "Reinigung", correct: "temizlik", options: ["bakım", "onarım", "güvenlik"], example: "Die Reinigung erfolgt einmal pro Woche." },
+  { word: "Reiseführer", correct: "rehber", options: ["turist", "şoför", "çalışan"], example: "Der Reiseführer erklärt die Sehenswürdigkeiten." },
+  { word: "Rentenbescheid", correct: "emeklilik kararı", options: ["emeklilik yaşı", "emekli maaşı", "emekli kartı"], example: "Der Rentenbescheid kam letzte Woche." },
+  { word: "Rentenbetrag", correct: "emeklilik tutarı", options: ["maaş bordrosu", "vergi oranı", "prim ücreti"], example: "Der Rentenbetrag wurde erhöht." },
+  { word: "Rentenversicherungsträger", correct: "emeklilik kurumu", options: ["sigorta firması", "sosyal hizmet", "belediye"], example: "Der Rentenversicherungsträger ist die DRV." },
+  { word: "Sachbearbeiter", correct: "yetkili memur", options: ["danışman", "işçi", "müdür"], example: "Der Sachbearbeiter bearbeitet meinen Antrag." },
+  { word: "Schadensmeldung", correct: "hasar bildirimi", options: ["şikayet", "rapor", "talep formu"], example: "Die Schadensmeldung muss schriftlich erfolgen." },
+  { word: "Schließfach", correct: "emanet dolabı", options: ["çekmece", "dosya dolabı", "raf"], example: "Ich habe ein Schließfach im Bahnhof." },
+  { word: "Schreiben", correct: "yazı, mektup", options: ["not", "başvuru", "fiş"], example: "Ich habe ein Schreiben vom Amt erhalten." },
+  { word: "Schulabschluss", correct: "okul mezuniyeti", options: ["okul geçişi", "sınav sonucu", "not ortalaması"], example: "Mein Schulabschluss ist das Abitur." },
+  { word: "Schulbescheinigung", correct: "okul belgesi", options: ["öğrenci kartı", "mezuniyet belgesi", "not dökümü"], example: "Die Schulbescheinigung ist erforderlich." },
+  { word: "Schülerausweis", correct: "öğrenci kimliği", options: ["pasaport", "kimlik kartı", "öğrenci kartı"], example: "Ich zeige meinen Schülerausweis vor." },
+  { word: "Selbstauskunft", correct: "kişisel beyan", options: ["soru formu", "adres bildirimi", "açıklama mektubu"], example: "Bitte füllen Sie die Selbstauskunft aus." },
+  { word: "Steuernummer", correct: "vergi numarası", options: ["kimlik numarası", "hesap numarası", "müşteri numarası"], example: "Meine Steuernummer steht auf dem Brief." },
+  { word: "Stromabrechnung", correct: "elektrik faturası", options: ["su faturası", "doğalgaz faturası", "kira makbuzu"], example: "Die Stromabrechnung ist sehr hoch." },
+{ word: "die Abdeckung", correct: "örtü, kaplama", options: ["karar", "bilgi", "ekip"], example: "Die Abdeckung schützt das Gerät vor Staub." },
+{ word: "die Abmahnung", correct: "uyarı", options: ["başvuru", "izin", "uyuşmazlık"], example: "Der Mitarbeiter bekam eine Abmahnung wegen Zuspätkommens." },
+{ word: "die Abteilungen", correct: "departmanlar", options: ["duvarlar", "kitaplar", "başkentler"], example: "In großen Firmen gibt es viele Abteilungen." },
+{ word: "die Altersbegrenzung", correct: "yaş sınırı", options: ["boy uzunluğu", "dil bilgisi", "eğitim şekli"], example: "Für diesen Kurs gibt es eine Altersbegrenzung." },
+{ word: "die Anerkennung", correct: "takdir, tanıma", options: ["başarı", "itiraz", "sorun"], example: "Er hat viel Anerkennung für seine Arbeit bekommen." },
+{ word: "die Anforderung", correct: "gereklilik, talep", options: ["tatil", "işe alım", "kargo"], example: "Die Anforderung für die Stelle ist ein Diplom." },
+{ word: "die Ankündigung", correct: "duyuru, bildiri", options: ["kargo", "araç", "fatura"], example: "Die Ankündigung kam per E-Mail." },
+{ word: "das Anliegen", correct: "dilek, istek", options: ["gürültü", "çöp", "tahta"], example: "Ich habe ein persönliches Anliegen." },
+{ word: "die Anmeldung zu einer Fortbildung", correct: "bir eğitime kayıt", options: ["çıkış işlemi", "kitap okuma", "ürün siparişi"], example: "Die Anmeldung zu einer Fortbildung ist online möglich." },
+{ word: "die Anweisung", correct: "talimat", options: ["soru", "cevap", "harita"], example: "Bitte folgen Sie der Anweisung auf dem Bildschirm." },
+{ word: "Anweisungen (Pl.) verstehen", correct: "talimatları anlamak", options: ["telefon etmek", "uyumak", "beklemek"], example: "Ich kann die Anweisungen gut verstehen." },
+{ word: "Arbeitgeber und Branchen", correct: "işverenler ve sektörler", options: ["araçlar ve yollar", "markalar ve ürünler", "şehirler ve oteller"], example: "Die Arbeitgeber in verschiedenen Branchen zahlen unterschiedlich." },
+{ word: "Arbeitsabschnitte (Pl.) kleinschrittig festhalten", correct: "iş bölümlerini ayrıntılı kaydetmek", options: ["silmek", "temizlemek", "durdurmak"], example: "Wir müssen die Arbeitsabschnitte kleinschrittig festhalten." },
+{ word: "die Arbeitsbedingungen", correct: "çalışma koşulları", options: ["tatil yerleri", "oyun kuralları", "hava şartları"], example: "Die Arbeitsbedingungen sind hier sehr gut." },
+{ word: "die Arbeitslosenversicherung", correct: "işsizlik sigortası", options: ["araba sigortası", "ev kredisi", "yemek fişi"], example: "In Deutschland zahlt man in die Arbeitslosenversicherung ein." },
+{ word: "die Arbeitsplatzbeschreibung", correct: "iş yeri tanımı", options: ["maaş bordrosu", "kimlik kartı", "emeklilik planı"], example: "Die Arbeitsplatzbeschreibung hilft neuen Mitarbeitern." },
+{ word: "die Arbeitsunfähigkeit", correct: "çalışamazlık", options: ["tatil hakkı", "süre uzatma", "yemek molası"], example: "Wegen Krankheit bekam sie eine Bescheinigung." },
   { word: "die Anekdote", correct: "anekdot", options: ['pencere', 'ayakkabı', 'kitap'], example: "Die Anekdote brachte alle zum Lachen. Bu anekdot herkesi güldürdü" },
   { word: "die Atmosphäre", correct: "atmosfer", options: ['pencere', 'kitap', 'telefon'], example: "Die Atmosphäre im Raum war sehr entspannt." },
   { word: "das Dutzend", correct: "düzine", options: ['su', 'çanta', 'kalemlik'], example: "Ein Dutzend Eier kostet heute drei Euro." },
@@ -1384,7 +2090,6 @@ const words = [
   { word: "Anschluss finden", correct: "bağlantı kurmak", options: ["saat ayarlamak", "kitap okumak", "çay içmek"], example: "In der Schule Anschluss zu finden ist wichtig." },
   { word: "das bunte Treiben", correct: "renkli hareketlilik", options: ["sessizlik", "boşluk", "uyuşmazlık"], example: "Auf dem Fest herrschte ein buntes Treiben." },
   { word: "der eingetragene Verein (e.V.)", correct: "kayıtlı dernek", options: ["hastane", "firma", "grup"], example: "Der Verein ist ein eingetragener Verein (e.V.)." },
-  { word: "etw./jmdn. zu schätzen wissen", correct: "kıymetini bilmek", options: ["unutmak", "sorgulamak", "önemsememek"], example: "Ich weiß deine Hilfe wirklich zu schätzen." },
   { word: "Fauna und Flora", correct: "bitki ve hayvan dünyası", options: ["gece hayatı", "şehir hayatı", "ekonomi"], example: "Die Fauna und Flora sind hier einzigartig." },
   { word: "für so ziemlich alles", correct: "hemen hemen her şey için", options: ["sadece tatil için", "yemekler için", "oyunlar için"], example: "Diese Plattform bietet etwas für so ziemlich alles." },
   { word: "in die engere Auswahl kommen", correct: "kısa listeye kalmak", options: ["çalışmak", "reddetmek", "vazgeçmek"], example: "Er kam in die engere Auswahl." },
@@ -1510,7 +2215,7 @@ const words = [
   { word: "der Norm entsprechen", correct: "normlara uymak", options: ["gecikmek", "ihlal etmek", "şikayet etmek"], example: "Es entspricht der Norm." },
   { word: "eine Tätigkeit ausführen", correct: "bir işi yerine getirmek", options: ["kaçmak", "unutmak", "izlemek"], example: "Sie führt ihre Tätigkeit gut aus." },
   { word: "überzeugt sein von", correct: "bir şeye ikna olmak", options: ["şüphelenmek", "kızmak", "uzak durmak"], example: "Er ist überzeugt von seiner Idee." },
-  { word: "umgehen mit", correct: "ile başa çıkmak", options: ["uzaklaşmak", "oynamak", "izlemek"], example: "Sie kann gut mit Stress umgehen." }
+  { word: "umgehen mit", correct: "ile başa çıkmak", options: ["uzaklaşmak", "oynamak", "izlemek"], example: "Sie kann gut mit Stress umgehen." },
 ];
 // Yükleme: Progress verisini al ve bugünün tarihini kontrol et
 let progressData = JSON.parse(localStorage.getItem("progressData") || "{}");
@@ -1545,41 +2250,72 @@ if (todaysWords.length > 0) {
   wordsToShow = shuffleArray(extraReviewWords);
 }
 
-let currentIndex = -1;
+let currentIndex = parseInt(localStorage.getItem("currentIndex")) || -1;
+const gecikmeSuresi = 4000;
 
 function shuffleArray(array) {
   return array.sort(() => Math.random() - 0.5);
 }
 
 let germanVoice = null;
+let turkishVoice = null;
 
-window.speechSynthesis.onvoiceschanged = () => {
-  const voices = window.speechSynthesis.getVoices();
-  germanVoice = voices.find(voice => voice.lang === "de-DE" || voice.lang.startsWith("de"));
-};
-
-function playAudio(text) {
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "de-DE";
-  utterance.rate = 0.8; // 🔈 Ses hızı burada ayarlandı
-  if (germanVoice) {
-    utterance.voice = germanVoice;
-  }
-  window.speechSynthesis.speak(utterance);
+function setGermanVoice() {
+  const voices = speechSynthesis.getVoices();
+  germanVoice = voices.find(v => v.lang === "de-DE");
+  turkishVoice = voices.find(v => v.lang === "tr-TR");
 }
 
+function playTurkishAudio(text) {
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "tr-TR"; // Türk aksanı zorunlu
+  utterance.rate = 0.8;
+  const turkishVoice = speechSynthesis.getVoices().find(v => v.lang === "tr-TR");
+  if (turkishVoice) utterance.voice = turkishVoice;
+  speechSynthesis.speak(utterance);
+}
 
-function nextWord() {
-  currentIndex = (currentIndex + 1) % wordsToShow.length;
-  const current = wordsToShow[currentIndex];
-  const options = shuffleArray([current.correct, ...current.options]);
+function playAudio(text) {
+  const utterance = new SpeechSynthesisUtterance(" " + text);
+  utterance.lang = "de-DE";
+  utterance.rate = 0.8;
 
-  document.getElementById("questionText").innerText = "Kelimenin Türkçesi:";
+  if (germanVoice) {
+    utterance.voice = germanVoice;
+  } else {
+    const fallback = speechSynthesis.getVoices().find(v => v.lang === "de-DE");
+    if (fallback) utterance.voice = fallback;
+  }
+
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utterance);
+}
+
+let correctCount = 0;
+let incorrectCount = 0;
+let learnedToday = 0;
+
+function updateStats() {
+  document.getElementById("correctCount").innerText = correctCount;
+  document.getElementById("incorrectCount").innerText = incorrectCount;
+  document.getElementById("learnedToday").innerText = learnedToday;
+}
+
+function showWord(index) {
+  const current = wordsToShow[index];
+  if (!current) return;
+
+  document.getElementById("questionText").innerText = "Kelimenin Türkçesi";
   document.getElementById("wordDisplay").innerText = current.word;
-  document.getElementById("exampleSentence").innerText = "";
+
+  const sentenceBox = document.getElementById("exampleSentence");
+  sentenceBox.textContent = "...........";
+  sentenceBox.classList.remove("visible");
 
   const container = document.getElementById("optionsContainer");
   container.innerHTML = "";
+
+  const options = shuffleArray([current.correct, ...current.options]);
 
   options.forEach(opt => {
     const btn = document.createElement("div");
@@ -1589,16 +2325,22 @@ function nextWord() {
       if (opt === current.correct) {
         btn.classList.add("correct");
         document.getElementById("exampleSentence").innerText = current.example;
+        document.getElementById("exampleSentence").classList.add("visible");
+
         playAudio(current.example);
         new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg").play();
+        correctCount++;
+        learnedToday++;
+        updateStats();
+        setTimeout(nextWord, 7000);
 
         // 🔁 TEKRAR ARALIĞINI GÜNCELLE
         const prev = progressData[current.word] || { interval: 0 };
         const newInterval = prev.interval === 0 ? 1 :
-                            prev.interval === 1 ? 3 :
-                            prev.interval === 3 ? 7 :
-                            prev.interval === 7 ? 15 :
-                            30;
+          prev.interval === 1 ? 3 :
+          prev.interval === 3 ? 7 :
+          prev.interval === 7 ? 15 :
+          30;
         const nextDate = new Date();
         nextDate.setDate(nextDate.getDate() + newInterval);
         progressData[current.word] = {
@@ -1607,16 +2349,30 @@ function nextWord() {
         };
         localStorage.setItem("progressData", JSON.stringify(progressData));
 
-        setTimeout(nextWord, 3000);
       } else {
         btn.classList.add("incorrect");
         new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg").play();
+        incorrectCount++;
+        updateStats();
       }
     };
     container.appendChild(btn);
   });
 
   playAudio(current.word);
+  localStorage.setItem("currentIndex", index);
+  currentIndex = index;
+}
+
+function nextWord() {
+  const nextIndex = (currentIndex + 1) % wordsToShow.length;
+  showWord(nextIndex);
+}
+
+function prevWord() {
+  if (currentIndex > 0) {
+    showWord(currentIndex - 1);
+  }
 }
 
 document.getElementById("speaker").onclick = () => {
@@ -1625,8 +2381,25 @@ document.getElementById("speaker").onclick = () => {
 };
 
 window.onload = () => {
-  nextWord();
+  window.speechSynthesis.onvoiceschanged = () => {
+    setGermanVoice();
+  };
+
+  setGermanVoice();
+
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+
+  if (prevBtn) prevBtn.onclick = prevWord;
+  if (nextBtn) nextBtn.onclick = nextWord;
+
+  if (currentIndex === -1 || currentIndex === undefined || currentIndex === null) {
+    nextWord();
+  } else {
+    showWord(currentIndex);
+  }
 };
+
 function goHome() {
   window.location.href = "index.html";
 }
@@ -1652,27 +2425,40 @@ function readWords(list) {
   if (!isReading || readIndex >= list.length) return;
 
   const w = list[readIndex];
-  const sentences = [
-    w.word,
-    w.correct,
-    w.example
-  ];
-
+  const sentences = [w.word, w.correct, w.example];
   let sIndex = 0;
 
   function speakNext() {
     if (!isReading || sIndex >= sentences.length) {
       readIndex++;
-      readInterval = setTimeout(() => readWords(list), 2000); // bir sonraki kelimeye geç
+      readInterval = setTimeout(() => readWords(list), 1000); // bir sonraki kelimeye geç
       return;
     }
 
     const utter = new SpeechSynthesisUtterance(sentences[sIndex]);
-    utter.lang = sIndex === 1 ? "tr-TR" : "de-DE"; // anlam Türkçe, diğerleri Almanca
+    utter.lang = sIndex === 1 ? "tr-TR" : "de-DE";
+
+    if (utter.lang === "de-DE" && germanVoice) {
+      utter.voice = germanVoice;
+      utter.rate = 0.9;
+    }
+
+    if (utter.lang === "tr-TR" && turkishVoice) {
+      utter.voice = turkishVoice;
+      utter.rate = 0.8;
+    }
+
+    // Önceki sesi iptal et → yavaşlamayı önler
+    speechSynthesis.cancel();
+
+    if (utter.lang === "de-DE" && germanVoice) {
+      utter.voice = germanVoice;
+    }
+
     window.speechSynthesis.speak(utter);
     sIndex++;
     utter.onend = () => {
-      setTimeout(speakNext, 1200); // cümleler arası bekleme
+      setTimeout(speakNext, 1000);
     };
   }
 
