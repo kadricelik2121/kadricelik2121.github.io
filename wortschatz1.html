@@ -55,7 +55,7 @@ h1 {
   gap: 20px;
   justify-content: center;
   max-width: 600px;
-  margin-top: 0;  /* 🔼 Buradaki üst boşluğu 20px yaptık */
+  margin-top: 0;  /* Üst boşluk */
 }
 
 .option {
@@ -157,7 +157,7 @@ h1 {
 }
 
 #wordDisplay {
-  font-size: 40px; /* Veya 40px, 44px yapabilirsin */
+  font-size: 40px;
   font-weight: bold;
   color: #333;
   text-align: center;
@@ -167,12 +167,10 @@ h1 {
 /* ------------ MOBİL UYUMLULUK (600px ve altı için) ------------- */
 @media (max-width: 600px) {
 
-  /* Genel body padding küçült */
   body {
     padding: 10px !important;
   }
 
-  /* Başlık ve metin boyutları küçülür */
   h1 {
     font-size: 22px !important;
   }
@@ -200,14 +198,28 @@ h1 {
     font-size: 20px !important;
   }
 
-  /* .options grid 1 sütuna düşür */
+  /* .options grid 2 sütuna çıkar */
   .options {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: repeat(2, 1fr) !important;
     gap: 12px !important;
     max-width: 100% !important;
   }
 
-  /* Konteyner genişlik ayarı */
+  /* Butonlar alt alta değil 2x2 grid */
+  div[style*="position: fixed"] {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 8px;
+    white-space: normal;
+    overflow-x: visible;
+  }
+  div[style*="position: fixed"] button {
+    padding: 10px 15px !important;
+    font-size: 16px !important;
+    min-width: auto !important;
+    margin: 0 !important;
+  }
+
   .stats-box {
     font-size: 12px !important;
     padding: 8px 10px !important;
@@ -223,69 +235,52 @@ h1 {
     padding: 8px 20px !important;
   }
 
-  /* Word display ve örnek cümle genişliği tam */
   #wordDisplay, #exampleSentence {
     font-size: 24px !important;
-  }
-  
-  /* EK: Butonlar için grid düzeni (2 satır 2 sütun) */
-  div[style*="position: fixed"] {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 8px;
-    white-space: normal;
-    overflow-x: visible;
-  }
-  div[style*="position: fixed"] button {
-    padding: 10px 15px !important;
-    font-size: 16px !important;
-    min-width: auto !important;
-    margin: 0 !important;
   }
 }
 </style>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-
 </head>
+
 <body>
+
 <h1 style="font-size: 26px; color: #e07109;">Kelime Oyunu</h1>
 <div class="word-display" id="wordDisplay">...</div>
 <div id="speaker">🔊</div>
 <div id="exampleSentence"></div>
 <div class="question" id="questionText">Kelime oynatılıyor...</div>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 
 <div class="options" id="optionsContainer"></div>
 
 <div style="text-align: center; margin-top: 0px;">
-  
-  
- <div style="position: fixed; bottom: 5px; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; z-index: 1000;">
 
-  <button id="prevBtn" style="padding: 12px 24px; font-size: 18px; background-color: #7e7d7b88; color: white; border: none; border-radius: 8px; cursor: pointer;">
-    ← Geri
-  </button>
+  <div style="position: fixed; bottom: 5px; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; z-index: 1000;">
 
-  <button onclick="goHome()" style="padding: 12px 24px; font-size: 18px; background-color: #7e7d7b88; color: white; border: none; border-radius: 8px; cursor: pointer;">
-    Ana Sayfaya Dön
-  </button>
+    <button id="prevBtn" style="padding: 12px 24px; font-size: 18px; background-color: #7e7d7b88; color: white; border: none; border-radius: 8px; cursor: pointer;">
+      ← Geri
+    </button>
 
-  <button id="nextBtn" style="padding: 12px 24px; font-size: 18px; background-color: #7e7d7b88; color: white; border: none; border-radius: 8px; cursor: pointer;">
-    İleri →
-  </button>
+    <button onclick="goHome()" style="padding: 12px 24px; font-size: 18px; background-color: #7e7d7b88; color: white; border: none; border-radius: 8px; cursor: pointer;">
+      Ana Sayfaya Dön
+    </button>
 
-</div>
-<button id="readButton" onclick="startStopReading()">🔊 Sesli Dinle / Durdur</button>
-</button>
- <div class="stats-box" id="statsBox">
-    <div>✅ Doğru: <span id="correctCount">0</span></div>
-    <div>❌ Yanlış: <span id="incorrectCount">0</span></div>
-    <div>📚 Öğrenilen: <span id="learnedToday">0</span></div>
+    <button id="nextBtn" style="padding: 12px 24px; font-size: 18px; background-color: #7e7d7b88; color: white; border: none; border-radius: 8px; cursor: pointer;">
+      İleri →
+    </button>
+
   </div>
 
+  <button id="readButton" onclick="startStopReading()">🔊 Sesli Dinle / Durdur</button>
+
+</div>
+
+<div class="stats-box" id="statsBox">
+  <div>✅ Doğru: <span id="correctCount">0</span></div>
+  <div>❌ Yanlış: <span id="incorrectCount">0</span></div>
+  <div>📚 Öğrenilen: <span id="learnedToday">0</span></div>
+</div>
 
 
 
