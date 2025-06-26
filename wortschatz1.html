@@ -227,7 +227,21 @@ h1 {
   #wordDisplay, #exampleSentence {
     font-size: 24px !important;
   }
-
+  
+  /* EK: Butonlar için grid düzeni (2 satır 2 sütun) */
+  div[style*="position: fixed"] {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 8px;
+    white-space: normal;
+    overflow-x: visible;
+  }
+  div[style*="position: fixed"] button {
+    padding: 10px 15px !important;
+    font-size: 16px !important;
+    min-width: auto !important;
+    margin: 0 !important;
+  }
 }
 </style>
 
