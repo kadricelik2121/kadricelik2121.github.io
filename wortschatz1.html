@@ -190,34 +190,43 @@ h1 {
     margin: 10px 0 !important;
   }
 
-  /* Buton ve seçenek kutuları küçült */
+  /* Cevap kutuları 2 sütun ve boşluklu */
+  .options {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    max-width: 100% !important;
+    padding: 0 5px !important;
+  }
+
   .option {
-    width: 100% !important;  /* Tam genişlik */
+    width: auto !important;  /* Taşmayı önler */
+    min-width: 0;
     height: 60px !important;
     padding: 12px !important;
     font-size: 20px !important;
   }
 
-  /* .options grid 2 sütuna çıkar */
-  .options {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 12px !important;
-    max-width: 100% !important;
+  /* Alt butonları flex yap, yan yana ve eşit genişlikte */
+  div[style*="position: fixed"] {
+    display: flex !important;
+    justify-content: space-between !important;
+    padding: 0 10px !important;
   }
 
-  /* Butonlar alt alta değil 2x2 grid */
-  div[style*="position: fixed"] {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 8px;
-    white-space: normal;
-    overflow-x: visible;
-  }
   div[style*="position: fixed"] button {
-    padding: 10px 15px !important;
+    flex: 1;
+    margin: 0 6px;
+    padding: 10px 12px !important;
     font-size: 16px !important;
     min-width: auto !important;
-    margin: 0 !important;
+  }
+
+  /* Butonların en sol ve sağ uçta olmasını istiyorsan kenarlardakilere margin yok */
+  div[style*="position: fixed"] button:first-child {
+    margin-left: 0;
+  }
+  div[style*="position: fixed"] button:last-child {
+    margin-right: 0;
   }
 
   .stats-box {
@@ -281,7 +290,6 @@ h1 {
   <div>❌ Yanlış: <span id="incorrectCount">0</span></div>
   <div>📚 Öğrenilen: <span id="learnedToday">0</span></div>
 </div>
-
 
 
 <script>
