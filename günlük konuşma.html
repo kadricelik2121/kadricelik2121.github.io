@@ -75,15 +75,32 @@
 
     #toggleModeBtn {
       position: fixed;
-      top: 15px;
+      font-weight: bold;
+      top: 10px;
       right: 10px;
       font-size: 14px;
-      padding: 7px 14px;
+      padding: 10px 18px;
       z-index: 1000;
       cursor: pointer;
-      color: rgb(24, 22, 22);
-      background-color: #bdbcbc;
+      color: rgb(18, 19, 19);
+      background-color: #acaaaa;
+
+      }
+      
+    #statsBox {
+      position: fixed;
+      top: 15px;
+      left: 10px;
+      background-color: white;
+      border: 2px solid #444;
+      border-radius: 10px;
+      padding: 10px 15px;
+      font-size: 14px;
+      z-index: 1000;
+      text-align: left;
+      line-height: 1.5;
     }
+
   </style>
 </head>
 <body>
@@ -101,10 +118,15 @@
     <a href="index.html" class="home-button">🏠 Ana Sayfaya Dön</a>
   </div>
 
-  <div id="currentSentence" style="font-size: 38px; font-weight: bold; margin-top: 20px; text-align: center;"></div>
+  <div id="currentSentence" style="font-size: 34px; font-weight: bold; margin-top: 20px; text-align: center;"></div>
 
   <!-- Mod değiştirme butonu -->
   <button id="toggleModeBtn" onclick="toggleReadingMode()">Mod: Sıralı</button>
+
+<div id="statsBox">
+  📊 Öğrenilen: <span id="sentenceCount">0</span><br />
+  ⏱️ Süre: <span id="workTime">0</span> dk
+</div>
 
   <script>
     let isSpeaking = false;
@@ -112,6 +134,10 @@
     let speakingLoop;
     let isRandomMode = false;
     let currentIndex = 0;
+
+    let sentenceCount = 0;
+    let workSeconds = 0;
+
 
     const sentences = [
   "Wie spät ist es?",
@@ -150,7 +176,7 @@
   "Kannst du bitte langsamer sprechen?",
   "Ja, gern. Ich spreche langsam.",
   "Was bedeutet dieses Wort?",
-  "Es bedeutet „alişveriş“.",
+  "Es bedeutet „alısveris“.",
   "Hast du heute Zeit?",
   "Ja, nachmittags bin ich frei.",
   "Was machst du heute Abend?",
@@ -971,6 +997,29 @@
   "Das zeigt, wie sehr wir daran gewöhnt sind."
 ];
 
+function updateStats() {
+  document.getElementById("sentenceCount").textContent = sentenceCount;
+  document.getElementById("workTime").textContent = Math.floor(workSeconds / 60);
+}
+
+function startStatsClock() {
+  setInterval(() => {
+    workSeconds++;
+    updateStats();
+  }, 1000);
+
+  // Gece 00:00'da sıfırlama
+  const now = new Date();
+  const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+  const msUntilMidnight = midnight - now;
+  setTimeout(() => {
+    sentenceCount = 0;
+    workSeconds = 0;
+    updateStats();
+  }, msUntilMidnight);
+}
+
+
     // Sayfa ilk açıldığında kaldığın yerden devam et
     window.onload = function () {
       const savedIndex = localStorage.getItem("lastSentenceIndex");
@@ -1011,6 +1060,9 @@
 
       synth.speak(utterance);
 
+      sentenceCount++;
+      updateStats();
+
       utterance.onend = () => {
         let multiplier = parseFloat(document.getElementById('delayInput').value) || 0.7;
         let wordCount = sentence.trim().split(/\s+/).length;
@@ -1019,16 +1071,24 @@
       };
     }
 
-    function toggleSpeech() {
-      if (!isSpeaking) {
-        isSpeaking = true;
-        speakRandomSentence();
-      } else {
-        isSpeaking = false;
-        synth.cancel();
-        clearTimeout(speakingLoop);
-      }
-    }
+function toggleSpeech() {
+  const button = document.querySelector("button"); // ilk <button> elemanını alır
+
+  if (!isSpeaking) {
+    isSpeaking = true;
+    button.style.backgroundColor = "#4CAF50"; // kırmızı renk
+    button.textContent = " 🎤 Konuşmayı Durdur";
+    speakRandomSentence();
+  } else {
+    isSpeaking = false;
+    button.style.backgroundColor = "#db343c"; // tekrar yeşil renk
+    button.innerHTML = '<span class="mic">🎤</span> Konuşmaya Başla';
+    synth.cancel();
+    clearTimeout(speakingLoop);
+  }
+}
+ startStatsClock();
+
   </script>
 </body>
 </html>
