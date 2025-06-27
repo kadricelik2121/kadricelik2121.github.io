@@ -971,6 +971,13 @@
   "Das zeigt, wie sehr wir daran gewöhnt sind."
 ];
 
+    // Sayfa ilk açıldığında kaldığın yerden devam et
+    window.onload = function () {
+      const savedIndex = localStorage.getItem("lastSentenceIndex");
+      if (savedIndex !== null) {
+        currentIndex = parseInt(savedIndex, 10);
+      }
+    };
 
     function toggleReadingMode() {
       isRandomMode = !isRandomMode;
@@ -989,6 +996,10 @@
       } else {
         if (currentIndex >= sentences.length) currentIndex = 0;
         sentence = sentences[currentIndex];
+
+        // Kaldığın yeri KAYDET
+        localStorage.setItem("lastSentenceIndex", currentIndex);
+
         currentIndex++;
       }
 
