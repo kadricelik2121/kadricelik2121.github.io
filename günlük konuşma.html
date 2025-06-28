@@ -72,7 +72,6 @@
     .home-button:hover {
       background-color: #0056b3;
     }
-
     #toggleModeBtn {
       position: fixed;
       font-weight: bold;
@@ -84,9 +83,7 @@
       cursor: pointer;
       color: rgb(18, 19, 19);
       background-color: #acaaaa;
-
-      }
-      
+    }
     #statsBox {
       position: fixed;
       top: 15px;
@@ -100,7 +97,6 @@
       text-align: left;
       line-height: 1.5;
     }
-
   </style>
 </head>
 <body>
@@ -110,7 +106,7 @@
     <input type="number" id="delayInput" value="0.7" step="0.1" min="0">
   </div>
 
-  <button onclick="toggleSpeech()">
+  <button onclick="toggleSpeech()" id="startButton">
     <span class="mic">🎤</span> Konuşmaya Başla
   </button>
 
@@ -120,13 +116,12 @@
 
   <div id="currentSentence" style="font-size: 34px; font-weight: bold; margin-top: 20px; text-align: center;"></div>
 
-  <!-- Mod değiştirme butonu -->
   <button id="toggleModeBtn" onclick="toggleReadingMode()">Mod: Sıralı</button>
 
-<div id="statsBox">
-  📊 Öğrenilen: <span id="sentenceCount">0</span><br />
-  ⏱️ Süre: <span id="workTime">0</span> dk
-</div>
+  <div id="statsBox">
+    📊 Öğrenilen: <span id="sentenceCount">0</span><br />
+    ⏱️ Süre: <span id="workTime">0</span> dk
+  </div>
 
   <script>
     let isSpeaking = false;
@@ -134,10 +129,6 @@
     let speakingLoop;
     let isRandomMode = false;
     let currentIndex = 0;
-
-    let sentenceCount = 0;
-    let workSeconds = 0;
-
 
     const sentences = [
   "Wie spät ist es?",
@@ -147,7 +138,7 @@
   "Was machst du am Wochenende?",
   "Hallo, wie geht es dir heute?",
   "Mir gehts gut, danke. Und dir?",
-  "Ich heiße Müller, und du?",
+  "Ich heiße Kadir, und du?",
   "Ich bin Thomas. Schön, dich kennenzulernen!",
   "Woher kommst du?",
   "Ich komme aus der Türkei.",
@@ -176,7 +167,7 @@
   "Kannst du bitte langsamer sprechen?",
   "Ja, gern. Ich spreche langsam.",
   "Was bedeutet dieses Wort?",
-  "Es bedeutet „alısveris“.",
+  "Es bedeutet „alişveriş“.",
   "Hast du heute Zeit?",
   "Ja, nachmittags bin ich frei.",
   "Was machst du heute Abend?",
@@ -997,36 +988,28 @@
   "Das zeigt, wie sehr wir daran gewöhnt sind."
 ];
 
-function updateStats() {
-  document.getElementById("sentenceCount").textContent = sentenceCount;
-  document.getElementById("workTime").textContent = Math.floor(workSeconds / 60);
-}
 
-function startStatsClock() {
-  setInterval(() => {
-    workSeconds++;
-    updateStats();
-  }, 1000);
+    function getTodayKey() {
+      const now = new Date();
+      return now.toISOString().slice(0, 10);
+    }
 
-  // Gece 00:00'da sıfırlama
-  const now = new Date();
-  const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-  const msUntilMidnight = midnight - now;
-  setTimeout(() => {
-    sentenceCount = 0;
-    workSeconds = 0;
-    updateStats();
-  }, msUntilMidnight);
-}
+    let sentenceCount = parseInt(localStorage.getItem("sentenceCount_" + getTodayKey())) || 0;
+    let workSeconds = parseInt(localStorage.getItem("workSeconds_" + getTodayKey())) || 0;
 
+    function updateStats() {
+      document.getElementById("sentenceCount").textContent = sentenceCount;
+      document.getElementById("workTime").textContent = Math.floor(workSeconds / 60);
+      localStorage.setItem("sentenceCount_" + getTodayKey(), sentenceCount);
+      localStorage.setItem("workSeconds_" + getTodayKey(), workSeconds);
+    }
 
-    // Sayfa ilk açıldığında kaldığın yerden devam et
-    window.onload = function () {
-      const savedIndex = localStorage.getItem("lastSentenceIndex");
-      if (savedIndex !== null) {
-        currentIndex = parseInt(savedIndex, 10);
-      }
-    };
+    function startStatsClock() {
+      setInterval(() => {
+        workSeconds++;
+        updateStats();
+      }, 1000);
+    }
 
     function toggleReadingMode() {
       isRandomMode = !isRandomMode;
@@ -1034,10 +1017,19 @@ function startStatsClock() {
       btn.textContent = isRandomMode ? "Mod: Rastgele" : "Mod: Sıralı";
     }
 
+    window.onload = function () {
+      const savedIndex = localStorage.getItem("lastSentenceIndex");
+      if (savedIndex !== null) {
+        currentIndex = parseInt(savedIndex, 10);
+      }
+      updateStats();
+      startStatsClock();
+    };
+
     function speakRandomSentence() {
       if (!isSpeaking) return;
 
-      synth.cancel(); // iPhone için önemli
+      synth.cancel();
 
       let sentence;
       if (isRandomMode) {
@@ -1045,10 +1037,7 @@ function startStatsClock() {
       } else {
         if (currentIndex >= sentences.length) currentIndex = 0;
         sentence = sentences[currentIndex];
-
-        // Kaldığın yeri KAYDET
         localStorage.setItem("lastSentenceIndex", currentIndex);
-
         currentIndex++;
       }
 
@@ -1071,24 +1060,22 @@ function startStatsClock() {
       };
     }
 
-function toggleSpeech() {
-  const button = document.querySelector("button"); // ilk <button> elemanını alır
+    function toggleSpeech() {
+      const button = document.getElementById("startButton");
 
-  if (!isSpeaking) {
-    isSpeaking = true;
-    button.style.backgroundColor = "#4CAF50"; // kırmızı renk
-    button.textContent = " 🎤 Konuşmayı Durdur";
-    speakRandomSentence();
-  } else {
-    isSpeaking = false;
-    button.style.backgroundColor = "#db343c"; // tekrar yeşil renk
-    button.innerHTML = '<span class="mic">🎤</span> Konuşmaya Başla';
-    synth.cancel();
-    clearTimeout(speakingLoop);
-  }
-}
- startStatsClock();
-
+      if (!isSpeaking) {
+        isSpeaking = true;
+        button.style.backgroundColor = "#4CAF50";
+        button.textContent = " 🎤 Konuşmayı Durdur";
+        speakRandomSentence();
+      } else {
+        isSpeaking = false;
+        button.style.backgroundColor = "#db343c";
+        button.innerHTML = '<span class="mic">🎤</span> Konuşmaya Başla';
+        synth.cancel();
+        clearTimeout(speakingLoop);
+      }
+    }
   </script>
 </body>
 </html>
