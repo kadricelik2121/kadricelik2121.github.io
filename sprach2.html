@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>telc Sprachbausteine Teil 2</title>
+  <style>
+    body {
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      background-color: white;
+      border-radius: 12px;
+      max-width: 1200px;
+      margin: 30px auto 0 auto;   /* Ortalamak için */
+      padding: 20px;
+      border: 2px solid #222;
+      box-sizing: border-box;
+      display: none;
+      width: 100%;
+    }
+    .container.active { display: block; }
+    .text {
+      font-size: 18px;
+      margin-bottom: 12px;
+      line-height: 1.7;
+      text-align: left;
+    }
+    .answer-box {
+      display: none;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 25px auto 0 auto;
+      padding: 18px;
+      background-color: #f0f0f0;
+      border: 2px solid #222;
+      border-radius: 12px;
+      max-width: 1180px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .answer-box.active { display: grid; }
+    .answer-option {
+      font-size: 16px;
+      text-align: left;
+      padding: 6px;
+      font-weight: normal;
+    }
+    .answer-option span:first-child {
+      font-weight: bold;
+      font-size: 18px;
+      margin-right: 6px;
+    }
+    .highlight { background-color: #b6fcb6 !important; }
+    .correct { background-color: #0bda12b9; }
+    .incorrect { background-color: #fc0019be; }
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      max-width: 800px;
+      width: 100%;
+      margin: 30px auto 0 auto;
+    }
+    .nav-buttons button {
+      padding: 14px 24px;
+      font-size: 20px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto 0 auto;
+    }
+    .title { font-size: 18px; font-weight: bold; }
+    #scoreboard { font-size: 16px; font-weight: bold; }
+    .page-number { font-size: 16px; }
+
+    select option {
+    font-size: 14px;
+  font-weight: bold;
+} 
+
+select option[value=""] {
+  font-weight: bold;
+  font-size: 16px;  /* Burada istediğin kadar büyütebilirsin */
+  color: #222;      /* Daha belirgin bir renk */
+} 
+
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="title">telc Sprachbausteine Teil 2</div>
+    <div id="scoreboard">✅ Doğru Cevap: <span id="correctCount">0</span> &nbsp;&nbsp;&nbsp; ❌ Yanlış Cevap: <span id="incorrectCount">0</span></div>
+    <div class="page-number">Seite <span id="pageIndex">1</span></div>
+  </div>
+
+  <!-- 1. METİN -->
+  <div class="container active">
+    <div class="text" id="text1">
+    <strong>Jugend diskutiert – mach mit!</strong><br>
+    Den Wettbewerb "Jugend diskutiert" gibt es bereits 
+    <select id="q31_1"><option>31</option></select> Herbst 2002. Für das kommende Jahr werden nun wieder Schülerinnen und Schüler gesucht, die an dem Wettbewerb teilnehmen möchten. 
+      <select id="q32_1"><option>32</option></select> immer bereiten sich die Teilnehmer dann im Unterricht auf "Jugend diskutiert" vor.<br>
+      Du fragst dich, 
+      <select id="q33_1"><option>33</option></select> du teilnehmen solltest? Ganz einfach: "Jugend diskutiert" bringt dich weiter! Sich einmischen, mitreden, überzeugen – bei der Vorbereitung im Unterricht trainierst du viele Fähigkeiten, die dir in der Schule und im Alltag helfen. Im Austausch mit den anderen entwickelst du deine Persönlichkeit weiter und profitierst langfristig. 
+      <select id="q34_1"><option>34</option></select> bietet dir "Jugend diskutiert" die Chance, im Wettstreit mit anderen weiterzukommen. Zuerst werden die besten einer Schule ermittelt, die dann 
+      <select id="q35_1"><option>35</option></select> Regionalwettbewerben teilnehmen. Die Sieger der Regionalwettbewerbe treten im Bundesfinale an. 
+      <select id="q36_1"><option>36</option></select> Preise kann man professionelle Trainings gewinnen.<br>
+      <select id="q37_1"><option>37</option></select> "Jugend diskutiert" kannst du viel lernen. Du hast bessere Chancen im Unterricht und bei Referaten, denn du trainierst, frei zu sprechen und Dinge anschaulich und verständlich zu beschreiben. Du gewinnst mehr Selbstbewusstsein, 
+      <select id="q38_1"><option>38</option></select> du lernst, wie man das Wort ergreift und auf sich aufmerksam macht. Du kannst überzeugen, da du eigene Argumente finden und die Argumente anderer genau prüfen kannst. Die Sichtweisen der anderen zeigen dir darüber hinaus, 
+      <select id="q39_1"><option>39</option></select> du vielleicht selbst noch nicht gesehen hast. Du überzeugst bei Auftritten, Prüfungen und Bewerbungen, da du sicher auftrittst.<br>
+      <select id="q40_1"><option>40</option></select> das alles im Unterricht gelernt hat, kann gemeinsam mit anderen viel bewegen! Schließlich ist der Wettbewerb "Jugend diskutiert" auch eine Chance, Jugendliche aus ganz Deutschland kennenzulernen und neue Freundschaften zu knüpfen.<br>
+      Weitere Informationen zu Anmeldung und Teilnahme gibt es im Internet.<br>
+    </div>
+    </div>
+  <div class="answer-box active" id="answerBox1"></div>
+
+  <!-- 2. METİN -->
+  <div class="container">
+    <div class="text" id="text2">
+    <strong>Ausbildung mit über 30</strong><br>
+    Die gelernte Krankenschwester Jaqueline Delgado drückt mit 38 Jahren noch einmal die Schulbank. 
+    <select id="q31_2"><option>31</option></select> sie hat sich für einen beruflichen Neustart entschieden. Da ihr früherer Beruf ihr keinen Spaß mehr machte, begann sie eine Berufsausbildung bei der Polizei. Ihr Ziel: Sie <select id="q32_2"><option>32</option></select> in den Streifendienst gehen.<br>
+    Mit über 30 noch einmal einen ganz neuen Job zu erlernen – lange Zeit war das kaum möglich. Arbeitgeber suchten nur junge Berufs­einsteiger. <select id="q33_2"><option>33</option></select> es heute in vielen Branchen aber an Nachwuchs fehlt, geben sie öfter auch Älteren eine <select id="q34_2"><option>34</option></select>.<br>
+    Thomas Neuendorfer, der stellvertretende Sprecher der Polizei Berlin, erklärt, <select id="q35_2"><option>35</option></select>. Sein Arbeitgeber gerne Ältere ausbildet: "Sie haben in ihrem Berufsleben Erfahrungen gesammelt, die der Polizei und auch den Bürgern der Stadt zu Gute kommen". Sie seien häufig emotional reifer, außerdem bereit, Verantwortung zu <select id="q36_2"><option>36</option></select>, und motiviert, die Ausbildung erfolgreich abzuschließen. Zudem <select id="q37_2"><option>37</option></select> sie die Jüngeren unterstützen und ihnen als Vorbild dienen. Davon profitierten dann auch die Arbeitgeber. Gegen die Einstellung von Älteren spreche nur, dass sie dem Unternehmen kürzer vor <select id="q38_2"><option>38</option></select> stehen. <select id="q39_2"><option>39</option></select> haben ältere Azubis in vielen Bereichen Möglichkeiten: im kaufmännischen oder in gewerblich-technischen Berufen, im Gesundheitswesen oder vor allem in der Gastronomie.<br>
+    Wenn das Azubi-Gehalt nicht für den Lebensunterhalt reicht, hilft die Arbeitsagentur. Der Betrag wird dabei nicht nach dem Alter festgelegt, <select id="q40_2"><option>40</option></select> es wird der individuelle, konkrete Bedarf ermittelt. Im August schließt Delgado ihre Ausbildung ab. In dem künftigen Polizei-Job wird sie ihr medizinisches Wissen, ihre Menschenkenntnis sowie ihre spanischen und englischen Sprachkenntnisse wohl gut gebrauchen können.
+    </div>
+  </div>
+  <div class="answer-box" id="answerBox2"></div>
+
+  <!-- 3. METİN -->
+  <div class="container">
+    <div class="text" id="text3">
+      <strong>Freunde und Freizeit</strong><br><br>
+      In der Freizeit ...
+    <strong>Im Restaurant</strong><br>
+    Eine unterhaltsame, schöne und gesellige Zeit. Das stellt man sich unter einem guten Essen vor.
+    Störend wirkt da der anschauliche Erlebnisbericht der letzten Operation im Krankenhaus oder das Klingeln des Handys. Sowohl Gastgeber als Gast sollen alles dafür tun, dass das gemeinsame Essen Freude macht. Das Handy stellt man selbstverständlich ab.<br>
+    Das Essen beginnt, wenn der Gastgeber zur Serviette greift oder zum Gruß ein Glas erhebt. Besonders bei Kindern ein unbeliebtes Thema: die richtige Körperhaltung beim Essen. Die Arme
+    <select id="q31_3"><option>31</option></select> ... nicht auf den Tisch und die Hände nicht unter den Tisch. Man sitzt gerade, ohne unruhig hin und her zu rücken. Die Beine werden nebeneinander gestellt, nicht übereinander gelegt. Die Schuhe
+    <select id="q32_3"><option>32</option></select> ... in jedem Fall an.<br>
+    Nur keine Angst vor unangenehmen Situationen mit ihrem Luxus! Denn je besser die Küche, umso aufmerksamer ist in der Regel das Personal. Doch schon bei der Anrede der Bedienung steht so
+    <select id="q33_3"><option>33</option></select> ... vor einem Problem. Die Bedienung
+    <select id="q34_3"><option>34</option></select> ... "Fräulein" an den Tisch zu rufen, ist in Zeiten der Gleichberechtigung veraltet. "Herr Ober" oder "Bedienung" ist
+    <select id="q35_3"><option>35</option></select> ... noch möglich, aber auch schon etwas ungewöhnlich. Am besten versucht man sich Blickkontakt zu verschaffen, um mit einem freundlichen
+    <select id="q36_3"><option>36</option></select> ... mit der Hand den Kellner an den Tisch zu bitten.<br>
+    Zudem gibt es zwischen Gast und Service eine Zeichensprache. Schließt der Gast die Speisekarte zu und legt sie auf den Tisch, ist dies für den Kellner das Signal, die Bestellung aufzunehmen. Ist man mit dem Essen
+    <select id="q37_3"><option>37</option></select> ..., legt man das Besteck parallel auf den rechten Tellerrand. Der Kellner wird dann abräumen. Macht man hingegen nur eine Pause, wird es gekreuzt oder einfach auf den Teller gelegt.<br>
+    Beim Bezahlen ist ein
+    <select id="q38_3"><option>38</option></select> ... gefragt. Übermittelt ein Gastgeber die Kosten, macht er dies dem Kellner
+    <select id="q39_3"><option>39</option></select> ... ein "Bringen Sie mir bitte die Rechnung" recht viel eleganter aus. Möchte man hingegen getrennt bezahlen,
+    <select id="q40_3"><option>40</option></select> ... jeder Gast möglichst gleichzeitig der Bedienung mit. In Deutschland gibt man, je nach Zufriedenheit mit dem Service und der Höhe der Gesamtrechnung, zwischen fünf und zehn Prozent Trinkgeld. Ist man mit dem Service unzufrieden gewesen, gibt man kein Trinkgeld.
+    </div>
+  </div>
+  <div class="answer-box" id="answerBox3"></div>
+
+  <div class="nav-buttons">
+    <button onclick="prevTest()">⬅️ Geri</button>
+    <button onclick="window.location.href='index.html'">🏠 Anasayfa</button>
+    <button onclick="nextTest()">İleri ➡️</button>
+  </div>
+
+  <script>
+    // Her sayfa için ayrı cevap anahtarı ve seçenekler
+    const correctAnswersArray = [
+      {
+        q31_1: 'i', q32_1: 'o', q33_1: 'k', q34_1: 'c', q35_1: 'b',
+        q36_1: 'a', q37_1: 'd', q38_1: 'm', q39_1: 'l', q40_1: 'n'
+      },
+      {
+        q31_2: 'e', q32_2: 'h', q33_2: 'c', q34_2: 'b', q35_2: 'n',
+        q36_2: 'l', q37_2: 'g', q38_2: 'm', q39_2: 'k', q40_2: 'j'
+      },
+      {
+        q31_3: 'g', q32_3: 'd', q33_3: 'j', q34_3: 'i', q35_3: 'f',
+        q36_3: 'o', q37_3: 'b', q38_3: 'm', q39_3: 'k', q40_3: 'h'
+      }
+    ];
+
+    const optionsArray = [
+      {
+        a: 'ALS', b: 'AN', c: 'AUSSERDEM', d: 'BEI', e: 'DARUNTER',
+        f: 'DIE', g: 'NACHDEM', h: 'OBWOHL', i: 'SEIT', j: 'VOR',
+        k: 'WARUM', l: 'WAS', m: 'WEIL', n: 'WER', o: 'WIE'
+      },
+      {
+       a: 'AUSWAHL', b: 'CHANCE', c: 'DA', d: 'DAGEGEN', e: 'DENN',
+       f: 'DURFTEN', g: 'KONNTEN',  h: 'MOCHTE',  i: 'SOLLTE',  j: 'SONDERN',  
+       k: 'TROTZDEM', l: 'UBERNEHMEN', m: 'VERFUGUNG', n: 'WARUM', o: 'ZIEHEN'
+      },
+      {
+    a: 'ALS', b: 'BEHALT', c: 'BEREIT', d: 'BLEIBT', e: 'DAGEGEN',
+    f: 'FERTIG', g: 'GEHÖREN', h: 'JEDER', i: 'KLAR', j: 'MANCHER', 
+    k: 'MIT', l: 'TAKT', m: 'TIPP', n: 'WAS', o: 'WINK'
+      }
+    ];
+
+    let correctTotal = 0;
+    let incorrectTotal = 0;
+    let alreadyCheckedArray = [ {}, {}, {} ];
+    let usedCorrectKeysArray = [ new Set(), new Set(), new Set() ];
+    const containers = document.querySelectorAll('.container');
+    const answerBoxes = document.querySelectorAll('.answer-box');
+    let currentIndex = 0;
+
+    function updatePageNumber() {
+      document.getElementById('pageIndex').innerText = currentIndex + 1;
+    }
+
+    function showTest(index) {
+      containers.forEach((c, i) => {
+        c.classList.toggle('active', i === index);
+      });
+      answerBoxes.forEach((b, i) => {
+        b.classList.toggle('active', i === index);
+      });
+      updatePageNumber();
+    }
+
+    function nextTest() {
+      if (currentIndex < containers.length - 1) {
+        currentIndex++;
+        showTest(currentIndex);
+      }
+    }
+
+    function prevTest() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        showTest(currentIndex);
+      }
+    }
+
+    function updateScoreboard() {
+      document.getElementById("correctCount").innerText = correctTotal;
+      document.getElementById("incorrectCount").innerText = incorrectTotal;
+    }
+
+    function highlightUsedCorrectOptions(currentPage) {
+      document.querySelectorAll(`.container.active select option`).forEach(opt => {
+        opt.classList.remove('highlight');
+        if (usedCorrectKeysArray[currentPage].has(opt.value)) {
+          opt.classList.add('highlight');
+        }
+      });
+    }
+
+    function fillSelects(textId, correctAnswers, options, pageIdx) {
+      const textBlock = document.getElementById(textId);
+      const selects = textBlock.querySelectorAll("select");
+      selects.forEach((select, idx) => {
+        select.innerHTML = "";
+        const placeholder = document.createElement("option");
+        placeholder.value = '';
+        placeholder.text = 31 + idx;
+        select.appendChild(placeholder);
+        for (let key in options) {
+          const opt = document.createElement("option");
+          opt.value = key;
+          opt.text = `${key} ${options[key]}`;
+          select.appendChild(opt);
+        }
+      });
+
+      selects.forEach(select => {
+        const qid = select.id;
+        select.addEventListener('change', () => {
+          const selected = select.value;
+          const correct = correctAnswers[qid];
+          const optionText = options[selected];
+          select.classList.remove("correct", "incorrect");
+
+          if (selected === correct) {
+            if (!alreadyCheckedArray[pageIdx][qid]) {
+              correctTotal++;
+              alreadyCheckedArray[pageIdx][qid] = true;
+              usedCorrectKeysArray[pageIdx].add(selected);
+              highlightUsedCorrectOptions(pageIdx);
+            }
+            select.classList.add("correct");
+            document.getElementById(`answerBox${pageIdx+1}`)?.querySelector(`#option-${selected}`)?.classList.add("highlight");
+            const span = document.createElement("span");
+            span.innerHTML = " <strong>" + optionText + "</strong> ";
+            select.replaceWith(span);
+          } else {
+            if (!alreadyCheckedArray[pageIdx][qid]) {
+              incorrectTotal++;
+            }
+            select.classList.add("incorrect");
+          }
+          updateScoreboard();
+        });
+      });
+    }
+
+    function setupAnswerBox(answerBoxId, options) {
+      const container = document.getElementById(answerBoxId);
+      container.innerHTML = '';
+      const keys = Object.keys(options);
+      const columns = 3;
+      const rows = Math.ceil(keys.length / columns);
+      const grid = Array.from({ length: rows }, () => []);
+      keys.forEach((key, index) => {
+        const col = Math.floor(index / rows);
+        const row = index % rows;
+        if (!grid[row]) grid[row] = [];
+        grid[row][col] = key;
+      });
+      grid.forEach(row => {
+        row.forEach(key => {
+          if (key) {
+            const div = document.createElement("div");
+            div.className = "answer-option";
+            div.id = `option-${key}`;
+            div.innerHTML = `<span>${key}</span> ${options[key]}`;
+            container.appendChild(div);
+          }
+        });
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      for (let i = 0; i < correctAnswersArray.length; i++) {
+        fillSelects(`text${i+1}`, correctAnswersArray[i], optionsArray[i], i);
+        setupAnswerBox(`answerBox${i+1}`, optionsArray[i]);
+      }
+      showTest(0);
+    });
+  </script>
+</body>
+</html> 
