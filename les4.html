@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>telc Sprachbausteine Teil 1</title>
+  <style>
+    body { background: #f5f5f7; font-family: Arial, sans-serif; margin:0; }
+    .topbar {
+      display:flex; align-items:center; justify-content:space-between;
+      background:#fff; font-size:19px; padding:9px 16px 8px 13px; margin-bottom:19px; border-bottom:2px solid #eee;
+    }
+    .topbar .stats { margin-left:14px; }
+    .topbar .ok {color:#119c0d; font-weight:bold;}
+    .topbar .wrong {color:#a11e00; font-weight:bold;}
+    .seite {color:#6d6d6d; font-size:1em; opacity:0.7; font-weight:normal;}
+    .flex-container { max-width:1350px; margin:0 auto 35px auto; display: flex; gap: 44px;}
+    .left { min-width:390px;}
+.titles {
+  position: relative;
+  background: #fff;
+  align-self: flex-start;
+  margin-left: 30px;
+  padding: 14px 10px;
+  border-radius:12px;
+  box-shadow:0 0 16px #bbb8;
+  max-height: 1000px;
+  width: 700px;
+  overflow-y: auto;
+  font-size: 16px;
+}
+
+/* YENİ: Arka plana silik resim ekle */
+.titles::before {
+  content: "";
+  position: absolute;
+  top:0; left:0; right:0; bottom:0;
+  background: url('4.png') no-repeat center center;
+  background-size: 75% auto;      /* Gerekirse % ile oyna */
+  opacity: 0.16;                  /* Siliklik miktarı, 0.1-0.3 arasında deneyebilirsin */
+  pointer-events: none;
+  z-index: 0;
+}
+.titles > * {
+  position: relative;
+  z-index: 1;
+}
+
+    .title-row {
+      font-size:22.5px; padding:18px 0 18px 8px; font-weight:bold; margin-bottom:6px; border-radius:12px;
+      transition: background 0.16s; letter-spacing:0.01em;
+      line-height:1.1; display: flex; align-items: center;
+      font-size: 23px;         /* ← Yazı boyutunu küçült! */
+       padding: 8px 10px;       /* ← Üst-alt ve sağ-sol iç boşluk (padding) azalt */
+     margin-bottom: 6px;      /* ← Satır arası boşluk */
+     border-radius: 8px;      /* ← Köşe yumuşaklığı */
+     font-weight: bold;
+     display: flex;
+     align-items: center;
+     transition: background 0.16s;
+    }
+    .title-row.selected { background:#caffc7; color:#167e10;}
+    .title-num {
+      font-weight:900; font-size: 1.25em; margin-right:17px;
+      color:#c20000; line-height:1; text-shadow:0 1px 2px #ff000030;
+      letter-spacing:0.05em; padding:2px 7px;
+      font-family: Arial Black, Arial, sans-serif; display:inline-block;
+    }
+    .main-right-area {
+      flex:1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 30px;
+    }
+    .ana-metin { margin-left: 5px; margin-right: 30px; }
+    .alt-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 28px;
+      padding-left: -735px;
+       margin-left: -735px; 
+    }
+
+    .question-box {
+      border-radius:16px;
+      box-shadow:0 0 11px #bbb7;
+      margin-bottom:3px;
+      display:flex; flex-direction:column; gap:14px;
+      padding:20px 24px 19px 24px;
+      cursor:pointer;
+      position:relative;
+      transition: box-shadow 0.15s;
+      min-width:180px;
+      min-height: 120px;
+      box-sizing: border-box;
+    }
+
+    .kutu-metin-gizli-ana {
+  display: -webkit-box;
+  -webkit-line-clamp: 18;   /* ← 15 satır görünsün */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 28em;         /* Yaklaşık 15 satıra denk gelir, gerekirse değiştir */
+  cursor: pointer;
+}
+
+    /* ÖZEL: Küçük kutularda metni kısalt */
+    .kutu-metin-gizli {
+      display: -webkit-box;
+      -webkit-line-clamp: 5;   /* Burada görünen SATIR sayısı */
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-height: 9em;
+      cursor: pointer;
+    }
+    .question-box:hover { box-shadow:0 0 22px #2ad07538; }
+    .q-header {display:flex; align-items:center; justify-content:space-between;}
+    .q-number { font-size:22px; font-weight:bold;}
+    .zoom-btns {display:flex; gap:8px;}
+    .zoom-btn {
+      border:none; background:#f4f4f4; border-radius:5px; font-size:19px; cursor:pointer; padding:4px 8px; margin-left:1px;
+      box-shadow:0 0 3px #bbb5;
+    }
+    .select-full { font-size:19px; margin-bottom:11px; border-radius:7px; padding:7px 14px; width:100%; min-width:0; box-sizing:border-box;}
+    .dogruOpt, .dogruSelected { background:#caffc7 !important; color:#167e10; font-weight:bold; }
+    .yanlisOpt, .yanlisSelected { background:#ffd6d6 !important; color:#c20000; font-weight:bold; }
+    .alreadyCorrect { background:#baf4b6 !important; color:#167e10; font-weight:bold; }
+    .dogru {color:#119c0d; font-size:19px; font-weight:bold;}
+    .yanlis {color:#c20000; font-size:19px; font-weight:bold;}
+    /* Modal */
+    .modal-bg { display:none; position:fixed; z-index:10000; left:0; top:0; right:0; bottom:0;
+      background:rgba(30,30,50,0.87); justify-content:center; align-items:center;}
+    .modal-bg.active { display:flex; }
+    .modal-content { background:#fff; border-radius:18px; padding:40px 32px 40px 32px; max-width:950px; width:99vw;
+      box-shadow:0 0 60px #0008; position:relative; animation: zoomIn 0.19s;
+      display: flex; flex-direction: column; gap: 0;
+    }
+    @keyframes zoomIn { from{transform:scale(0.94);} to{transform:scale(1);} }
+    .modal-q-number { font-size:26px; font-weight:bold; margin-bottom:14px;}
+    .modal-close {position:absolute; top:16px; right:29px; font-size:31px; color:#333; background:none; border:none; cursor:pointer;}
+    .modal-header {display:flex; align-items:center; justify-content:space-between;}
+    .modal-zoom-btns{margin-left:11px;}
+    .modal-select-box{margin-bottom:12px;}
+    #modalMetin {
+      background: none !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0;
+      margin: 16px 0 0 0;
+      font-size: 1.07em;
+      color: #222;
+    }
+    @media (max-width:1100px){
+      .flex-container{flex-direction:column;}
+      .left{max-width:98vw;}
+      .main-right-area{align-items:center;}
+      .ana-metin{align-self:center;}
+    }
+    @media (max-width:700px){
+      .modal-content{padding:10px;}
+      .alt-grid{grid-template-columns: 1fr;  grid-template-rows: repeat(4,1fr);}
+    }
+
+.alt-butonlar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 55px 0 22px 0;
+  padding-bottom: 18px;
+  max-width: 900px;   /* isteğe göre genişlik ayarı */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.alt-btn {
+  font-size: 1.16em;
+  padding: 10px 38px;
+  border-radius: 8px;
+  background: #f5f5f7;
+  border: 1.5px solid #aaa;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 2px 10px #bbb4;
+  transition: background 0.13s, color 0.13s;
+  min-width: 140px;
+}
+
+.alt-btn:hover {
+  background: #ddeedc;
+  color: #129d1d;
+  border-color: #129d1d;
+}
+
+.orta-btn {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <span style="font-weight:bold;font-size:19px;">telc Sprachbausteine Teil 1</span>
+    <span class="stats">
+      <span class="ok"><span class="icon">&#x2714;</span> Doğru Cevap: <span id="dogruSay">0</span></span>
+      <span class="wrong" style="margin-left:12px;"><span class="icon">&#10006;</span> Yanlış Cevap: <span id="yanlisSay">0</span></span>
+    </span>
+    <span class="seite">Seite 1</span>
+  </div>
+<div class="flex-container">
+  <div class="left">
+    <div class="titles" id="basliklar"></div>
+  </div>
+  <div class="main-right-area">
+    <div class="ana-metin" id="anaMetin"></div>
+    <div class="alt-grid" id="altGrid"></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBG" onclick="kapatModal(event)">
+  <div class="modal-content" onclick="event.stopPropagation();">
+    <button class="modal-close" onclick="kapatModal(event)">&times;</button>
+    <div class="modal-header">
+      <span class="modal-q-number" id="modalNum"></span>
+      <span class="zoom-btns modal-zoom-btns">
+        <button class="zoom-btn" onclick="zoomModal(-1);event.stopPropagation();">➖</button>
+        <button class="zoom-btn" onclick="zoomModal(1);event.stopPropagation();">➕</button>
+      </span>
+    </div>
+    <div class="modal-select-box">
+      <select class="select-full" id="modalSelect" onchange="modalSecim(event)">
+        <!-- Dinamik -->
+      </select>
+    </div>
+    <div id="modalMetin"></div>
+    <div id="modalSonuc" style="margin-top:18px;"></div>
+  </div>
+</div>
+<div class="alt-butonlar">
+  <button onclick="geriGit()" class="alt-btn sol-btn">&#8592; Geri</button>
+  <button onclick="anaSayfa()" class="alt-btn orta-btn">Ana Sayfa</button>
+  <button onclick="ileriGit()" class="alt-btn sag-btn">İleri &#8594;</button>
+</div>
+
+<script>
+const basliklarArr = [
+  {k:"a", t:"Neue Heuschreckenart in Frankreich entdeckt Insektenart "},
+  {k:"b", t:"Kleine Plagegeister können Krankheiten bringen  "},
+  {k:"c", t:"Landwirte wollen Gift gegen schädliche Insekten einsetzen "},
+  {k:"d", t:"Neue Mittel gegen Mücken"},
+  {k:"e", t:"Neue Studie: Nicht nur Affen und Delfine erkennen sich selbst  "},
+  {k:"f", t:"Probleme beim Versuchsaufbau: Studie gescheitert"},
+  {k:"g", t:"Rhein nach Chemieunfall noch immer tot "},
+  {k:"h", t:"Rückblick: Fischsterben im Rhein  "},
+  {k:"i", t:"Um die Zukunft der Nordsee ist es schlecht bestellt"},
+  {k:"j", t:"WWF zieht positive Bilanz für die Nordsee "}
+];
+
+const metinler = [
+  { text: "Die anhaltenden außergewöhnlich hohen Temperaturen haben im Süden Frankreichs eine Tierplage bisher unbekannten Ausmaßes ausgelöst. Bei den Plagegeistern handelt es sich um Unmengen von zwei bis dreieinhalb Zentimeter langen Heuschrecken, sogenannten Roten Schnarrschrecken. Die dunklen Insekten fressen Felder und Wiesen kahl und haben innerhalb von rund sechs Wochen die Landschaft in eine trostlose Steppe verwandelt. Die Landwirte der Region sind bereits verzweifelt, denn ihre gesamte Ernte hat sich buchstäblich in Luft aufgelöst. Wenn man über ein befallenes Feld geht, springt bei jedem Schritt ein Schnarrschreckenschwarm auf. Der Name dieser heimischen Tierart hat übrigens einen ganz einfachen Ursprung: Die Heuschrecken machen ein lautes Geräusch beim Springen - sie schnarren also und man sieht an ihnen leuchtend rote Hinterflügel. Daher also ‘Rote Schnarrschrecke’. Manche Experten vermuten, die Heuschreckenplage werde durch einen drastischen Klimawandel ausgelöst. Die damit verbundene Aufheizung mache Sūdeuropa immer ‘afrikanischer’. Ein deutscher Wissenschaftsautor wies kürzlich im Internet mehrfach darauf hin, dass es im Laufe der Erdgeschichte ständig einen Wechsel von Warmzeiten und Kaltzeiten gegeben habe, der keineswegs abgeschlossen sei. Zeitweise habe das Gebiet von Europa nahe dem Äquator gelegen. Der Einsatz von Gift gegen die Heuschrecken ist sehr riskant. Denn dabei darf nur ein Mittel verwendet werden, das ausschließlich für die Heuschrecken tödlich ist. nicht aber für Bienen und andere Insekten. Auch das Vieh der Bauern darf nicht durch verseuchtes Futter gefährdet werden. Die einzige gute Nachricht: für Menschen und andere Tiere sind die Heuschrecken völlig ungefährlich. ", bg: "#F2F5FF", fontSize: "18px", dogru:"c", width: "500px", minHeight: "600px", padding: "15px 15px 15px 15px" },
+  { text: "Für immer wird eine der größten Umweltkatastrophen mit dem Namen des damals in Basel ansässigen Chemiekonzerns Sandoz verbunden bleiben, der jetzt zu Novartis gehört. 1986 führte ein Brand in einer Lagerhalle des Konzerns zu Verunreinigung des Rheins mit 20 Tonnen hochgiftiger Pestizide und Insektizide. Auf einer Länge von 450 Kilometern kam es zu einem gigantischen Fischsterben. Vor allem Aale waren betroffen. Trinkwasser konnte nicht mehr aus dem Fluss gewonnen werden. Der öffentliche Druck, der als Reaktion auf die Umweltkatastrophe entstanden war, führte zu großen Investitionen für den Gewässerschutz. Im Rahmen des Aktionsprogramms Rhein wurden rund 60 Milliarden Euro in den Ausbau von Kläranlagen entlang des Rheinufers investiert. Viele Schwermetalle wie Kupfer, Cadmium, Blei und Quecksilber konnten reduziert und teilweise sogar ganz aus dem Rhein verbannt werden. Angesichts der getroffenen Maßnahmen spricht die Internationale Kommission zum Schutz des Rheins (IKSR) heute wieder von guter Wasserqualität des Rheins. 63 Fischarten sind wieder im Rhein vertreten, darunter auch Lachse. Die Aufgaben des Gewässerschutzes gehen aber noch weiter. Zink, Kupfer und Cadmium so wie Pestizide und Stickstoff bereiten weiterhin Sorgen. Kürzlich warnte das Verbraucherschutzministerium des Landes Nordrhein-Westfalen vor dem Verzehr von Rheinfischen unterhalb von Duisburg, weil Tenside durch die Nebenflüsse Möhne und Ruhr in den Rhein gelangt waren.  ", bg: "#FFF8F2", fontSize: "18px", dogru:"h", width: "600px", minHeight: "50px", padding: "15px 15px" },
+  { text: "Der Klimawandel bringt es in Verbindung mit der Globalisierung mit sich, dass auch in Deutschland Tiere heimisch werden, die hier zuvor nicht beobachtet wurden. Zu diesen Neuankömmlingen gehören auch exotische Stechmücken, beispielsweise der japanische Bushmosquito. Mit den exotischen Stechmücken kommen auch neue Infektionserreger nach Deutschland, die möglicherweise auch bisher unbekannte Krankheiten beim Menschen auslösen können. Eine Forschergruppe identifizierte jetzt einige bisher nur in Afrika und Asien vorkommende Erreger. Anfang 2011 wurde ein interdisziplinäres Projekt ins Leben gerufen. Als ein erstes Ziel der Forschungsarbeit wird die Erstellung einer Mückenkarte für Deutschland angestrebt. 'Innerhalb weniger Jahre wollen wir einen Überblick über die Artenverteilung der Mücken haben und wissen was an Viren in ihnen steckt', so der Leiter des Bernhard-Nocht-Institut Professor Dr. Sven Klimpel. Das Bernhard-Nocht-Institut ist eine internationale anerkannte Forschungseinrichtung, die eine langjährige Erfahrung in der Virendiagnostik in das Projekt einbringen kann. Es verfügte über Laboratorien der höchsten Sicherheitsstufe, die erforderlich sind, um neue Viren mit unbekanntem Gefährdungspotential zu untersuchen. Mit der neu entdeckten, aus Asien stammenden Mückenarten könnten in Deutschland bisher 48 Stechmückenarten von den Entomologen nachgewiesen werden. Seit einigen Jahren breitete sich die Malaria-Mücke Anopheles plumbeus in Südwestdeutschland aus. Auch die Asiatische Tigermücke, die unter anderem das gefährliche Denguefieber verbreitet, schaffte es 2018 in die Schlagzeilen, weil sie am Rhein gefunden wurde.  ", bg: "#F2FFF8", fontSize: "18px", dogru:"b",  width: "600px", minHeight: "300px", padding: "15px 15px" },
+  { text: "Forscher haben bei Versuchen im Bronx Zoo in New York eine neue Erkenntnis über Elefanten erlangt: Sie können sich selbst im Spiegel erkennen. Zumindest eines von drei Versuchstieren versuchte, einen auf seinem Kopfe aufgemalten Fleck, der im Spiegelbild zu sehen war, zu entfernen. Bisher war unter anderem von Affen, Delfinen und Elstern ein ähnliches Verhalten bekannt. Und auch bei diesen reagierte nicht immer alle Versuchstiere auf einen Spiegel. Es gab auch schon in der Vergangenheit solche Tests mit Elefanten, die aber auf keine Selbsterkenntnis schließen ließen. Den Grund sieht ein Wissenschaftler im Versuchsaufbau: 'Das große Problem ist, einen Spiegel zu haben, der 'elefantenfest' ist.'' Frühere Versuche hätten zu kleine und zu schwer zugängliche Spiegeln verwendet. Die Elefanten aber wollten 'dagegen knallen, dahinter schauen, die Sache ausprobieren, bevor Sie verstehen, was vor sich geht' Deshalb wurde diesmal mit ein 2,5 mal 2,5 Meter großer Spiegel in einem Elefantengehege mit drei weiblichen asiatischen Elefanten montiert, der stabil genug für ausgiebige Untersuchungen durch die Tiere war. Bei ähnlichen Tests mit Affen und Delfinen gibt es normalerweise vier Phasen der Erkenntnis im Spiegel: Zuerst der Versuch der Kommunikation mit dem vermeintlichen Artgenossen, dann eine physische Inspektion des Spiegels, ein Testen des Verhaltens des Spiegelbilds und schließlich die Selbsterkenntnis. Die Elefanten übersprangen die erste Phase und schauten in Phase zwei hinter den Spiegel und griffen auch mit dem Rüssel dahinter. In Phase drei führten sie verschiedene Bewegungen durch und verglichen sie mit denen des Spiegelbildes. Auch wenn sich dann nur eines der Tiere selbst erkannte, indem es den aufgemalten Fleck untersuchte und nach einiger Zeit dann auch das Interesse an dem Fleck verlor, sehen die Wissenschaftler das Ergebnis als eindeutigen Beweis für die Fähigkeit zur Selbsterkenntnis. Als Nächstes wollen sie die Fähigkeiten von Elefanten auch in ihrer natürlichen Umgebung weiter erforschen.  ", bg: "#FFFDEB", fontSize: "18px", dogru:"e", width: "600px", minHeight: "300px", padding: "15px 15px" },
+  { text: "Heute und morgen tagt in Göteborg die Internationale Nordseekonferenz (INK), an der Regierungsvertreter der acht Nordsee-Anrainerstaaten teilnehmen. Der World Wide Fund For Nature (WWF) kritisierte in diesem Zusammenhang, dass dies das letzte Treffen dieser Art sei. Künftig sollen Fragen der Nordsee auf europäischer Ebene behandelt werden. Der WWF befürchtet, dass die Berücksichtigung ökologischer Belange der Nordsee künftig im europäischen Rahmen vernachlässigt werde: 'Es sieht nicht gut aus für die Nordsee'. So fasste WWF-Meeresschützer Stefan Lutter diese Besorgnis in Worte. Der WWF ist der Ansicht, dass auf den Treffen der INK richtungsweisende Beschlüsse zum Nordseeschutz gefasst worden seien. Das Problem sei allerdings die Umsetzung dieser Beschlüsse in politisches Handeln in den Anrainerstaaten. Zu diesen Beschlüssen gehörte beispielsweise das 2001 vereinbarte Abkommen zum Verbot giftiger Schiffsfarben sowie ein weiteres Abkommen, das die Verunreinigung der Nordsee durch von Schiffen abgelassenes Ballastwasser bekämpfen sollte. Diese Abkommen wurden erst zum Teil umgesetzt. Der WWF befürchtet nun, dass diese wichtigen INK- Initiativen unter den Tisch fallen könnten. Anlässlich des letzten Treffens der Anrainerstaaten erneuerte der WWF seine Kritik an der Fleischereipolitik. Das Ziel einer nachhaltigen Fischereipolitik stehe zwar auf der Tagesordnung der Konferenz, die alltägliche Praxis in der EU sei jedoch durch die 'Plünderung der Fischbestände' gekennzeichnet. Die Kabeljaubestände stünden kurz vor dem Zusammenbruch, sagte der WWF-Fischereiexperte. Ein notwendiger Fangstopp für diese Fischart sei jedoch nicht geplant. Ein weiteres ungelöstes Problem sei das Beifang- Problem. Der WWF-Sprecher brachte dazu folgendes Rechenbeispiel: Auf jedes Kilo Plattfisch, das auf den Tellern lande, gingen über fünf Kilo ungenutzter Beifang in die Netze der Fangflotten.  ", bg: "#F7F7F9", fontSize: "18px", dogru:"i", width: "600px", minHeight: "20", padding: "15px 15px" }
+];
+
+let secimler = Array(metinler.length).fill("");
+let modalAktif = null;
+let fontZoom = Array(metinler.length).fill(1);
+let modalFontZoom = 1;
+
+function guncelleBasliklar() {
+  let html = "";
+  basliklarArr.forEach((b, idx) => {
+    let atananlar = [];
+    secimler.forEach((s, mIdx) => { if(s === b.k && metinler[mIdx].dogru === b.k) atananlar.push((mIdx+1).toString()); });
+    let selected = atananlar.length>0 ? "selected" : "";
+    html += `<div class="title-row ${selected}" id="baslik-${b.k}">
+      ${atananlar.length>0?'<span class="title-num">'+atananlar.join(" ")+'</span>':''}${b.k}) ${b.t}
+    </div>`;
+  });
+  document.getElementById("basliklar").innerHTML = html;
+}
+
+function guncelleSorular() {
+  // Ana metin (1. kutu)
+  let m = metinler[0];
+  let idx = 0;
+  let selectClass = "";
+  if(secimler[idx]) {
+    if(secimler[idx]===m.dogru) selectClass="dogruSelected";
+    else selectClass="yanlisSelected";
+  }
+  let dogruKullanim = {};
+  secimler.forEach((secim,i)=>{ if(secim === metinler[i].dogru) dogruKullanim[secim]=true; });
+
+  let anaHtml = `<div class="question-box"
+    style="background:${m.bg};
+           font-size:calc(${m.fontSize}*${fontZoom[idx]});
+           width:${m.width||'auto'};
+           min-height:${m.minHeight||'120px'};
+           padding:${m.padding||'20px 24px 19px 24px'};"
+    onclick="acModal(${idx})">
+      <div class="q-header">
+        <span class="q-number">${idx+1}</span>
+        <span class="zoom-btns" onclick="event.stopPropagation();">
+          <button class="zoom-btn" onclick="zoomKutu(event,${idx},-1)">➖</button>
+          <button class="zoom-btn" onclick="zoomKutu(event,${idx},1)">➕</button>
+        </span>
+      </div>
+<select
+  class="select-full ${selectClass}" id="q${idx}" style="width:100%;min-width:0;"
+  onchange="kontrolEt(${idx});event.stopPropagation();"
+  onclick="event.stopPropagation();"
+  onmousedown="event.stopPropagation();">
+  <option value="">Başlık seçiniz...</option>
+  ${basliklarArr.map(b=>{
+    let optionClass = "";
+    if(secimler[idx]===b.k && secimler[idx]===m.dogru) optionClass="dogruOpt";
+    else if(secimler[idx]===b.k && secimler[idx]!==m.dogru && secimler[idx]!=="") optionClass="yanlisOpt";
+    else if(dogruKullanim[b.k] && secimler[idx]!==b.k) optionClass="alreadyCorrect";
+    return `<option value="${b.k}" ${secimler[idx]===b.k?'selected':''} class="${optionClass}">${b.k}) ${b.t}</option>`;
+  }).join("")}
+</select>
+      <div class="kutu-metin-gizli-ana" style="margin-top:8px;">${m.text}</div>
+      <div id="sonuc${idx}">
+        ${
+          !secimler[idx] ? "" :
+          (secimler[idx]===m.dogru ? "<span class='dogru'>Doğru!</span>" : "<span class='yanlis'>Yanlış</span>")
+        }
+      </div>
+    </div>`;
+  document.getElementById("anaMetin").innerHTML = anaHtml;
+
+  // Alt grid (2–5. kutular)
+  let altHtml = "";
+  for(let i=1; i<metinler.length; i++) {
+    let m = metinler[i];
+    let selectClass = "";
+    if(secimler[i]) {
+      if(secimler[i]===m.dogru) selectClass="dogruSelected";
+      else selectClass="yanlisSelected";
+    }
+    altHtml += `<div class="question-box"
+      style="background:${m.bg};
+             font-size:calc(${m.fontSize}*${fontZoom[i]});
+             width:${m.width||'auto'};
+             min-height:${m.minHeight||'120px'};
+             padding:${m.padding||'20px 24px 19px 24px'};"
+      onclick="acModal(${i})">
+        <div class="q-header">
+          <span class="q-number">${i+1}</span>
+          <span class="zoom-btns" onclick="event.stopPropagation();">
+            <button class="zoom-btn" onclick="zoomKutu(event,${i},-1)">➖</button>
+            <button class="zoom-btn" onclick="zoomKutu(event,${i},1)">➕</button>
+          </span>
+        </div>
+<select
+  class="select-full ${selectClass}" id="q${i}" style="width:100%;min-width:0;"
+  onchange="kontrolEt(${i});event.stopPropagation();"
+  onclick="event.stopPropagation();"
+  onmousedown="event.stopPropagation();">
+  <option value="">Başlık seçiniz...</option>
+  ${basliklarArr.map(b=>{
+    let optionClass = "";
+    if(secimler[i]===b.k && secimler[i]===m.dogru) optionClass="dogruOpt";
+    else if(secimler[i]===b.k && secimler[i]!==m.dogru && secimler[i]!=="") optionClass="yanlisOpt";
+    else if(dogruKullanim[b.k] && secimler[i]!==b.k) optionClass="alreadyCorrect";
+    return `<option value="${b.k}" ${secimler[i]===b.k?'selected':''} class="${optionClass}">${b.k}) ${b.t}</option>`;
+  }).join("")}
+</select>
+        <div class="kutu-metin-gizli" style="margin-top:8px;">${m.text}</div>
+        <div id="sonuc${i}">
+          ${
+            !secimler[i] ? "" :
+            (secimler[i]===m.dogru ? "<span class='dogru'>Doğru!</span>" : "<span class='yanlis'>Yanlış</span>")
+          }
+        </div>
+      </div>`;
+  }
+  document.getElementById("altGrid").innerHTML = altHtml;
+
+  // İstatistikleri güncelle
+  let dogruSay=0, yanlisSay=0;
+  secimler.forEach((secim,idx)=>{
+    if(secim === metinler[idx].dogru) dogruSay++;
+    else if(secim!=="") yanlisSay++;
+  });
+  document.getElementById("dogruSay").innerText = dogruSay;
+  document.getElementById("yanlisSay").innerText = yanlisSay;
+}
+guncelleBasliklar();
+guncelleSorular();
+
+function kontrolEt(idx) {
+  const secilen = document.getElementById('q'+idx).value;
+  secimler[idx] = secilen;
+  guncelleBasliklar();
+  guncelleSorular();
+}
+function zoomKutu(event,idx,degis) {
+  event.stopPropagation();
+  fontZoom[idx] += degis*0.23;
+  if(fontZoom[idx]<0.75) fontZoom[idx]=0.75;
+  if(fontZoom[idx]>2.7) fontZoom[idx]=2.7;
+  guncelleSorular();
+}
+
+// --- Modal ---
+function acModal(idx) {
+  modalAktif = idx;
+  modalFontZoom = fontZoom[idx] || 1;
+  document.getElementById('modalNum').innerHTML = (idx+1) + ". Metin";
+  let dogruKullanim = {};
+  secimler.forEach((secim,i)=>{
+    if(secim === metinler[i].dogru) dogruKullanim[secim]=true;
+  });
+  let secHtml = `<option value="">Başlık seçiniz...</option>`;
+  basliklarArr.forEach((b, bidx) => {
+    let optionClass = "";
+    if(secimler[idx]===b.k && secimler[idx]===metinler[idx].dogru) optionClass="dogruOpt";
+    else if(secimler[idx]===b.k && secimler[idx]!==metinler[idx].dogru && secimler[idx]!=="") optionClass="yanlisOpt";
+    else if(dogruKullanim[b.k] && secimler[idx]!==b.k) optionClass="alreadyCorrect";
+    secHtml += `<option value="${b.k}" ${secimler[idx]===b.k?'selected':''} class="${optionClass}">${b.k}) ${b.t}</option>`;
+  });
+  let selectClass = "";
+  if(secimler[idx]) {
+    if(secimler[idx]===metinler[idx].dogru) selectClass="dogruSelected";
+    else selectClass="yanlisSelected";
+  }
+  document.getElementById('modalSelect').className = "select-full " + selectClass;
+  document.getElementById('modalSelect').innerHTML = secHtml;
+  document.getElementById('modalMetin').innerHTML = metinler[idx].text;
+  let secilen = secimler[idx];
+  let sonuc = "";
+  if(!secilen) sonuc = "";
+  else if(secilen===metinler[idx].dogru) sonuc = "<span class='dogru'>Doğru!</span>";
+  else sonuc = "<span class='yanlis'>Yanlış</span>";
+  document.getElementById('modalSonuc').innerHTML = sonuc;
+  document.getElementById('modalBG').classList.add('active');
+  document.querySelector('.modal-content').style.fontSize = modalFontZoom + "em";
+}
+function kapatModal(e){
+  document.getElementById('modalBG').classList.remove('active');
+  modalAktif = null;
+}
+function modalSecim(e){
+  if(modalAktif===null) return;
+  let val = e.target.value;
+  secimler[modalAktif] = val;
+  guncelleBasliklar();
+  guncelleSorular();
+  document.getElementById('q'+modalAktif).value = val;
+  let dogruKullanim = {};
+  secimler.forEach((secim,i)=>{
+    if(secim === metinler[i].dogru) dogruKullanim[secim]=true;
+  });
+  let selectClass = "";
+  if(val) {
+    if(val===metinler[modalAktif].dogru) selectClass="dogruSelected";
+    else selectClass="yanlisSelected";
+  }
+  let secHtml = `<option value="">Başlık seçiniz...</option>`;
+  basliklarArr.forEach((b, bidx) => {
+    let optionClass = "";
+    if(val===b.k && val===metinler[modalAktif].dogru) optionClass="dogruOpt";
+    else if(val===b.k && val!==metinler[modalAktif].dogru && val!=="") optionClass="yanlisOpt";
+    else if(dogruKullanim[b.k] && val!==b.k) optionClass="alreadyCorrect";
+    secHtml += `<option value="${b.k}" ${val===b.k?'selected':''} class="${optionClass}">${b.k}) ${b.t}</option>`;
+  });
+  document.getElementById('modalSelect').className = "select-full " + selectClass;
+  document.getElementById('modalSelect').innerHTML = secHtml;
+  let sonuc = "";
+  if(!val) sonuc = "";
+  else if(val===metinler[modalAktif].dogru) sonuc = "<span class='dogru'>Doğru!</span>";
+  else sonuc = "<span class='yanlis'>Yanlış</span>";
+  document.getElementById('modalSonuc').innerHTML = sonuc;
+}
+function zoomModal(degis) {
+  if(modalAktif===null) return;
+  modalFontZoom += degis*0.23;
+  if(modalFontZoom<0.75) modalFontZoom=0.75;
+  if(modalFontZoom>2.7) modalFontZoom=2.7;
+  document.querySelector('.modal-content').style.fontSize = modalFontZoom + "em";
+}
+
+function ileriGit() {
+  window.scrollTo({top: 0, behavior: 'smooth'});
+  window.location.href = "les5.html"; // bir sonraki sayfanın dosya adı
+  // İstersen burada yeni bir sayfaya, başka bir bölüme yönlendirme ekleyebilirsin.
+  // Örneğin: window.location.href = 'sayfa2.html';
+}
+function geriGit() {
+  window.scrollTo({top: 0, behavior: 'smooth'});
+  window.location.href = "les3.html"; // bir önceki sayfanın dosya adı
+  // Aynı şekilde önceki sayfa/bölüm için burada işlem yapabilirsin.
+}
+function anaSayfa() {
+  window.location.href = "index.html"; // Veya ana sayfanın ismi neyse onu yaz.
+}
+
+</script>
+</body>
+</html>
