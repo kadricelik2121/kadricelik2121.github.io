@@ -1,0 +1,2359 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>telc Sprachbausteine Teil 2</title>
+  <style>
+    body {
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      background-color: white;
+      border-radius: 12px;
+      max-width: 1200px;
+      margin: 30px auto 0 auto;   /* Ortalamak için */
+      padding: 20px;
+      border: 2px solid #222;
+      box-sizing: border-box;
+      display: none;
+      width: 100%;
+    }
+    .container.active { display: block; }
+    .text {
+      font-size: 18px;
+      margin-bottom: 12px;
+      line-height: 1.7;
+      text-align: left;
+    }
+    .answer-box {
+      display: none;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 25px auto 0 auto;
+      padding: 18px;
+      background-color: #f0f0f0;
+      border: 2px solid #222;
+      border-radius: 12px;
+      max-width: 1180px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .answer-box.active { display: grid; }
+    .answer-option {
+      font-size: 16px;
+      text-align: left;
+      padding: 6px;
+      font-weight: normal;
+    }
+    .answer-option span:first-child {
+      font-weight: bold;
+      font-size: 18px;
+      margin-right: 6px;
+    }
+    .highlight { background-color: #b6fcb6 !important; }
+    .correct { background-color: #0bda12b9; }
+    .incorrect { background-color: #fc0019be; }
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      max-width: 800px;
+      width: 100%;
+      margin: 30px auto 0 auto;
+    }
+    .nav-buttons button {
+      padding: 14px 24px;
+      font-size: 20px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto 0 auto;
+    }
+    .title { font-size: 18px; font-weight: bold; }
+    #scoreboard { font-size: 16px; font-weight: bold; }
+    .page-number { font-size: 16px; }
+
+    select option {
+    font-size: 14px;
+  font-weight: bold;
+} 
+
+select option[value=""] {
+  font-weight: bold;
+  font-size: 16px;  /* Burada istediğin kadar büyütebilirsin */
+  color: #222;      /* Daha belirgin bir renk */
+} 
+
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="title">telc Sprachbausteine Teil 2</div>
+    <div id="scoreboard">✅ Doğru Cevap: <span id="correctCount">0</span> &nbsp;&nbsp;&nbsp; ❌ Yanlış Cevap: <span id="incorrectCount">0</span></div>
+    <div class="page-number">Seite <span id="pageIndex">1</span></div>
+  </div>
+
+  <!-- 1. METİN -->
+  <div class="container active">
+    <div class="text" id="text1">
+    <strong>Jugend diskutiert – mach mit!</strong><br>
+    Den Wettbewerb "Jugend diskutiert" gibt es bereits 
+    <select id="q31_1"><option>31</option></select> Herbst 2002. Für das kommende Jahr werden nun wieder Schülerinnen und Schüler gesucht, die an dem Wettbewerb teilnehmen möchten. 
+      <select id="q32_1"><option>32</option></select> immer bereiten sich die Teilnehmer dann im Unterricht auf "Jugend diskutiert" vor.<br>
+      Du fragst dich, 
+      <select id="q33_1"><option>33</option></select> du teilnehmen solltest? Ganz einfach: "Jugend diskutiert" bringt dich weiter! Sich einmischen, mitreden, überzeugen – bei der Vorbereitung im Unterricht trainierst du viele Fähigkeiten, die dir in der Schule und im Alltag helfen. Im Austausch mit den anderen entwickelst du deine Persönlichkeit weiter und profitierst langfristig. 
+      <select id="q34_1"><option>34</option></select> bietet dir "Jugend diskutiert" die Chance, im Wettstreit mit anderen weiterzukommen. Zuerst werden die besten einer Schule ermittelt, die dann 
+      <select id="q35_1"><option>35</option></select> Regionalwettbewerben teilnehmen. Die Sieger der Regionalwettbewerbe treten im Bundesfinale an. 
+      <select id="q36_1"><option>36</option></select> Preise kann man professionelle Trainings gewinnen.<br>
+      <select id="q37_1"><option>37</option></select> "Jugend diskutiert" kannst du viel lernen. Du hast bessere Chancen im Unterricht und bei Referaten, denn du trainierst, frei zu sprechen und Dinge anschaulich und verständlich zu beschreiben. Du gewinnst mehr Selbstbewusstsein, 
+      <select id="q38_1"><option>38</option></select> du lernst, wie man das Wort ergreift und auf sich aufmerksam macht. Du kannst überzeugen, da du eigene Argumente finden und die Argumente anderer genau prüfen kannst. Die Sichtweisen der anderen zeigen dir darüber hinaus, 
+      <select id="q39_1"><option>39</option></select> du vielleicht selbst noch nicht gesehen hast. Du überzeugst bei Auftritten, Prüfungen und Bewerbungen, da du sicher auftrittst.<br>
+      <select id="q40_1"><option>40</option></select> das alles im Unterricht gelernt hat, kann gemeinsam mit anderen viel bewegen! Schließlich ist der Wettbewerb "Jugend diskutiert" auch eine Chance, Jugendliche aus ganz Deutschland kennenzulernen und neue Freundschaften zu knüpfen.<br>
+      Weitere Informationen zu Anmeldung und Teilnahme gibt es im Internet.<br>
+    </div>
+    </div>
+  <div class="answer-box active" id="answerBox1"></div>
+
+  <!-- 2. METİN -->
+  <div class="container">
+    <div class="text" id="text2">
+    <strong>Ausbildung mit über 30</strong><br>
+    Die gelernte Krankenschwester Jaqueline Delgado drückt mit 38 Jahren noch einmal die Schulbank. 
+    <select id="q31_2"><option>31</option></select> sie hat sich für einen beruflichen Neustart entschieden. Da ihr früherer Beruf ihr keinen Spaß mehr machte, begann sie eine Berufsausbildung bei der Polizei. Ihr Ziel: Sie <select id="q32_2"><option>32</option></select> in den Streifendienst gehen.<br>
+    Mit über 30 noch einmal einen ganz neuen Job zu erlernen – lange Zeit war das kaum möglich. Arbeitgeber suchten nur junge Berufs­einsteiger. <select id="q33_2"><option>33</option></select> es heute in vielen Branchen aber an Nachwuchs fehlt, geben sie öfter auch Älteren eine <select id="q34_2"><option>34</option></select>.<br>
+    Thomas Neuendorfer, der stellvertretende Sprecher der Polizei Berlin, erklärt, <select id="q35_2"><option>35</option></select>. Sein Arbeitgeber gerne Ältere ausbildet: "Sie haben in ihrem Berufsleben Erfahrungen gesammelt, die der Polizei und auch den Bürgern der Stadt zu Gute kommen". Sie seien häufig emotional reifer, außerdem bereit, Verantwortung zu <select id="q36_2"><option>36</option></select>, und motiviert, die Ausbildung erfolgreich abzuschließen. Zudem <select id="q37_2"><option>37</option></select> sie die Jüngeren unterstützen und ihnen als Vorbild dienen. Davon profitierten dann auch die Arbeitgeber. Gegen die Einstellung von Älteren spreche nur, dass sie dem Unternehmen kürzer vor <select id="q38_2"><option>38</option></select> stehen. <select id="q39_2"><option>39</option></select> haben ältere Azubis in vielen Bereichen Möglichkeiten: in kaufmännischen oder in gewerblich-technischen Berufen, im Gesundheitswesen oder vor allem in der Gastronomie.<br>
+    Wenn das Azubi-Gehalt nicht für den Lebensunterhalt reicht, hilft die Arbeitsagentur. Der Betrag wird dabei nicht nach dem Alter festgelegt, <select id="q40_2"><option>40</option></select> es wird der individuelle, konkrete Bedarf ermittelt. Im August schließt Delgado ihre Ausbildung ab. In dem künftigen Polizei-Job wird sie ihr medizinisches Wissen, ihre Menschenkenntnis sowie ihre spanischen und englischen Sprachkenntnisse wohl gut gebrauchen können.
+    </div>
+  </div>
+  <div class="answer-box" id="answerBox2"></div>
+
+  <!-- 3. METİN -->
+  <div class="container">
+    <div class="text" id="text3">
+    <strong>Im Restaurant</strong><br>
+    Eine unterhaltsame, schöne und gesellige Zeit. Das stellt man sich unter einem guten Essen vor.
+    Störend wirkt da der anschauliche Erlebnisbericht der letzten Operation im Krankenhaus oder das Klingeln des Handys. Sowohl Gastgeber als Gast sollen alles dafür tun, dass das gemeinsame Essen Freude macht. Das Handy stellt man selbstverständlich ab.<br>
+    Das Essen beginnt, wenn der Gastgeber zur Serviette greift oder zum Gruß ein Glas erhebt. Besonders bei Kindern ein unbeliebtes Thema: die richtige Körperhaltung beim Essen. Die Arme
+    <select id="q31_3"><option>31</option></select> ... nicht auf den Tisch und die Hände nicht unter den Tisch. Man sitzt gerade, ohne unruhig hin und her zu rücken. Die Beine werden nebeneinander gestellt, nicht übereinander gelegt. Die Schuhe
+    <select id="q32_3"><option>32</option></select> ... in jedem Fall an.<br>
+    Nur keine Angst vor guten restaurants mit ihrem Luxus! Denn je besser die Küche, umso aufmerksamer ist in der Regel das Personal. Doch schon bei der Anrede der Bedienung steht so
+    <select id="q33_3"><option>33</option></select> ... vor einem Problem. Die Bedienung
+    <select id="q34_3"><option>34</option></select> ... "Fräulein" an den Tisch zu rufen, ist in Zeiten der Gleichberechtigung veraltet. "Herr Ober" oder "Bedienung" ist
+    <select id="q35_3"><option>35</option></select> ... noch möglich, aber auch schon etwas ungewöhnlich. Am besten versucht man sich Blickkontakt zu verschaffen, um mit einem kleinen
+    <select id="q36_3"><option>36</option></select> ... mit der Hand den Kellner an den Tisch zu bitten.<br>
+    Zudem gibt es zwischen Gast und Service eine Zeichensprache. Schließt der Gast die Speisekarte und legt sie auf den Tisch, ist dies für den Kellner das Signal, die Bestellung aufzunehmen. Ist man mit dem Essen
+    <select id="q37_3"><option>37</option></select> ..., legt man das Besteck parallel nebeneinender auf den rechten Tellerrand. Der Kellner wird dann abräumen. Macht man hingegen nur eine Pause, wird es gekreuzt oder einfach auf den Teller gelegt.<br>
+    Beim Bezahlen ist
+    <select id="q38_3"><option>38</option></select> ... gefragt. Übermittelt ein Gastgeber die Kosten, macht er dies dem Kellner
+    <select id="q39_3"><option>39</option></select> ... ein "Bringen Sie mir bitte die Rechnung" recht da völlig aus. Möchte man hingegen getrennt bezahlen,
+    <select id="q40_3"><option>40</option></select> ... durchaus üblichist, teilt man dies ebenfalls rechtzeitig der Bedienung mit. In Deutschland gibt man, je nach Zufriedenheit mit dem Service und der Höhe der Gesamtsumme, zwischen drei und zehn Prozent Trinkgeld. Ist man mit dem Service unzufrieden gewesen, gibt man kein Trinkgeld.
+    </div>
+  </div>
+  <div class="answer-box" id="answerBox3"></div>
+
+  <div class="container">
+  <div class="text" id="text4">
+    <strong>Theater für Kinder und Jugendliche</strong><br><br>
+    Theater fördert nicht nur die Kreativität,
+    <select id="q31_4"><option value="">31</option></select>
+    auch die Körpererfahrung von Kindern. Der Verein „Jugendhilfe Düsseldorf e. V.“ arbeitet
+    <select id="q32_4"><option value="">32</option></select>
+    vielen Jahren in der Jugendförderung, und deshalb unterstützt er auch ein neues Theaterprojekt für Kinder. Üben Und spielen werden die Teilnehmer im Jugendzentrum. Das Jugendzentrum ist eine Einrichtung des städtischen Jugendamtes und kümmert sich um Kinder, Jugendliche und junge Volljährige, die
+    <select id="q33_4"><option value="">33</option></select>
+    familiärer und anderer Probleme Hilfe benötigen.<br>
+    Bis zu zwanzig Mädchen und Jungen werden
+    <select id="q34_4"><option value="">34</option></select>
+    dem kommenden Jahr die Welt des Theaters kennenlernen.
+    <select id="q35_4"><option value="">35</option></select>
+    Ende des Projekts werden die Nachwuchsschauspieler bei einem Theaterfestival auftreten, was sicher ein Höhepunkt für alle Teilnehmer sein wird.
+    Geleitet wird die Gruppe vom Schauspieler Wolfgang Neuhausen. Er arbeitet mit dem Jugendzentrum zusammen und wird von zwei Theaterpädagogen unterstützt. Allen Mitarbeitern ist
+    <select id="q36_4"><option value="">36</option></select>
+    wichtig, dass die Kinder auf der Bühne Anerkennung für ihre Leistung bekommen. Ohne die finanzielle Unterstützung wäre das Vorhaben unmöglich.
+    <select id="q37_4"><option value="">37</option></select>
+    bei der Stadt keine Gelder vorhanden waren.<br>
+    Dieses Theaterprojekt ist nicht das erste, das gefördert wird. Im vergangenen Jahr erhielt das Theaterprojekt „Schiller – das wilde, freie Leben“ finanzielle Unterstützung. Allerdings ist nicht nur Geld wichtig: Der Verein kümmert sich auch  
+    <select id="q38_4"><option value="">38</option></select>
+    die Projekte bekannt zu machen. In verschiedenen Theaterhäusern der Stadt werden Plakate aufgehängt, mit denen der Verein für das Jugendtheater wirbt.Man hofft,
+    <select id="q39_4"><option value="">39</option></select>
+    diese Weise noch mehr Unterstützer zu finden.
+     Auch unsere Leser können die Jugendinitiative unterstützen: Aktuell sammelt das Jugendzentrum Spenden,
+    <select id="q40_4"><option value="">40</option></select>
+    weitere Projekte finanzieren zu können. Außerdem werden für die Theaterproben und die Aufführungen noch ehrenamtliche Helfer gesucht.
+  </div>
+  </div> 
+  <div class="answer-box" id="answerBox4"></div>
+
+
+ <div class="container">
+  <div class="text" id="text5">
+  <strong>Das Schicksal des Braunbären</strong><br><br>
+  Klimatische Veränderungen seit der letzten Kaltzeit könnten für den stetigen Rückgang der Braunbären zahl in Europa verantwortlich sein. Wie eine aktuelle Studie nahelegt, haben vor allem steigende Wintertemperaturen 
+  <select id="q31_5"><option>31</option></select> der vergangenen 12000 Jahre die Fortpflanzungsrate der Tiere verringert, was entscheidend zu deren Verschwinden beigetragen hat. Zudem wurden durch die Klimaveränderung größere Flächen für den Ackerbau nutzbar. 
+  <select id="q32_5"><option>32</option></select> wurde der Lebensraum der Tiere  verkleinert. Es ist längst unumstriten. 
+
+  <select id="q33_5"><option>33</option></select> das Verschwinden der Braunbären mit der Landnutzung durch den Menschen zusammenhängt.<br>
+ Ein internationales Experten Team untersuchte, nun die Rolle des Klimas beim Rückgang der Bären zahl. In den letzten 12000 Jahren ist Winter Temperatur in weiten Teilen Europas 
+  <select id="q34_5"><option>34</option></select> zwei bis vier Grad angestiegen. In der Folge bekamen die Braunbären weniger 
+
+  <select id="q35_5"><option>35</option></select>, und ihre Zahl schrumpfte.<br>
+
+  Der Grund <select id="q36_5"><option>36</option></select> ist, dass Braunbären bei steigenden Wintertemperaturen in mehr Energie für ihre Winterruhe brauchen.<br>
+  Braunbärenweibchen benötigen ihre Energie reserven auch für die Fortpflanzung,
+  <select id="q37_5"><option>37</option></select>, sie bringen im Winter ihre Jungen zur Welt. Wird mehr Energie für die Winterruhe verbraucht,
+
+ bleibt nicht so viel für die Fortpflanzung übrig, und es gibt weniger Nachwuchs. Steigende Wintertemperaturen könnten auch indirekt für das Schicksal des Braunbären wortlich gewesen sein: Wärmer Winter begünstigen namlich auch die menschlicher
+  <select id="q38_5"><option>38</option></select> in die Naturlandschaften und damit in den Lebensraum der Braunbären.<br>
+  Am Ende der letzten Eiszeit war der Braunbär 
+  <select id="q39_5"><option>39</option></select> überall in Europa heimlich großes Aussterben gab es im Südwesteuropa vor 7000 bis 5000 Jahren. Richtig bergab 
+  <select id="q40_5"><option>40</option></select> es mit dem Braunbären aber vor etwa 2000 Jahren, als sich verringerte.
+ </div>
+  </div> 
+  <div class="answer-box" id="answerBox5"></div>
+
+  <div class="container">
+  <div class="text" id="text6">
+    <strong>Die wichtigsten Regeln auf der Skipiste</strong><br><br>
+    Wer beim Skifahren fahrlässig einen anderen Sportler verletzt oder gefährdet, muss auch mit rechtlichen Folgen
+    <select id="q31_6"><option>31</option></select>
+    . Das Strafgesetzbuch ist sowohl auf der Straße als auch auf der Piste
+    <select id="q32_6"><option>32</option></select>
+    . Laut Gesetz gibt es Freiheitsstrafen bis zu 3 Monaten oder eine entsprechende Geldstrafe. Bei schwerer Körperverletzung sieht das Gesetz Freiheitsstrafen bis zu 6 Monaten <select id="q33_6"><option>33</option></select>
+    . Der deutsche Skiverband hat eine Pistenordnung erarbeitet, die bei gerichtlichen Entscheidungen angewandt wird. Jeder Wintersportler <select id="q34_6"><option>34</option></select> diese Regeln kennen:<br>
+    Jeder Skifahrer muss sich stets <select id="q35_6"><option>35</option></select> verhalten, dass er keinen anderen gefährdet oder schädigt. Er muss die Zeichen und Hinweisschilder an der Piste kennen und beachten. Er muss die eigene Geschwindigkeit und Fahrweise seinem Können und dem Gelände sowie den herrschenden Wetterverhältnissen <select id="q36_6"><option>36</option></select>
+   
+    . Ein von hinten kommender Skifahrer muss seine Fahrspur so wählen, dass er vor ihm fahrende Skifahrer nicht gefährdet. Überholen darf man rechts oder links, <select id="q37_6"><option>37</option></select>
+     immer in einem Abstand, der dem überholten Skifahrer genug Raum für seine Bewegungen lässt. Aufsteigende Skifahrer dürfen nur den <select id="q38_6"><option>38</option></select>
+einer Abfahrtstrecke benutzen. Dasselbe gilt für einen Skifahrer, der zu Fuß absteigt. Bei schlechten Sichtverhältnissen ist die Benutzung des Pistenrands verboten und der Skifahrer muss diesen verlassen. Niemand sollte sich an unübersichtlichen oder engen Stellen aufhalten.
+Gestürtze skifahrer müssen eine solche <select id="q39_6"><option>39</option></select> so schnell wie möglich freimachen. Bei Unfällen ist jeder zur Hilfeleistung verpflichtet. Jeder Zeuge oder Verantwortliche muss bei einem unfall ausserdem seine Personalien
+    <select id="q40_6"><option>40</option></select>
+    ,. Durch Beachtung dieser Regeln ist die Sicherheit auf den Pisten deutlich gestiegen.
+  </div>
+  </div> 
+  <div class="answer-box" id="answerBox6"></div>
+
+
+  <div class="container">
+  <div class="text" id="text7">
+    <strong>Jugend diskutiert – mach mit!</strong><br><br>
+    Den Wettbewerb "Jugend diskutiert" gibt es bereits
+    <select id="q31_7"><option>31</option></select> Herbst 2002. Für das kommende Jahr werden nun wieder Schülerinnen und Schüler gesucht, die an dem Wettbewerb teilnehmen möchten.
+    <select id="q32_7"><option>32</option></select> immer bereiten sich die Teilnehmer dann im Unterricht auf "Jugend diskutiert" vor.<br>
+    Du fragst dich,
+    <select id="q33_7"><option>33</option></select> du teilnehmen solltest? Ganz einfach: "Jugend diskutiert" bringt dich weiter! Sich einmischen, mitreden, überzeugen – bei der Vorbereitung im Unterricht trainierst du viele Fähigkeiten, die dir in der Schule und im Alltag helfen. Im Austausch mit den anderen entwickelst du deine Persönlichkeit weiter und profitierst langfristig.
+    <select id="q34_7"><option>34</option></select> bietet dir "Jugend diskutiert" die Chance, im Wettstreit mit anderen weiterzukommen. Zuerst werden die besten einer Schule ermittelt, die dann
+    <select id="q35_7"><option>35</option></select> Regionalwettbewerben teilnehmen. Die Sieger der Regionalwettbewerbe treten im Bundesfinale an.
+    <select id="q36_7"><option>36</option></select> Preise kann man professionelle Trainings gewinnen.<br>
+    <select id="q37_7"><option>37</option></select> "Jugend diskutiert" kannst du viel lernen. Du hast bessere Chancen im Unterricht und bei Referaten, denn du trainierst, frei zu sprechen und Dinge anschaulich und verständlich zu beschreiben. Du gewinnst mehr Selbstbewusstsein,
+    <select id="q38_7"><option>38</option></select> du lernst, wie man das Wort ergreift und auf sich aufmerksam macht. Du kannst überzeugen, da du eigene Argumente finden und die Argumente anderer genau prüfen kannst. Die Sichtweisen der anderen zeigen dir darüber hinaus,
+    <select id="q39_7"><option>39</option></select> du vielleicht selbst noch nicht gesehen hast. Du überzeugst bei Auftritten, Prüfungen und Bewerbungen, da du sicher auftrittst.<br>
+    <select id="q40_7"><option>40</option></select> das alles im Unterricht gelernt hat, kann gemeinsam mit anderen viel bewegen! Schließlich ist der Wettbewerb "Jugend diskutiert" auch eine Chance, Jugendliche aus ganz Deutschland kennenzulernen und neue Freundschaften zu knüpfen.<br>
+    Weitere Informationen zu Anmeldung und Teilnahme gibt es im Internet.
+  </div>
+  </div> 
+  <div class="answer-box" id="answerBox7"></div>
+
+  <div class="container">
+  <div class="text" id="text8">
+  <strong>Manipulierte Bilder</strong><br><br>
+  Im Internet, in sozialen Netzwerken und der Werbung werden wir mit einer 
+  <select id="q31_8"><option value="">31</option></select> von Fotos konfrontiert. Klar ist: Viele von ihnen sind keine wirklichen Originale, Bildbearbeitungsprogramme machen es sogar für Laien <select id="q32_8"><option value="">32</option></select>, einfach, Fotos zu verändern. Meist sind die Manipulationen harmlos, <select id="q33_8"><option value="">33</option></select> die Möglichkeiten der Bildbearbeitung lassen sich natürlich auch für betrügereien oder Meinungsmache missbrauchen. In diesem Zusammenhang <select id="q34_8"><option value="">34</option></select> sich die Frage, inwieweit Betrachtern solche Manipulationen auffallen. Können Sie erkennen, dass an einem Bild etwas merkwürdig ist, oder sogar die manipulierte Stelle finden <select id="q35_8"><option value="">35</option></select> Fragen sind nun Forscher der University of Warwick (UK) nachgegangen. Sie entwickelten dazu ein Online-Testsystem, bei dem die Teilnehmer den manipulierten Bereich auf Fotos erkennen sollten.<br>
+  Die Auswertungen ergaben: Die 
+  <select id="q36_8"><option value="">36</option></select> Teilnehmer waren eher nur zufällig in der Lage, ein manipuliertes Bild zu identifizieren. Oft hatten sie das vage Gefühl, dass mit einem der Bilder etwas nicht stimmt. Nur in 45 Prozent der Fälle konnten sie tatsächlich <select id="q37_8"><option value="">37</option></select> bestimmen, wo das Bild verändert worden war. Selbst ein falscher Schattenwurf oder andere <select id="q38_8"><option value="">38</option></select> Abweichungen wurden nicht besser erkannt als nachvollziehbare Manipulationen wie beispielsweise künstliche Farbveränderungen.<br>
+  Bilder haben einen starken Einfluss auf die Erinnerungen, so die Forscher. Können Menschen also nicht zwischen echten und gefälschten Details auf Fotos <select id="q39_8"><option value="">39</option></select>, so können manipulierte Bilder entscheiden beeinflussen, woran wir uns zu erinnern glauben. Die Ergebnisse dokumentieren <select id="q40_8"><option value="">40</option></select>. Wir können recht leicht auf Fake-Fotos und damit auch auf ihre manipulierten botschaften reinfallen. Aufbauend auf ihren Ergebnissen wollen die forscher nun konkrete Ratschläge erarbeiten, die dem Betrachter helfen sollen, Fotomanipulationen besser zu erkennen.
+  </div>
+  </div> 
+  <div class="answer-box" id="answerBox8"></div>
+
+
+  <div class="container">
+  <div class="text" id="text9">
+  <strong>Der klügste Freund des Menschen</strong><br><br>
+  <strong>Wissenschaftliche Studie bescheinigt Hunden hohe Intelligenz</strong><br><br>
+  Seit jeher gilt der Hund <select id="q31_9"><option value="">31</option></select> als treuer Begleiter des Menschen, besondere Leistungen auf dem Gebiet der Intelligenz wurden ihm jedoch sehr viel seltener zugesprochen. Jetzt bewiesen aber Untersuchungen, die etwa zeitgleich an der Eötvös-Loránd-Universität in Budapest, an der Harvard Universität und am Max-Planck-Institut für evolutionäre Anthropologie in Leipzig durchgeführt <select id="q32_9"><option value="">32</option></select>, dass die beliebten Vierbeiner offenbar mehr verstehen und leisten können, als man bislang glaubte.<br>
+  In speziell ausgearbeiteten Versuchen mit Hunden, Schimpansen und Gorillas wurde die Kommunikationsfähigkeit der Tiere getestet. In allen Tests schnitten die Hunde besser ab als die Affen. Hunde lesen kommunikative ınformationen besonders an den Augen <select id="q33_9"><option value="">33</option></select>, aber sie reagieren auch <select id="q34_9"><option value="">34</option></select> die Stimme und die Körpersprache des Menschen.<br>
+  Ganz besonders der Blickkontakt <select id="q35_9"><option value="">35</option></select> für Hunde ein wichtiges Instrument, um Informationen über den "Gesprächspartner" zu erhalten. Diese Fähigkeit habe sich im Verlaufe der Domestizierung der Hunde durch den Menschen immer weiter ausgebildet und sei jetzt in den Genen der Hunde fest verankert, so die Aussage der Forscher.<br>
+  Hunden wird jetzt auch bescheinigt, dass sie ein Verständnis für Objekte entwickelt haben. Die Forscher versteckten vor den Augen ihrer Probanden Spielzeug entweder hinter einer Wand oder in einem Behälter. <select id="q36_9"><option value="">36</option></select> der Behälter nach dem Öffnen leer, suchten die Hunde auch hinter der Wand nach dem Spielzeug.<br>
+  Hundetrainer, die in anerkannten Hundeschulen arbeiten, wissen schon lange Erstaunliches über die Fähigkeiten ihrer Schüler zu berichten. Ein Beispiel für die erstaunlichen Leistungen, die ein Hund zustande zu bringen vermag, ist der Blindenhund. Er kann nach den entsprechenden Trainings blinden Menschen sicher den weg zeigen er achtet auf den Straßenverkehr, er leitet sie <select id="q37_9"><option value="">37</option></select> Hindernisse herum.<br>
+  Nach neuesten Erkenntnissen wurden die ersten Hunde vor etwa 15.000 Jahren in Ostasien domestiziert. Nach umfangreichen Erbgutuntersuchungen geht man <select id="q38_9"><option value="">38</option></select>aus, dass alle heute bekannten Hunderassen von etwas fünf weiblichen wölfen abstammen. Als Ursprungsland der heutigen Hunderassen nimmt man china an.<br>
+  Hundebesitzer von heute können also stolz<select id="q39_9"><option value="">39</option></select> sein, nicht nur einen anhänglichen, <select id="q40_9"><option value="">40</option></select> auch einen intelligenten Begleiter bei sich zu haben.
+ </div>
+  </div> 
+  <div class="answer-box" id="answerBox9"></div>
+
+  <div class="container">
+  <div class="text" id="text10">
+  <strong>Der klügste Freund des Menschen</strong><br><br>
+  <strong>Wissenschaftliche Studie bescheinigt Hunden hohe Intelligenz</strong><br><br>
+  Seit jeher gilt der Hund <select id="q31_10"><option value="">31</option></select> als treuer Begleiter des Menschen, besondere Leistungen auf dem Gebiet der Intelligenz wurden ihm jedoch sehr viel seltener zugesprochen. Jetzt bewiesen aber Untersuchungen, die etwa zeitgleich an der Eötvös-Loránd-Universität in Budapest, an der Harvard Universität und am Max-Planck-Institut für evolutionäre Anthropologie in Leipzig durchgeführt <select id="q32_10"><option value="">32</option></select>, dass die beliebten Vierbeiner offenbar mehr verstehen und leisten können, als man bislang glaubte.<br>
+  In speziell ausgearbeiteten Versuchen mit Hunden, Schimpansen und Gorillas wurde die Kommunikationsfähigkeit der Tiere getestet. In allen Tests schnitten die Hunde besser ab als die Affen. Hunde lesen kommunikative Hinweise nicht nur mit den Augen <select id="q33_10"><option value="">33</option></select>, aber sie reagieren auch <select id="q34_10"><option value="">34</option></select> die Stimme und die Körpersprache eines Menschen.<br>
+  Ganz besonders der Blickkontakt <select id="q35_10"><option value="">35</option></select> für Hunde ein wichtiges Instrument, um Informationen über den "Gesprächspartner" zu erhalten. Diese Fähigkeit habe sich im Verlaufe der Domestizierung der Hunde durch den Menschen immer weiter ausgebildet und sei jetzt in den Genen der Hunde fest verankert, so die Aussage der Forscher.<br>
+  Hunden wird jetzt auch bescheinigt, dass sie ein Verständnis für Objekte entwickelt haben. Die Forscher versteckten vor den Augen ihrer Probanden Spielzeug entweder hinter einer Wand oder in einem Behälter. <select id="q36_10"><option value="">36</option></select> der Behälter nach dem Öffnen leer, suchten die Hunde auch hinter der Wand nach dem Spielzeug.<br>
+  Hundetrainer, die in anerkannten Hundeschulen arbeiten, wissen schon lange Erstaunliches über die Fähigkeiten ihrer Schüler zu berichten. Ein Beispiel für die erstaunlichen Leistungen, die ein Hund zustande zu bringen vermag, ist das Verhalten eines Blindenhundes. Auf ein entsprechendes Training blinden Menschen sicher im Straßenverkehr zu handeln und auf den Straßenverkehr, er leitet sie <select id="q37_10"><option value="">37</option></select> Hunden sicher herum.<br>
+  Nach neuesten Erkenntnissen wurden die ersten Hunde vor etwa 15.000 Jahren in Ostasien domestiziert. Nach umfangreichen Erbgutuntersuchungen geht man <select id="q38_10"><option value="">38</option></select>, dass alle heute bekannten Hunderassen von asiatischen Wölfen abstammen. Als Ursprungsland der heutigen Hunderassen gilt die Mongolei.<br>
+  Hundebesitzer von heute können <select id="q39_10"><option value="">39</option></select> sein, nicht nur einen anhänglichen, <select id="q40_10"><option value="">40</option></select> auch einen intelligenzbegabten Begleiter bei sich zu haben.
+ </div>
+  </div> 
+  <div class="answer-box" id="answerBox10"></div>
+
+
+  <div class="container">
+  <div class="text" id="text11">
+  <strong>Der klügste Freund des Menschen</strong><br><br>
+  <strong>Wissenschaftliche Studie bescheinigt Hunden hohe Intelligenz</strong><br><br>
+  Seit jeher gilt der Hund <select id="q31_11"><option value="">31</option></select> als treuer Begleiter des Menschen, besondere Leistungen auf dem Gebiet der Intelligenz wurden ihm jedoch sehr viel seltener zugesprochen. Jetzt bewiesen aber Untersuchungen, die etwa zeitgleich an der Eötvös-Loránd-Universität in Budapest, an der Harvard Universität und am Max-Planck-Institut für evolutionäre Anthropologie in Leipzig durchgeführt <select id="q32_11"><option value="">32</option></select>, dass die beliebten Vierbeiner offenbar mehr verstehen und leisten können, als man bislang glaubte.<br>
+  In speziell ausgearbeiteten Versuchen mit Hunden, Schimpansen und Gorillas wurde die Kommunikationsfähigkeit der Tiere getestet. In allen Tests schnitten die Hunde besser ab als die Affen. Hunde lesen kommunikative Informationen besonders gut von den Augen <select id="q33_11"><option value="">33</option></select>, aber sie reagieren auch <select id="q34_11"><option value="">34</option></select> die Stimme und die Körpersprache eines Menschen.<br>
+  Ganz besonders der Blickkontakt <select id="q35_11"><option value="">35</option></select> für Hunde ein wichtiges Instrument, um Informationen über den "Gesprächspartner" zu erhalten. Diese Fähigkeit habe sich im Verlaufe der Domestizierung der Hunde durch den Menschen immer weiter ausgebildet und sei jetzt in den Genen der Hunde fest verankert, so die Aussage der Forscher.<br>
+  Hunden wird jetzt auch bescheinigt, dass sie ein Verständnis für Objekte entwickelt haben. Die Forscher versteckten vor den Augen ihrer Probanden Spielzeug entweder hinter einer Wand oder in einem Behälter. <select id="q36_11"><option value="">36</option></select> der Behälter nach dem Öffnen leer, suchten die Hunde auch hinter der Wand nach dem Spielzeug.<br>
+  Hundetrainer, die in anerkannten Hundeschulen arbeiten, wissen schon lange Erstaunliches über die Fähigkeiten ihrer Schüler zu berichten. Ein Beispiel für die erstaunlichen Leistungen, die ein Hund zustande zu bringen vermag, ist das Verhalten eines Blindenhundes. Er kann den Straßenverkehr, er leitet sie <select id="q37_11"><option value="">37</option></select> Hunden sicher herum.<br>
+  Nach neuesten Erkenntnissen wurden die ersten Hunde vor etwa 15.000 Jahren in Ostasien domestiziert. Nach umfangreichen Erbgutuntersuchungen geht man <select id="q38_11"><option value="">38</option></select>, dass alle heute bekannten Hunderassen von asiatischen Wölfen abstammen. Als Ursprungsland der heutigen Hunderassen gilt die Mongolei.<br>
+  Hundebesitzer von heute können <select id="q39_11"><option value="">39</option></select> sein, nicht nur einen anhänglichen, <select id="q40_11"><option value="">40</option></select> auch einen intelligenzbegabten Begleiter bei sich zu haben.
+ </div>
+  </div> 
+  <div class="answer-box" id="answerBox11"></div>
+
+
+  <div class="container">
+  <div class="text" id="text12">
+  <strong>Maßgeschneidert nach Bodyscanning</strong><br><br>
+  Haben Sie sich schon einmal <select id="q31_12"><option value="">31</option></select> geärgert, dass Sie zwar in vielen Geschäften viele schöne Kleidungsstücke sehen konnten, Ihnen aber dann bei der Anprobe keines gepasst hat? Dann geht es Ihnen wie zurzeit der Mehrheit der deutschen Bevölkerung: Die Kleidungsstücke, die in den Modehäusern angeboten werden, gibt es fast <select id="q32_12"><option value="">32</option></select> noch in den falschen Größen.<br>
+  Eine Untersuchung des Textilforschungszentrums Hohenstein brachte nun <select id="q33_12"><option value="">33</option></select> Licht, dass die Modeproduzenten den Grund dafür , dass viele Konfektionsgrößen offenbar <select id="q34_12"><option value="">34</option></select> den Kundinnen noch den Kunden passen, in der körperlichen Entwicklung der Bevölkerung in Deutschland suchen<select id="q35_12"><option value="">35</option></select>.<br>
+  Seıt den 1960er jahren seien die Deutschen im Durchschnitt um bis zu acht Zentimeter sowohl größer als auch dicker geworden. Die Länge der Arme habe  zugenommen, besonders aber an den Hüften hätten die Deutschen beträchtlich zugelegt.<br>
+  <select id="q36_12"><option value="">36</option></select> der Handel natürlich daran interessiert ist, die kleidungsstücke in den richtigen Größen in ausreichender Zahl zu produzieren, wurde jetzt ein neues projekt geplant <select id="q37_12"><option value="">37</option></select>.<br>
+ Aufschluss darüber geben soll, welche Größen die Kunden eigentlich brauchen. Die neue Body-Scan-Technologie soll Männer und Frauen neu vermessen. Mehrere Kameras tasten mit Laserlicht die menschlichen Körper ab und erstellen ein dreidimensionales Ebenbild der gescannten Person. Diese dreidimensionalen Bilder   <select id="q38_12"><option value="">38</option></select>es ermöglichen, in Zukunft genauere Informationen über die durchschnittliche Körpergröße zu erhalten.<br>
+  Ähnliche Messungen werden auch in Großbritannien, den Niederlanden, den skandinavischen Ländern, Frankreich und den USA vorgenommen. Mehr als zwei Millionen Euro wollen die Modefirmen dafür investieren, das Ergebnis lohnt sich aber für sie auf jeden Fall.<br>
+  Als Kundinnen und Kunden <select id="q39_12"><option value="">39</option></select> wir uns außerdem darauf freuen, <select id="q40_12"><option value="">40</option></select> sich als Nebenprodukt der Körpervermessung in den verschiedenen Ländern die Modefirmen vielleicht endlich dafür entscheiden, weltweit gleiche Nummern für gleiche Größen einzuführen. Dann ist ein Kleidungsstück mit der Nummer 26 überall gleich groß, ob in Nord- oder Südeuropa, in Amerika oder Asien.
+ </div>
+  </div> 
+  <div class="answer-box" id="answerBox12"></div>
+
+  <div class="container">
+  <div class="text" id="text13">
+  <strong>Maßgeschneidert nach Bodyscanning</strong><br><br>
+  Haben Sie sich schon einmal <select id="q31_13"><option value="">31</option></select> geärgert, dass Sie zwar in vielen Geschäften viele schöne Kleidungsstücke sehen konnten, Ihnen aber dann bei der Anprobe keines gepasst hat? Dann geht es Ihnen wie zurzeit der Mehrheit der deutschen Bevölkerung: Die Kleidungsstücke, die in den Modehäusern angeboten werden, gibt es fast <select id="q32_13"><option value="">32</option></select> noch in den falschen Größen.<br>
+  Eine Untersuchung des Textilforschungszentrums Hohenstein  <select id="q33_13"><option value="">33</option></select> nun zu der folgenden Erkenntnis: Der Grund dafür, dass viele Konfektionsgrößen offenbar <select id="q34_13"><option value="">34</option></select> nochden Kundinnen noch den Kunden passen, sei die körperliche Entwicklung der Bevölkerung in Deutschland. Seit den 1960er Jahren seien die Deutschen im Durchschnitt um bis zu acht Zentimeter sowohl größer als auch dicker geworden ,den Kundinnen noch den künden passen. die Länge der Arme habe <select id="q35_13"><option value="">35</option></select> zugenommen, besonders aber auch an den Hüften hätten die Deutschen beträchtlich zugelegt.<br>
+   <select id="q36_13"><option value="">36</option></select> man natürlich daran interessiert ist, Kleidungsstücke in den richtigen Größen und in ausreichender Zahl zu produzieren, soll jetzt ein neu ermittelt werden.<br>
+  welche Größen die kunden eigentlich brauchen. Dazu wurde ein neues verfahren entwickelt <select id="q37_13"><option value="">37</option></select> Männer und Frauen neu vermessen soll. Bei der Body-Scan-technologie tasten mehrere Kameras mit Laserlicht die menschlichen Körper ab und erstellen ein dreidimensionales Ebenbild der gescannten Person. Diese dreidimensionalen Bilder <select id="q38_13"><option value="">38</option></select>  es ermöglichen, in Zukunft genauere Informationen über die durchschnittliche Körpergröße zu erhalten.<br>
+  Ähnliche Messungen werden auch in Großbritannien, den Niederlanden, den skandinavischen Ländern, Frankreich und den USA vorgenommen. mehr als zwei Millionen Euro wollen die Modefirmen dafür investieren, das Ergebnis lohnt sich aber für sie auf jeden Fall.<br>
+  Als Kundinnen und Kunden dürften wir uns außerdem darauf freuen <select id="q39_13"><option value="">39</option></select> sich als Nebenprodukt der Körpervermessung in den verschiedenen Ländern die Modefirmen vielleicht endlich dafür entscheiden,weltweit gleich Nummern fürgleich Größen einzuführen. Dann ist ein Kleidungsstück mit der Nummer 36 überall <select id="q40_13"><option value="">40</option></select>  groß, ob in Nord- oder Südeuropa, in Amerika oder Asien.
+ </div>
+  </div> 
+  <div class="answer-box" id="answerBox13"></div>
+
+
+  <div class="container">
+  <div class="text" id="text14">
+  <strong>Das Fahrrad: ernsthafte Konkurrenz fürs Auto?</strong><br><br>
+  Welches Fortbewegungsmittel, denken Sie, wird in Deutschland am häufigsten benutzt? Natürlich das Automobil. Volkswagen, Porsche, Mercedes Benz, BMW, Audi: In <select id="q31_14"><option value="">31</option></select> einem anderen Land gibt es so viele Automobilfabriken wie in Deutschland, spielt die Automobilindustrie eine so große Rolle. Nahezu jeder Haushalt verfügt über mindestens ein Auto, das Auto spielt im Leben der Deutschen eine große Rolle, sowohl als Fortbewegungsmittel zum Arbeitsplatz oder in den Urlaub als auch als Statussymbol: „Zeig mir dein Auto und ich weiß, wer du bist.“<br>
+  Doch hat das Autofahren auch Schattenseiten. Mangelnde Bewegungsmöglichkeiten, gesundheitliche Probleme und stress bringen zumindest in den großstädten s immer mehr Autofahrer dazu, sich vom Automobil freizumachen und <select id="q32_14"><option value="">32</option></select> ein anderes Verkehrsmittel umzusteigen, das in dem Ruf steht, gesünder zu sein als das Auto: das Fahrrad. Nicht nur in der Freizeit, sondern auch auf dem Weg zum Arbeitsplatz wird das Rad benutzt. „Ich habe keine Lust, Morgen für Morgen im Stau zu stehen und Zeit zu verlieren“, sagt Bettina Meier (25): „Da ist es viel entspannender, auf den zumeist gut ausgebauten Fahrradwegen an den im stau wartenden Fahrzeugen<select id="q33_14"><option value="">33</option></select> und ausgeruht am Arbeitsplatz anzukommen.<br>
+  Dass Fahrradfahren um einiges gesünder ist, als hinter dem Lenkrad zu sitzen, bestätigen auch die Mediziner. Wer Fahrrad fährt<select id="q34_14"><option value="">34</option></select> zu sitzen, bringt seinen Blutkreislauf in Schwung, stärkt die Abwehrkräfte des Körpers und trainiert seinen körper. Auch die Bewegungen an der frischen Luft tut Menschen gut, die sich sonst die meiste Zeit<select id="q35_14"><option value="">35</option></select> geschlossener Räume in Büros, Schulen oder Fabriken aufhalten <select id="q36_14"><option value="">36</option></select>.<br>
+  Auch die Geschäftswelt hat die Fahrradfahrer als kunden entdeckt. Ein breites Angebot <select id="q37_14"><option value="">37</option></select> Zubehör für Fahrräder von schicken Radfelgen über sportliche Mehrganggetriebe, mit denen Berge kein Problem mehr darstellen, bis zur designer-trinkflasche machen aus dem einfachen Fahrrad ein exlusives Fahrzeug. Und natürclich darf bei keinem  Fahrradfahrer eine aufwändige Sicherheitsausstattung mehr fehlen : Schutzhelme, Ellenbogen - und Knieschützer, die das Fahrrad im Falle eines Unfalls fast so sicher wie einen panzer machen <select id="q38_14"><option value="">38</option></select> .<br>
+    Nur wenn es regnet – und das passiert in Deutschland leider nicht selten –, <select id="q39_14"><option value="">39</option></select>   sind die Autoschlangen wieder länger  <select id="q40_14"><option value="">40</option></select>  einen praktischen Wetterschutz für Radfahrer haben die Geschäfte noch nicht im Angebot.
+ </div>
+  </div> 
+  <div class="answer-box" id="answerBox14"></div>
+
+  <div class="container">
+  <div class="text" id="text15">
+  <strong>Sollte man nicht doch besser aufs Fahrrad umsteigen?</strong><br><br>
+  Welches Fortbewegungsmittel, denken Sie, wird in Deutschland am häufigsten benutzt? Natürlich das Automobil. Volkswagen, Porsche, Mercedes Benz, BMW, Audi: In <select id="q31_15"><option value="">31</option></select> einem anderen Land gibt es so viele Automobilfabriken wie in Deutschland, spielt die Automobilindustrie eine so große Rolle. Nahezu jeder Haushalt verfügt über mindestens ein Auto. Das Auto hat im Leben der Deutschen eine große Bedeutung, sowohl als Fortbewegungsmittel, mit dem man zum Arbeitsplatz kommt oder in den Urlaub fährt, als auch als Statussymbol: Zeig mir dein Auto und ich weiß, wer du bist.<br>
+  Doch hat das Autofahren auch Schattenseiten. Mangelnde Bewegungsmöglichkeiten, gesundheitliche Probleme und Stress bringen zumindest in den Großstädten immer mehr Autofahrer dazu, sich vom Automobil freizumachen und <select id="q32_15"><option value="">32</option></select> ein anderes Verkehrsmittel umzusteigen, das in dem Ruf steht, gesünder zu sein als das Auto: das Fahrrad. Nicht nur in der Freizeit, sondern auch auf dem Weg zum Arbeitsplatz wird das Rad benutzt. „Ich habe keine Lust, Morgen für Morgen im Stau zu stehen und Zeit zu verlieren“, sagt Bettina Meier (25): „Da ist es viel entspannender, auf den <select id="q33_15"><option value="">33</option></select> gut ausgebauten Fahrradwegen an den im Stau wartenden Fahrzeugen vorbeizufahren und ausgeruht am Arbeitsplatz anzukommen.“<br>
+  Dass Fahrradfahren um einiges gesünder ist, als hinter dem Lenkrad zu sitzen, bestätigen auch die Mediziner. Wer Fahrrad fährt<select id="q34_15"><option value="">34</option></select> zu sitzen, bringt seinen blutkreislauf in Schwung, trainiert seinen Körper und stärkt dessen Abwehrkräfte. Auch die Bewegung an der frischen Luft tut Menschen gut, die sich sonst die meiste Zeit <select id="q35_15"><option value="">35</option></select>geschlossener Räume in Büros Schulen oder Fabriken aufhalten <select id="q36_15"><option value="">36</option></select>.<br>
+  Auch die Geschäftswelt hat die Fahrradfahrer als Kunden entdeckt. Ein breites Angebot <select id="q37_15"><option value="">37</option></select> Zubehör für Fahrräder von schicken Radfelgen über sportliche Mehrganggetriebe, mit denen Berge kein Problem mehr darstellen, bis zur bis zur designer-trinkflasche machen aus dem einfachen Fahrrad ein exlusives Fahrzeug. Und natürclich darf bei keinem  Fahrradfahrer eine aufwändige Sicherheitsausstattung mehr fehlen : Schutzhelme, Ellenbogen- und Knieschützer, die das Fahrrad im Falle eines Unfalls fast so sicher wie einen panzer machen <select id="q38_15"><option value="">38</option></select>.<br>
+   
+  Nur wenn es regnet – und das passiert in Deutschland leider nicht so selten –,<select id="q39_15"><option value="">39</option></select>  sind die Autoschlangen wieder so länger<select id="q40_15"><option value="">40</option></select>  einen praktischen Wetterschutz für Radfahrer haben die Geschäfte noch nicht im Angebot.
+ </div>
+  </div> 
+  <div class="answer-box" id="answerBox15"></div>
+
+
+
+  <div class="container">
+  <div class="text" id="text16">
+  <strong>Ist der Umgang mit Haustieren gesund für Kleinkinder?</strong><br><br>
+  Kleine Kinder, die in der Gesellschaft von Haustieren wie Hund und Katze leben, sind einer Studie aus Finnland zufolge seltener krank <select id="q31_16"><option value="">31</option></select> Kinder in Haushalten ohne Tiere.<br>
+  Die Studie wurde in der <select id="q32_16"><option value="">32</option></select> Woche in einem amerikanischen Fachmagazin veröffentlicht. Es wurden <select id="q33_16"><option value="">33</option></select> keine Erklärungen für diese Tatsache geliefert, aber die Vermutung wurde geäußert, dass der Kontakt zu Hunden das Immunsystem der Kleinkinder stärke. Hunde haben nämlich <select id="q34_16"><option value="">34</option></select> die täglichen Spaziergänge draußen viel Kontakt zu möglichen Krankheitserregern und trainierten vielleicht so das Immunsystem der Kinder. Auch Katzen, die Möglichkeit haben, nach draußen zu gehen, haben demnach <select id="q35_16"><option value="">35</option></select> Wirkung auf die Gesundheit der Kinder, wenngleich in geringerem Maße.<br>
+  Für die Studie <select id="q36_16"><option value="">36</option></select> in Finnland 397 Babys über den Zeitraum von der neunten Lebenswoche bis zu ihrem ersten Geburtstag beobachtet. Dabei hatten die mit Hund oder Katze aufwachsenden Kinder ein um 30 % <select id="q37_16"><option value="">37</option></select> Risiko für Erkrankungen der Atemwege. Es fiel auf, dass bei diesen Kindern Ohrenentzündungen <select id="q38_16"><option value="">38</option></select> auftraten.<br>
+  Die Studie kommt daher zu dem Schluss, dass die Gesundheit von Kindern in Gesellschaft von Tieren <select id="q39_16"><option value="">39</option></select> besser sei. Frühere Untersuchungen aus den USA hatten das genaue <select id="q40_16"><option value="">40</option></select> der jetzigen Ergebnisse ergeben. Ob diese Unterschiede mit den unterschiedlichen Lebens- und Umweltbedingungen der beiden Länder zusammenhängen, ist noch unklar.
+ </div>
+  </div> 
+  <div class="answer-box" id="answerBox16"></div>
+
+  <div class="container">
+  <div class="text" id="text17">
+  <strong>Schwarzarbeit kann teuer werden</strong><br><br>
+  Schnäppchen machen, um Rabatte feilschen: Wer billig einkauft, gilt als clever. Vorsicht ist jedoch bei Aufträgen an Schwarzarbeiter geboten. Denn schnell zahlt der Kunde drauf, <select id="q31_17"><option value="">31</option></select> wie durch das illegale Arbeitsverhältnis erhofft – Geld zu sparen.<br>
+  Rund ums Haus ist nicht <select id="q32_17"><option value="">32</option></select> Gelegenheit so günstig, wie es anfangs scheint: Schwarzarbeit etwa ist nicht nur verboten, sondern es gibt auch ein finanzielles Argument <select id="q33_17"><option value="">33</option></select> illegale Arbeiter: Oftmals rechnet sich der Dienst gegen Barzahlung gar nicht.<br>
+  "Abgesehen <select id="q34_17"><option value="">34</option></select>, dass es strafbar ist, Schwarzarbeiter zu beschäftigen, nimmt der Auftraggeber handfeste steurliche Nachteile in Kauf", warnt Dirk Vitte, Steuerberater aus Wildeshausen in Niedersachsen. Wer eine Putz­hilfe beschäftigt, kann die Steuerlast auch auf legalem Weg spürbar senken.<br>
+  Auch für die Modernisierung, Renovierung und Sanierung der Wohnung gibt es einen Steuer­nachlass, allerdings nur für legale Arbeiten. "Das Finanzamt <select id="q35_17"><option value="">35</option></select> eine ordentliche Rechnung und einen Überweisungs­beleg sehen". Barzahler können daher nichts von der Steuer absetzen. Noch schwerer fällt ins Gewicht, dass sie kunde seine Haft­ungsansprüche aufs Spiel setzt, wenn er vordergründig ein paar Euro sparen möchte. Denn Mängelfreie Bauten <select id="q36_17"><option value="">36</option></select> eher die Ausnahme.<br>
+  Und ob ein Kunde die Beseitigung von Mängeln gerichtlich gegen einen Schwarzarbeiter durchsetzen kann, ist von Fall zu Fall zu prüfen. Im Prinzip muss man aber damit rechnen, die Ansprüche zu verlieren. Ebenso dürfen Verbraucher leer <select id="q37_17"><option value="">37</option></select>, wenn beim Bauen etwas zu Bruch geht. Ein orderntlicher Handwerker hat für <select id="q38_17"><option value="">38</option></select> Fälle eine Haftpflichtversicherung .<br>
+  
+Richtig teuer werden können auch Unfälle, bei denen sich der illegale Helfer verletzt. Dann zahlen weder Krankenversicherung - noch Unfallkasse. "Fällt etwa ein Arbeiter vom Gerüst und ist danach dauerhaft querschnittsgelähmt,dann wird der künde dafür sein leben lang zahlen.<br>
+  Die Folgen von Schwarzarbeit lassen sich mit dem Dominoprinzip beschreiben:Fliegt die illegale Beschäftigung auf, dann <select id="q39_17"><option value="">39</option></select> es gleich mehrere Behörden mit. Post gibt es dann vom Finanzamt, der Staatsanwaltschaft und den Sozialversicherungsträgern. Dann braucht der Auftraggeber <select id="q40_17"><option value="">40</option></select> – einen Anwalt. Und der kostet natürlich auch wieder Geld.
+ </div>
+  </div> 
+  <div class="answer-box" id="answerBox17"></div>
+
+
+  <div class="container">
+  <div class="text" id="text18">
+  <strong>Schwarzarbeit kann teuer werden</strong><br><br>
+  Schnäppchen machen, um Rabatte feilschen: Wer billig einkauft, gilt als clever. Vorsicht ist jedoch bei Aufträgen an Schwarzarbeiter geboten. Denn schnell zahlt der Kunde drauf, <select id="q31_18"><option value="">31</option></select> wie durch das illegale Arbeitsverhältnis plötzlich – Geld zu sparen.<br>
+  Rund ums Haus ist nicht <select id="q32_18"><option value="">32</option></select> Gelegenheit so günstig, wie es anfangs scheint: Schwarzarbeit etwa ist nicht nur verboten, sondern es gibt auch ein finanzielles Argument <select id="q33_18"><option value="">33</option></select> illegale Arbeit: Oftmals rechnet der Dienst gegen Barzahlung gar nicht.<br>
+  „Abgesehen <select id="q34_18"><option value="">34</option></select>, dass es strafbar ist, Schwarzarbeiter zu beschäftigen, nimmt der Auftraggeber handfeste wirtschaftliche Nachteile in Kauf“, warnt Dirk Vott, Steuerberater aus Wilshausen in Niedersachsen. Wer eine Putz­hilfe beschäftigt, kann die Steuerlast auch auf legalem Weg mindern.<br>
+  Auch für die Modernisierung und Sanierung der Wohnung gibt es einen Steuer­nachlass, allerdings nur für legale Arbeiten. „Das Finanzamt <select id="q35_18"><option value="">35</option></select> eine ordentliche Rechnung und einen Überweisungs­beleg sehen“. Barzahler können daher nichts von der Steuer absetzen. Noch schwerer fällt ins Gewicht, dass sie keine Haft­pflichtansprüche aufs Spiel setzen, wenn er vordergründig nur ganz kleine Beträge sparen möchte. Denn mehr­gliedrige Bauten <select id="q36_18"><option value="">36</option></select> eher die Ausnahme.<br>
+  Und ob ein Kunde die Beseitigung von Mängeln gerichtlich gegen einen Schwarzarbeiter durchsetzen kann, ist von Fall zu Fall zu prüfen. Im Prinzip muss man aber damit rechnen, die Ansprüche zu verlieren. Diesen dürfen Verbraucher <select id="q37_18"><option value="">37</option></select>, wenn beim Bauen etwas zu Bruch geht. Ein dritter Grund: Auch bei einem Unfall haftet der Kunde selbst, wenn der Schwarzarbeiter keine Haftpflichtversicherung hat.<br>
+  Richtig teuer werden können auch Unfälle, bei denen sich der illegale Helfer verletzt. Dann zahlen weder Kranken- noch Unfallkasse. „Fällt etwa ein Helfer vom Gerüst und ist danach dauerhaft querschnittsgelähmt, können auf den Auftraggeber ein Leben lang zahlen.<br>
+  Die Folgen von Schwarzarbeit lassen sich noch im gleichen Behördenhof mindern: Fliegt die illegale Beschäftigung auf, dann <select id="q39_18"><option value="">39</option></select> es gleich mehrere Behörden mit. Post gibt es dann vom Finanzamt, der Staatsanwaltschaft oder vom Sozialversicherungsträger. Dann braucht der Auftraggeber <select id="q40_18"><option value="">40</option></select> – einen Anwalt. Und der kostet natürlich nicht gerade wenig Geld.
+ </div>
+  </div> 
+  <div class="answer-box" id="answerBox18"></div>
+
+  <div class="container">
+  <div class="text" id="text19">
+  <strong>Was steckt hinter „Bio“?</strong><br><br>
+  Überall gibt es inzwischen Bio-Lebensmittel – aber häufig fehlen den Käufern Hintergrundinformationen. Viele Verbraucher fragen sich beispielsweise, <select id="q31_19"><option value="">31</option></select> Bio-Produkte nun auch wirklich gesünder sind. Skepsis macht sich breit, spätestens wenn wieder einmal ein Skandal in den Nachrichten ist. <select id="q32_19"><option value="">32</option></select> sind Bio-Produkte teurer – und den Aufpreis will man nur zahlen, wenn man sicher ist, dass die Bio-Lebensmittel die bessere Wahl sind. Der Informationsdienst des Bundesministeriums für Ernährung und Verbraucherschutz gibt darüber eine eindeutige Auskunft: Bio-Lebensmittel sind gesünder. Sie <select id="q33_19"><option value="">33</option></select> weniger Nitrat, mehr Nährstoffe und sind besser geeignet, wenn man Allergien hat.<br>
+  Doch Bio-Lebensmittel sind nicht nur gut für die Gesundheit. Bei vielen Verbrauchern steht <select id="q34_19"><option value="">34</option></select> ihrem Einkaufsverhalten ein ökologisches Bewusstsein. Bio-Verbraucher machen sich Gedanken über Bio-Lebensmittel, denn auch die umweltfreundliche Landwirtschaft ist besser für Tiere und Pflanzen, kurz: Sie <select id="q35_19"><option value="">35</option></select> unsere Umwelt. Und sie hoffen darauf, dass möglichst viele gesunde Menschen in einer gesunden Umwelt leben und auch der nächsten Generation eine gesunde Umwelt hinterlassen.<br>
+  Bio-Lebensmittel kommen <select id="q36_19"><option value="">36</option></select> ökologischer Landwirtschaft, die im Einklang mit der Natur steht. Die Mindestkriterien der Bio-Landwirtschaft beinhalten eine artgerechte Tierhaltung: Alle Tiere müssen ausreichend Platz haben, es gibt keine langen Tiertransporte, keine Antibiotika. Die Produkte werden möglichst aus der näheren Umgebung verkauft, beispielsweise in Bio-Bauernmärkten oder in Bio-Supermärkten, auf denen <select id="q37_19"><option value="">37</option></select> nur Produkte vermarktet werden.<br>
+  Wenn die Bio-Lebensmittel verarbeitet werden – beispielsweise aus Bio-Eiern, Bio-Mehl und Bio-Zucker ein Bio-Kuchen gebacken wird – dürfen <select id="q38_19"><option value="">38</option></select> nur Zusatzstoffe verwendet werden, die aus natürlichen Rohstoffen stammen. Das bedeutet: Es gibt keine chemische Schädlingsbekämpfungsmittel, Antibiotika oder künstliche Zusatzstoffe. Auch im Ausland <select id="q39_19"><option value="">39</option></select> Bio-Lebensmittel nach diesen Kriterien geprüft.<br>
+  Für Bio-Produkte gibt es ein Zertifikat, das Bio-Siegel. Diese Richtlinien garantieren, <select id="q40_19"><option value="">40</option></select> die Produkte wirklich „bio“ sind.
+ </div>
+  </div> 
+  <div class="answer-box" id="answerBox19"></div>
+
+  <div class="container">
+  <div class="text" id="text20">
+  <strong>Was steckt hinter „Bio“?</strong><br><br>
+  Überall gibt es inzwischen Bio-Lebensmittel – aber häufig fehlen den Käufern Hintergrundinformationen. Viele Verbraucher fragen sich beispielsweise, <select id="q31_20"><option value="">31</option></select> Bio-Produkte nun auch wirklich gesünder sind. Skepsis macht sich breit, spätestens wenn wieder einmal ein Skandal in den Nachrichten ist. <select id="q32_20"><option value="">32</option></select> sind Bio-Produkte teurer – und den Aufpreis will man nur zahlen, wenn man sicher ist, dass die Bio-Lebensmittel die bessere Wahl sind. Der Informationsdienst des Bundesministeriums für Ernährung, Landwirtschaft und Verbraucherschutz gibt darüber eine eindeutige Auskunft: Bio-Lebensmittel sind gesünder. Sie <select id="q33_20"><option value="">33</option></select> weniger Nitrat, mehr Nährstoffe und sind besser geeignet, wenn man Allergien hat.<br>
+  Doch Bio-Lebensmittel sind nicht nur gut für die Gesundheit. Bei vielen Verbrauchern steht <select id="q34_20"><option value="">34</option></select> ihrem Einkaufsverhalten ein ökologisches Bewusstsein. Bio-Verbraucher machen sich Gedanken über Bio-Lebensmittel, denn auch die umweltfreundliche Landwirtschaft ist besser für Tiere und Pflanzen, kurz: Sie <select id="q35_20"><option value="">35</option></select> unsere Umwelt. Und sie hoffen darauf, dass möglichst viele gesunde Menschen in einer gesunden Umwelt leben und auch der nächsten Generation eine gesunde Umwelt hinterlassen.<br>
+  Bio-Lebensmittel kommen <select id="q36_20"><option value="">36</option></select> ökologischer Landwirtschaft, die im Einklang mit der Natur steht. Die Mindestkriterien der Bio-Landwirtschaft beinhalten eine artgerechte Tierhaltung: Alle Tiere müssen ausreichend Platz haben, es gibt keine langen Tiertransporte, keine Antibiotika. Die Produkte werden möglichst aus der näheren Umgebung verkauft, beispielsweise in Bio-Bauernmärkten oder in Bio-Supermärkten, auf denen <select id="q37_20"><option value="">37</option></select> nur Produkte vermarktet werden.<br>
+  Wenn die Bio-Lebensmittel verarbeitet werden – beispielsweise aus Bio-Eiern, Bio-Mehl und Bio-Zucker ein Bio-Kuchen gebacken wird – dürfen <select id="q38_20"><option value="">38</option></select> nur Zusatzstoffe verwendet werden, die aus natürlichen Rohstoffen stammen. Das bedeutet: Es gibt keine chemische Schädlingsbekämpfungsmittel, Antibiotika oder künstliche Zusatzstoffe. Auch im Ausland <select id="q39_20"><option value="">39</option></select> Bio-Lebensmittel nach diesen Kriterien geprüft.<br>
+  Für Bio-Produkte gibt es ein Zertifikat, das Bio-Siegel. Diese Richtlinien garantieren, <select id="q40_20"><option value="">40</option></select> die Produkte wirklich „bio“ sind.
+ </div>
+  </div> 
+  <div class="answer-box" id="answerBox20"></div>
+
+  <div class="container">
+  <div class="text" id="text21">
+  <strong>Teamarbeit als Schlüssel zum Erfolg</strong><br><br>
+  <em>Erstaunliche Erkenntnisse über Teamarbeit bei Affen</em><br><br>
+  Nicht nur Menschen sind in der Lage, bei der Lösung einer Aufgabe mit anderen zusammenzuarbeiten. Ein deutsch-britisches Forscherteam konnte eindrücklich <select id="q31_21"><option value="">31</option></select>, dass auch Schimpansen <select id="q32_21"><option value="">32</option></select> echter Teamarbeit fähig sind. Die Wissenschaftler gaben zwei Schimpansen gemeinsam die Aufgabe, Trauben aus einer Kiste zu holen. <select id="q33_21"><option value="">33</option></select> einer der beiden Affen zwei Werkzeuge. Um die Aufgabe zu meistern, musste er aber die <select id="q34_21"><option value="">34</option></select> an seinen Artgenossen weitergeben. Zehn von zwölf Schimpansen taten dies auch, und in über 70 Prozent der Versuche <select id="q35_21"><option value="">35</option></select> es sogar das richtige Werkzeug, berichten die Forscher.<br>
+  Ziel der Untersuchung war es, herauszufinden, wo die Fähigkeit des Menschen zur Zusammenarbeit herkommt und ob diese Eigenschaft <select id="q36_21"><option value="">36</option></select> beim Menschen vorhanden ist. Dass einige Tierarten zusammenarbeiten, beispielsweise bei der Jagd, war bekannt. Unklar war bisher, wie viel Teamarbeit bewusst erfolgt. Im Versuch musste der eine Affe Trauben mit einer Harke durch eine Öffnung in einer Kiste auf eine Platte schubsen. Der andere Affe musste dann mit einem Stock die Platte anheben, damit die Trauben auf den Boden fielen und beide die Früchte essen <select id="q37_21"><option value="">37</option></select>. Bei den einzelnen Affen dauerte es unterschiedlich lange, bis ein Werkzeug weitergegeben wurde. Hatte einer ein Werkzeug, so lief es auch in 97 Prozent der folgenden Versuche wieder ein Werkzeug weiter. Diese Studie <select id="q38_21"><option value="">38</option></select> Hinweise darauf, dass Schimpansen bei einer gemeinsamen Aufgabe nicht nur erkennen, wann die Hilfe ihres Partners Acht <select id="q39_21"><option value="">39</option></select> können. Den Affen scheint bewusst zu sein, dass ihr Artgenosse wichtig ist, um an die Trauben zu kommen. Bewusst sei es aber nicht, so die Forscher, <select id="q40_21"><option value="">40</option></select> den Menschen sei es den Affen möglich, strategisch zusammenzuarbeiten.
+</div>
+  </div> 
+  <div class="answer-box" id="answerBox21"></div>
+
+  <div class="container">
+  <div class="text" id="text22">
+  <strong>Verlieren die Deutschen die Höflichkeit?</strong><br><br>
+  „Höflichkeit gehört zu den Dingen, die allmählich verschwinden.“ Drei von vier Deutschen <select id="q31_22"><option value="">31</option></select>. Dieser Behauptung zu: Früher waren die Menschen höflicher, ---<select id="q32_22"><option value="">32</option></select> einer Umfrage zufolge 75 Prozent der Befragten. Genauso viele denken, dass junge Leute zu wenig Respekt vor älteren Menschen haben.<br>
+  Ärgert sich das möglicherweise nur die ältere Generation über den Verlust überholter Umgangsformen? Keineswegs: Glaubt man der Studie, besteht der Wunsch <select id="q33_22"><option value="">33</option></select> gewissen Höflichkeitsformen altersübergreifend.<br>
+  Klare Spielregeln für einen höflichen <select id="q34_22"><option value="">34</option></select> In einer immer weniger von Formalität und offiziellen Hierarchien geprägten Welt sucht man sie oft <select id="q35_22"><option value="">35</option></select> Da war zum Beispiel die Frage nach dem Du oder Sie. <select id="q36_22"><option value="">36</option></select> die Hälfte der Deutschen gibt zu, regelmäßig unsicher zu sein, wie sie ihr Gegenüber ansprechen sollen. Während es jüngere Menschen zum Beispiel als normal oder sogar angenehm empfinden ---<select id="q37_22"><option value="">37</option></select>, vom Kellner geduzt zu werden, kann es älteren Semestern den Restaurantbesuch vermiesen. Nur ein Viertel der Befragten kann sich damit anfreunden, besonders Ältere ---<select id="q38_22"><option value="">38</option></select> sich am ungefragten Duzen.<br>
+  Über andere Umgangsformen herrscht hingegen Konsens bei Jung und Alt: Den Sitzplatz in der Bahn Älteren oder Schwangeren anzubieten, finden 94 Prozent wichtig. 95 Prozent legen Wert auf Pünktlichkeit. Für immerhin 78 Prozent erfordert es die Höflichkeit, dass Männer Frauen die Tür aufhalten und ihnen Vortritt ---<select id="q39_22"><option value="">39</option></select>. Unhöflich finden es 91 Prozent, wenn jemand während einer Unterhaltung auf das Handy schaut.<br>
+  Angesichts von so viel Einigkeit über den allgemeinen Umgang miteinander stellt sich freilich die Frage, warum so wenig davon im Alltag zu sehen ist. Wenn man weiß, was ---<select id="q40_22"><option value="">40</option></select> gehört, kann es doch nicht so schwer sein, sich daran zu halten.
+</div>
+  </div> 
+  <div class="answer-box" id="answerBox22"></div>
+
+
+  <div class="container">
+  <div class="text" id="text23">
+  <strong>Im Restaurant</strong><br><br>
+  Eine unterhaltsame, schöne und gesellige Zeit. Das stellt man sich unter einem guten Essen vor. Störend wirkt da der anschauliche Erlebnisbericht der letzten Operation im Krankenhaus oder das Klingeln des Handys. Sowohl Gastgeber als Gast sollen alles dafür tun, dass das gemeinsame Essen Freude macht. Das Handy stellt man selbstverständlich ab.<br>
+  Das Essen beginnt, wenn der Gastgeber zur Serviette greift oder zum Gruß sein Glas erhebt. Besonders bei Kindern ein unbeliebtes Thema: die richtige Körperhaltung beim Essen. Die Arme <select id="q31_23"><option value="">31</option></select> nicht auf den Tisch und die Hände nicht neben den Tisch. Mal sitzt sie gerade, ohne unruhig hin und her zu rutschen. Die Beine werden nie übereinandergeschlagen. Die Schuhe <select id="q32_23"><option value="">32</option></select> in jedem Fall an.<br>
+  Nur keine Angst vor guten Restaurants mit ihrem Luxus! Denn je besser die Küche, umso aufmerksamer ist in der Regel das Personal. Doch bevor die/der Andere der Bedienung steht so <select id="q33_23"><option value="">33</option></select> vor einem Problem. Die Bedienung „<select id="q34_23"><option value="">34</option></select>“ an den Tisch zu rufen, ist in Zeiten der Gleichberechtigung veraltet. „Herr Ober“ oder „Bedienung“ ist in <select id="q35_23"><option value="">35</option></select> noch möglich, aber auch schon etwas ungewöhnlich. <select id="q36_23"><option value="">36</option></select> der Hand ein Zeichen an den Tisch zu bitten.<br>
+  Zudem gibt es zwischen Gast und Service eine Zeichensprache. Schließt der Gast die Speisekarte und legt sie auf den Tisch, ist dies für den Kellner das Signal, die Bestellung aufzunehmen. Ist man mit dem Essen <select id="q37_23"><option value="">37</option></select>, legt man das Besteck parallel nebeneinander auf den rechten Tellerrand. Der Kellner ordnet das Besteck neu an. Macht man hingegen das Besteck gekreuzt oder offen auf den Teller gelegt.<br>
+  Beim Bezahlen ist man <select id="q38_23"><option value="">38</option></select> gefragt. Übernimmt ein Gastgeber nicht die Kosten, macht er dies dem Kellner <select id="q39_23"><option value="">39</option></select>. Ein „Bringen Sie mir bitte die Rechnung“ reicht da aus. Möchte man hingegen getrennt zahlen, sollte man dies am besten parallel, falls rechtzeitig der Bedienung mitteilen. In Deutschland gibt man, je nach Qualität des Service und der Höhe der Gesamtsumme zwischen drei und zehn Prozent Trinkgeld. Ist man mit dem Service unzufrieden gewesen, gibt man kein Trinkgeld.
+</div>
+  </div> 
+  <div class="answer-box" id="answerBox23"></div>
+
+
+  <div class="container">
+  <div class="text" id="text24">
+  <strong>Online-Sprachkurse & Co. – Wie lernt man heute am besten eine Sprache?</strong><br><br>
+  Es gibt inzwischen zahlreiche Online-Sprachkurse und <select id="q31_24"><option value="">31</option></select> mit Smartphones kann man Sprachen lernen. Eine weitere Lernmöglichkeit ist zum Beispiel eine Tandem-Partnerschaft <select id="q32_24"><option value="">32</option></select> einem Muttersprachler. Welche Vorteile und Nachteile haben die unterschiedlichen Methoden?<br>
+  Es gibt inzwischen zahlreiche Online-Lernportale, die leicht zu überblicken und zu bedienen sind. Der Vorteil: Man kann die Wörter nicht nur lesen, <select id="q33_24"><option value="">33</option></select> gleichzeitig auch hören. Außerdem kann man Wörter nachsprechen. <select id="q34_24"><option value="">34</option></select> es auf einem Kurs zahlt.<br>
+  Auch Lerntipps bekommt man bei Online-Portalen, beispielsweise diesen: Vokabeln sollte man lieber mehrmals täglich in Fünf-Minuten-Blöcken wiederholen, <select id="q35_24"><option value="">35</option></select> sie in einer Stunde alle auf einmal zu lernen.<br>
+  Wer auch unterwegs lernen möchte, kann es mit einer Smartphone-App versuchen, einem kleinen Programm, das auf dem Handy läuft. Viele Programme gibt es kostenlos, andere kosten zwischen einem und mehreren Euro. Die kleinen Helfer sind <select id="q36_24"><option value="">36</option></select> zum Vokabellernen geeignet – mehr aber meist nicht. Das spielerische Vokabellernen macht zwar Spaß, <select id="q37_24"><option value="">37</option></select> Satzbau oder andere Grammatikthemen werden allenfalls kurz angesprochen. Ein richtiges Gespräch kann man mit dieser Methode meist nicht üben. Dafür <select id="q38_24"><option value="">38</option></select> man besser in einen Kurs gehen oder einen Tandem-Partner suchen.<br>
+  Ein Tandem-Partner ist ein Muttersprachler, der die Grammatik erklärt, die Aussprache verbessert und seinerseits die Muttersprache lernt. <select id="q39_24"><option value="">39</option></select> der schnellste Weg, <select id="q40_24"><option value="">40</option></select> einen passenden Partner zu finden, ist die Online-Suche: Muttersprache, Zielsprache und Wohnort eingeben, und alle Treffer werden angezeigt. Man trifft sich beispielsweise in einem Restaurant, schickt sich Nachrichten oder E-Mails und erklärt sich gegenseitig die eigene Sprache.
+</div>
+  </div> 
+  <div class="answer-box" id="answerBox24"></div>
+  
+
+  <div class="container">
+  <div class="text" id="text25">
+  <strong>Liebesgrüße aus der Kühltruhe</strong><br><br>
+  Wer sich einen Mann angeln will, sollte einen Blick in dessen Tiefkühlfach werfen. Einer Studie zufolge kann man <select id="q31_25"><option value="">31</option></select> des Inhalts des Tiefkühlfachs den Charakter seines Besitzers erkennen. Die Meinungsforscher unterscheiden fünf Kategorien <select id="q32_25"><option value="">32</option></select> Single-Männern: den spontanen Typ, den Bequemen, den Kreativen, <select id="q33_25"><option value="">33</option></select> den Cocktail- und den Gourmet-Typen. Am häufigsten findet man in Deutschland den spontanen Typ. Er hat neben kompletten Gerichten auch tiefgekühlte Produkte wie Brokkoligemüse oder Putenfilet in der Truhe, <select id="q34_25"><option value="">34</option></select> er eine Mahlzeit zusammenstellen kann. Dieser Typ liebt die Abwechslung auf dem Teller und sucht im Leben Sonst und Lebend. Da wird es vermutlich auch in der Liebe nicht langweilig.<br>
+  Hauptgewinn für jede Frau ist der Gourmet-Typ. In seinem Tiefkühlfach liegen Produkte wie Garnelen, Muscheln oder Ente. Dieser Typ liebt es, Frauen zu verwöhnen. Der Nachteil liegt <select id="q35_25"><option value="">35</option></select> der Hand: Dieser Typ Single-Mann ist selten.<br>
+  Was man in der Tiefkühltruhe von bequemen Single-Männern findet, kann man leicht erraten, denn diese Männer haben gar keine Lust zu kochen. Meist ist es sogar zu <select id="q36_25"><option value="">36</option></select>, zwei Tüten zu öffnen statt nur einer. Wer <select id="q37_25"><option value="">37</option></select> diese Männer am häufigsten komplette Gerichte, die sie nur noch in die Mikrowelle oder den Backofen stellen müssen. Aber ob das Herz einer Frau erobern können? Zumindest Frauen sehen das wohl <select id="q38_25"><option value="">38</option></select> skeptisch.<br>
+  Doch egal, <select id="q39_25"><option value="">39</option></select> ein Mann gehört: sie haben alle gemeinsam: Sie kaufen immer mehr Tiefkühlkost. Warum das so ist, kann die Studie nicht beantworten – da kann man nur raten: keine Zeit zum Kochen, andere <select id="q40_25"><option value="">40</option></select> eher keine Lust. Dabei wäre das doch der beste Weg, um eine Frau zu erobern.
+</div>
+  </div> 
+  <div class="answer-box" id="answerBox25"></div>
+
+
+  <div class="container">
+  <div class="text" id="text26">
+  <strong>Liebesgrüße aus der Kühltruhe – Version 2</strong><br><br>
+  Wer sich einen Mann angeln will, sollte einen Blick in dessen Tiefkühlfach werfen. Einer Studie <select id="q31_26"><option value="">31</option></select> kann man anhand des Inhalts des Tiefkühlfachs den Charakter seines Besitzers erkennen. Die Meinungsforscher unterscheiden fünf Kategorien <select id="q32_26"><option value="">32</option></select> Single-Männern: den spontanen Typ, den Bequemen, den Kreativen, <select id="q33_26"><option value="">33</option></select> den Cocktail- und den Gourmet-Typen. Am häufigsten findet man in Deutschland den spontanen Typ. Er hat neben kompletten Gerichten auch tiefgekühlte Produkte wie Brokkoligemüse oder Putenfilet in der Truhe, <select id="q34_26"><option value="">34</option></select> er eine Mahlzeit zusammenstellen kann. Dieser Typ liebt die Abwechslung auf dem Teller und sucht im Leben Sonst und Lebend. Da wird es vermutlich auch in der Liebe nicht langweilig.<br>
+  Hauptgewinn für jede Frau ist aber der Gourmet-Typ. In seinem Tiefkühlfach liegen Produkte wie Garnelen, Muscheln oder Ente. Dieser Typ liebt es, Frauen zu verwöhnen. Der Nachteil liegt <select id="q35_26"><option value="">35</option></select> der Hand: Dieser Typ Single-Mann ist selten.<br>
+  Was man in der Tiefkühltruhe von bequemen Single-Männern findet, kann man leicht erraten, denn diese Männer haben gar keine Lust zu kochen. Meist ist es sogar zu <select id="q36_26"><option value="">36</option></select>, zwei Tüten zu öffnen statt nur einer. Wer <select id="q37_26"><option value="">37</option></select> diese Männer am häufigsten komplette Gerichte, die sie nur noch in die Mikrowelle oder den Backofen stellen müssen. Aber ob das Herz einer Frau erobern können? Zumindest Frauen sehen das wohl <select id="q38_26"><option value="">38</option></select> skeptisch.<br>
+  Doch egal, <select id="q39_26"><option value="">39</option></select> Kategorie ein Mann gehört – eines haben alle gemeinsam: Sie kaufen immer mehr Tiefkühlkost. Warum das so ist, kann die Studie nicht beantworten – da kann man nur raten: Einige haben Zeit zum Kochen, andere <select id="q40_26"><option value="">40</option></select> keine Lust. Dabei wäre das doch der beste Weg, um eine Frau zu erobern.
+</div>
+  </div> 
+  <div class="answer-box" id="answerBox26"></div>
+
+  <div class="container">
+  <div class="text" id="text27">
+  <strong>Liebesgrüße aus der Kühltruhe – Version 3</strong><br><br>
+  Wer sich einen Mann angeln will, sollte einen Blick in dessen Tiefkühlfach werfen. Einer Studie <select id="q31_27"><option value="">31</option></select> kann man anhand des Inhalts des Tiefkühlfachs den Charakter seines Besitzers erkennen. Die Meinungsforscher unterscheiden fünf Kategorien <select id="q32_27"><option value="">32</option></select> Single-Männern: den spontanen Typ, den Bequemen, den Kreativen, <select id="q33_27"><option value="">33</option></select> den Cocktail- und den Gourmet-Typen. Am häufigsten gibt es in Deutschland den spontanen Typ. Er hat neben kompletten Gerichten auch tiefgekühlte Produkte wie Brokkoligemüse oder Putenfilet in der Truhe, <select id="q34_27"><option value="">34</option></select> er eine Mahlzeit zusammenstellen kann. Dieser Typ liebt die Abwechslung auf dem Teller und auch sonst im Leben. Da wird es vermutlich auch in der Liebe nicht langweilig.<br>
+  Hauptgewinn für <select id="q35_27"><option value="">35</option></select> Frau ist aber der Gourmet-Typ. In seinem Tiefkühlfach liegen Produkte wie Garnelen, Muscheln oder Ente. Dieser Typ liebt es, Frauen zu verwöhnen. Der Nachteil liegt <select id="q36_27"><option value="">36</option></select> der Hand: Dieser Typ Single-Mann ist selten.<br>
+  Was man in der Tiefkühltruhe von bequemen Single-Männern findet, kann man leicht erraten, denn diese Männer haben gar keine Lust zu kochen. Meist ist es sogar zu <select id="q37_27"><option value="">37</option></select>, zwei Tüten zu öffnen statt nur einer. Wer <select id="q38_27"><option value="">38</option></select> diese Männer am häufigsten komplette Gerichte, die sie nur noch in die Mikrowelle oder den Backofen stellen müssen. Aber <select id="q39_27"><option value="">39</option></select> das Herz einer Frau erobern können? Zumindest Frauen sehen das wohl <select id="q40_27"><option value="">40</option></select> skeptisch.<br>
+  Doch egal, zu welcher Kategorie ein Mann gehört – eines haben alle gemeinsam: Sie kaufen immer mehr Tiefkühlkost. Warum das so ist, kann die Studie nicht beantworten – da kann man nur raten: Einige haben Zeit zum Kochen, andere haben keine Lust. Dabei wäre das doch der beste Weg, um eine Frau zu erobern.
+</div>
+  </div> 
+  <div class="answer-box" id="answerBox27"></div>
+
+
+  <div class="container">
+  <div class="text" id="text28">
+  <strong>Man(n) kocht selbst</strong><br><br>
+  Selbst ist der Mann. Von der Wahrheit dieser alten deutschen Redewendung haben Frauen Generationen lang geträumt, wenn es um typische Hausarbeiten wie Waschen, Putzen oder Kochen ging. Zumindest bei Letzterem scheint sich jedoch in der letzten Jahren vieles zu ändern. – <select id="q31_28"><option value="">31</option></select> immer mehr Männer in Deutschland greifen jetzt selbst zum Kochtopf. Ein Grund <select id="q32_28"><option value="">32</option></select> diese Entwicklung mag sein, dass es immer mehr Ein-Personen-Haushalte in Deutschland gibt. Es ist einfach niemand anderes da, der die Kocharbeit übernehmen könnte. Und Hunger kennt bekanntlich kein Handeln. Andererseits ist das Kochen inzwischen ein allgemein akzeptiertes Hobby geworden, besonders unter Männern. Doch welchen Unterschied besteht <select id="q33_28"><option value="">33</option></select> einer traditionellen Hausfrau und denen eines Hobbykochs, was die Ausstattung der Küche angeht! Nicht <select id="q34_28"><option value="">34</option></select> Topf auf ist für den selbsternannten Drei-Sterne-Küchenchef sein: Geblätterte Antibeschichtung und integrierter Temperaturanzeige gilt als Mindeststandard für einen echten kochenden Mann. Alles andere gilt als stillos.<br>
+  Die zweite Voraussetzung – <select id="q35_28"><option value="">35</option></select> dass die Gerichte auch gelingen, ist das Wissen, wie man welche Speise am besten zubereitet. Zu diesem Zweck bieten die Buchhandlungen Berge von Kochbüchern an – mit Rezepten von Alaska bis Zimbabwe, Wild und rotem Fleisch, für Dicke und für Dünne. Jetzt hängt es nur noch <select id="q36_28"><option value="">36</option></select> ab, was der Hobbykoch aus dem Angebot der Buchautorenausmacht. Wird es ein exzellentes Mahl oder wie unser "Chefkoch" nicht doch lieber Convenience? Zu den Überraschungen gehören auch die zahlreichen Kochkurse, die in der Regel – <select id="q37_28"><option value="">37</option></select> wenigen Männern – gut besucht sind. Das Kursangebot richtet sich meist an den unsicher Hausmann oder an Schiller, Krautwickel oder Rinderbraten zumeist autodidaktisch kocht. Hilfreich für die Auswahl des richtigen Kochkurses, bieten zum Beispiel die Volkshochschulen zahlreiche Kochkurse an, in denen <select id="q38_28"><option value="">38</option></select> erfahrenen Köchen der Buchautor unterrichten.<br>
+  Das größte Problem der Hobbyköche ist aber, <select id="q39_28"><option value="">39</option></select> es viel zu aufwändig ist, für sich alleine zu kochen. Daher sind zurzeit Internetseiten wie www.allein-kochen-ist-doof.de beliebt, wo sich Hobbyköche und -köchinnen zu Kochgruppen zusammenschließen und Rezepte austauschen oder gemeinsame Kochfeste feiern können. Das Interessante <select id="q40_28"><option value="">40</option></select> solchen Kochfesten ist: Die Teilnehmer müssen wissen, dass es andere Menschen gibt, die mit vielleicht weniger Aufwand genauso gut ein Festmahl zubereiten können wie sie: nämlich die Frauen.
+</div>
+  </div> 
+  <div class="answer-box" id="answerBox28"></div>
+
+  
+  <div class="container">
+  <div class="text" id="text29">
+  <strong>Der Hund als intelligentes Wesen</strong><br><br>
+  Hunde sind beliebte Begleiter vieler Menschen. Gerade in den Großstädten Deutschlands und Österreichs gibt es eine große Anzahl an Hundebesitzern, die das Tier als Freund, manchmal sogar als Helfer schätzen. Bislang galt die Auffassung, Hunde seien zwar treu, aber <select id="q31_29"><option value="">31</option></select> ihre Intelligenz betrifft, eher mit geringen Begabungen ausgestattet. Doch <select id="q32_29"><option value="">32</option></select> haben wissenschaftliche Experimente <select id="q33_29"><option value="">33</option></select> der Universität Wien und Max-Planck-Institut in Leipzig die Hundeherzen gerettet und bewiesen: Der Hund ist ein äußerordentlich intelligentes Lebewesen und kommt in einer Vielzahl von Strategien, die er anwendet, an menschliche Denkmuster durchaus heran.<br>
+
+  Friederike Range von der Universität Wien setzte einen Hund vor einen Computer. Der Hund sollte <select id="q34_29"><option value="">34</option></select> verschiedenen Bildern, von denen jeweils zwei auf dem Monitor zu sehen waren, das richtige auswählen und <select id="q35_29"><option value="">35</option></select> entweder einen  Menschen oder eine Landschaft erkennen. Der Monitor war mit einem Touchscreen ausgestattet. <select id="q36_29"><option value="">36</option></select> der Hund mit der Schnauze auf das jeweils Bild tippen konnte. Lag er richtig, bekam er ein Stück Trockenfutter als Belohnung, lag er falsch, wurde der Bildschirm kurz rot und zeigte gleich im Anschluss das nächste Bildpaar.<br>
+
+  Das Ergebnis war verblüffend. Der Hund hing <select id="q37_29"><option value="">37</option></select> mit einer ähnlichen Begeisterung und Ausdauer am Bildschirm wir manch Jugendlicher an der Playstation, sondern er war auch bei seinen Entscheidungen äußerst treffsicher. Die Leipziger Forscherin Juliane Kaminski setzte ihren Hund vor zwei Gefäße, von <select id="q38_29"><option value="">38</option></select> eines Futter enthielt, das andere nicht. Danach schaute sie in die Richtung des Behälters, in dem das Fleischstück lag. Der Hund beobachtete sie dabei und interpretierte die menschliche Mimik richtig.<br>
+
+  Dasselbe Experiment mit dem gleichen Ergebnis mit Hundebabys wiederholt. Daraus schließen die Forscher in Leipzig, <select id="q39_29"><option value="">39</option></select> bestimmte Muster menschlicher Gestik und Mimik von den Hunden sehr treffsicher interpretiert werden können und diese Fähigkeiten bereits seit langem bei Hunden vorhanden sein müssen. Man kann also mit Recht annehmen, dass die 
+Interpretationsfähigkeit menschlicher Mimik und Gestik bei den Hunden genetisch verankert ist.<br>
+   Ähnliche Experimente mit Wölfen, die als die Vorfahren des Haushundes gelten, brachten  <select id="q40_29"><option value="">40</option></select> vergleichbaren Resultate. Ein weiterer Beweis also dafür, dass der Hund diese Fähigkeiten gelernt und verinnerlicht haben muss.
+</div>
+  </div> 
+  <div class="answer-box" id="answerBox29"></div>
+
+  <div class="container">
+  <div class="text" id="text30">
+  <strong>Deutschland – ein Paradies für Kinder?</strong><br><br>
+  17 Millionen Kinder leben in Deutschland. Verglichen <select id="q31_30"><option value="">31</option></select> der Bevölkerungszahl von ungefähr 80 Millionen ist das fast ein Viertel der Einwohner. Doch nur für jedes zehnte Kind unter drei Jahren steht ein Betreuungsplatz in einer Kindertagesstätte zur Verfügung. Die Folge: Nur etwas mehr als die Hälfte der Mütter dieser Kinder ist berufstätig – und nur ein Viertel kann ganztägig zur Arbeit gehen.<br>
+
+  Um dem entgegenzuwirken, gibt es in Deutschland die dreijährige Elternzeit, die es einem Elternteil ermöglichen soll, drei Jahre <select id="q32_30"><option value="">32</option></select> dem Kind zu Hause zu bleiben, <select id="q33_30"><option value="">33</option></select> hat den Vorteil, dass der zu Hause bleibende Elternteil seinen Arbeitsplatz nicht verliert. Dennoch wird die Elternzeit für viele Eltern in finanzieller Hinsicht zu einem gravierenden Problem. Außerdem gilt die Elternzeit nur für Angestellte. Mütter zum Beispiel, die vor der Geburt ihres Kindes selbständig waren und mit dem Baby zu Hause bleiben wollen, stehen weit schlechter da. Kind und Karriere zu vereinbaren ist in Deutschland für die meisten Mütter so gut wie unmöglich. Dies scheinen die Hauptgründe <select id="q34_30"><option value="">34</option></select> zu sein, warum in Deutschland zurzeit weltweit die wenigsten Kinder geboren werden.<br>
+  Doch auch andere Dinge machen Familien mit Kindern in Deutschland das Leben schwer: In Restaurants zum Beispiel sind Kinder selten willkommen. Sie sitzen eben nicht still am Tisch, <select id="q35_30"><option value="">35</option></select> stören mit ihrem Lachen und lauten sprechen die anderen (kinderlosen) Gäste. Bei den kinderlosen Erwachsenen werden andere Maßstäbe angelegt. <select id="q36_30"><option value="">36</option></select> diese selbst häufig lautstark telefonieren, stört das niemanden: Telefonate sind eben wichtiger als Kinder.<br>
+
+   In zahlreichen deutschen Städten wie Mainz strengen Anwohner Prozesse gegen Kindergärten und Spielplätze an, <select id="q37_30"><option value="">37</option></select> die Kinder die Ruhe der banachbarten (kinderlosen) Hausbewohner stören. Die Folge: Spielplätze werden von Gerichts wegen geschlossen. An Wiesen, auf denen früher Kinder tobten und Ball spielten, stehen nun Schilder: Betreten und 
+spielen verboten. Bei Zuwiderhandlung drohen Geldstrafen.<br>
+ 
+Eltern, die mit der deutschen Bahn mit ihren Kindern verreisen möchten, haben schlechte Karten. In den meisten Zügen sind die Gänge so angeordnet, <select id="q38_30"><option value="">38</option></select> mit einem Kinderwagen kein Durchkommen ist. Und in den Mutter-Kind-Abteilen haben sich schon andere Reisende breitgemacht, die nicht einsehen, warum sie Müttern mit Kind Platz machen sollten. Schließlich hätten sie ja eine Fahrkarte gekauft und damit Anspruch, <select id="q39_30"><option value="">39</option></select> einen Platz. In vielen Berichten in Zeitungen oder im Fernsehen, die sich mit kindern, ihrer Erziehung oder mit dem Schulsystem befassen, spricht man in Deutschland gerne <select id="q40_30"><option value="">40</option></select> "Problemen". Man meint damit die Kinder. Kann eine Gesellschaft, in der ein Kind als ein Problemfall angesehen wird, ein Paradies für Kinder sein?
+</div>
+  </div> 
+  <div class="answer-box" id="answerBox30"></div>
+
+
+  <div class="container">
+  <div class="text" id="text31">
+  <strong>Deutschland – ein Paradies für Kinder?</strong><br><br>
+  17 Millionen Kinder leben in Deutschland. Verglichen mit der Bevölkerungszahl von ungefähr 80 Millionen ist das fast ein Viertel der Einwohner. Doch nur für jedes zehnte Kind unter drei Jahren steht ein Betreuungsplatz in einer Kindertagesstätte <select id="q31_31"><option value="">31</option></select> Verfügung. Die Folge: Nur etwas mehr als die Hälfte der Mütter dieser Kinder ist berufstätig – und nur ein Viertel kann ganztägig zur Arbeit gehen.<br>
+
+  Um dem entgegenzuwirken, gibt es in Deutschland die dreijährige Elternzeit, die es einem Elternteil ermöglichen soll, drei Jahre <select id="q32_31"><option value="">32</option></select> dem Kind zu Hause zu bleiben, <select id="q33_31"><option value="">33</option></select> hat den Vorteil, dass der zu Hause bleibende Elternteil seinen Arbeitsplatz nicht verliert. <select id="q34_31"><option value="">34</option></select>wird die Elternzeit für viele Eltern in finanzieller Hinsicht zu einem gravierenden Problem. Außerdem gilt die Elternzeit nur für Angestellte. Mütter zum Beispiel, die vor der Geburt ihres 
+Kindes selbständig waren und mit dem Baby zu Hause bleiben wollen, stehen weit schlechter da.Kind und Karriere zu vereinbaren ist daher in Deutschland für die meisten Mütter so gut wie unmöglich. Dies scheinen die Hauptgründe dafür  zu sein, warum in Deutschland zurzeit weltweit die wenigsten Kinder geboren werden. .<br>
+
+   <select id="q35_31"><option value="">35</option></select> auch andere Dinge machen Familien mit Kindern in Deutschland das Leben schwer: In Restaurants zum Beispiel sind Kinder selten willkommen. Sie sitzen eben nicht still am Tisch, <select id="q36_31"><option value="">36</option></select> stören mit ihrem Lachen und lauten Sprechen die anderen (kinderlosen) Gäste. Bei den kinderlosen Erwachsenen werden andere Maßstäbe angelegt.Obwohl diese selbst häufig 
+lautstark telefonieren, stört das <select id="q37_31"><option value="">37</option></select> Telefonate sind eben wichtiger als Kinder. In zahlreichen deutschen Städten wie Mainz strengen Anwohner Prozesse gegen Kindergärten und Spielplätze an, <select id="q38_31"><option value="">38</option></select>die Kinder die Ruhe der banachbarten (kinderlosen) Hausbewohner stören. Die Folge: Spielplätze werden von Gerichts wegen geschlossen. An Wiesen, auf denen früher Kinder tobten und Ball spielten, stehen nun Schilder: Betreten und spielen verboten. Bei Zuwiderhandlung drohen Geldstrafen. .<br>
+
+  Eltern, die mit der deutschen Bahn mit ihren Kindern verreisen möchten, haben schlechte Karten. In den meisten Zügen sind die Gänge so angeordnet,<select id="q39_31"><option value="">39</option></select> mit einem Kinderwagen kein Durchkommen ist.Und in den Mutter-Kind-Abteilen haben sich schon andere Reisende breitgemacht, die nicht einsehen, warum sie Müttern mit Kind Platz machen sollten. Schließlich hätten sie ja eine Fahrkarte gekauft und damit Anspruch <select id="q40_31"><option value="">40</option></select>einen Platz. In vielen Berichten in Zeitungen oder im Fernsehen, die sich mit Kindern,ihrer Erziehung oder mit dem Schulsystem befassen, spricht man in Deutschland gerne von "Problemen". Man meint damit die Kinder. Kann eine Gesellschaft, in der ein Kind als ein Problemfall angesehen wird, ein Paradies für Kinder sein?
+</div>
+  </div> 
+  <div class="answer-box" id="answerBox31"></div>
+
+
+  <div class="container">
+  <div class="text" id="text32">
+  <strong>Deutschland – ein Paradies für Kinder?</strong><br><br>
+
+  17 Millionen Kinder leben in Deutschland. Verglichen mit der Bevölkerungszahl von ungefähr 80 Millionen ist das fast ein Viertel der Einwohner. Doch nur für jedes zehnte Kind unter drei Jahren steht ein Betreuungsplatz in einer Kindertagesstätte <select id="q31_32"><option value="">31</option></select> Verfügung. Die Folge: Nur etwas mehr als die Hälfte der Mütter dieser Kinder ist berufstätig - und nur ein Viertel kann ganztägig zur Arbeit gehen.<br>
+
+  Um dem entgegenzuwirken, gibt es in Deutschland die dreijährige Elternzeit, die es einem Elternteil ermöglichen soll, drei Jahre bei dem Kind zu Hause zu bleiben, das hat den Vorteil, dass der zu Hause bleibende Elternteil seinen Arbeitsplatz nicht verliert <select id="q32_32"><option value="">32</option></select>wird die Elternzeit für viele Eltern in finanzieller Hinsicht zu einem gravierenden Problem. Außerdem gilt die Elternzeit nur für Angestellte. Mütter zum Beispiel, die vor der Geburt ihres Kindes selbständig waren und mit dem Baby zu Hause bleiben wollen, stehen weit schlechter da.
+ Kind und Karriere zu  , <select id="q33_32"><option value="">33</option></select> ist daher in Deutschland für die meisten Mütter so gut wie 
+unmöglich. Dies scheinen die Hauptgründe dafür zu sein, warum in Deutschland zurzeit weltweit die wenigsten Kinder geboren werden.<br>
+
+  Doch auch andere Dinge machen Familien mit Kindern in Deutschland das Leben schwer: In Restaurants zum Beispiel sind Kinder selten willkommen. Sie sitzen eben nicht still am Tisch,sondern  stören mit ihrem Lachen und lauten Sprechen die anderen (kinderlosen) Gäste. Bei 
+den kinderlosen Erwachsenen werden andere Maßstäbe angelegt. obwohl diese selbst häufig lautstark telefonieren, stört das <select id="q34_32"><option value="">34</option></select> Telefonate sind eben wichtiger als Kinder.<br>
+
+ In zahlreichen deutschen Städten wie Mainz strengen Anwohner Prozesse gegen Kindergärten und Spielplätze an,<select id="q35_32"><option value="">35</option></select> die Kinder die Ruhe der banachbarten (kinderlosen) Hausbewohner stören. Die Folge: Spielplätze <select id="q36_32"><option value="">36</option></select> von Gerichts wegen geschlossen. An Wiesen, auf denen früher Kinder tobten und Ball spielten, stehen nun Schilder: Betreten und 
+spielen verboten. Bei Zuwiderhandlung drohen Geldstrafen<br>
+
+   Eltern, die mit der deutschen Bahn mit ihren Kindern verreisen möchten, haben schlechte Karten. In den meisten Zügen sind die Gänge so angeordnet<select id="q37_32"><option value="">37</option></select> mit einem Kinderwagen kein Durchkommen ist. Und in den Mutter-Kind-Abteilen haben <select id="q38_32"><option value="">38</option></select> schon andere Reisende breitgemacht, die nicht einsehen, warum sie Müttern mit Kind Platz machen sollten. Schließlich 
+hätten sie ja eine Fahrkarte gekauft und damit Anspruch  , <select id="q39_32"><option value="">39</option></select> einen Platz. In vielen Berichten in Zeitungen oder im Fernsehen, <select id="q40_32"><option value="">40</option></select> ich mit Kindern, ihrer Erziehung oder mit dem 
+Schulsystem befassen, spricht man in Deutschland gerne von "Problemen". Man meint damit die Kinder. Kann eine Gesellschaft, in der ein Kind als ein Problemfall angesehen wird, ein Paradies für Kinder sein?</div>
+  </div> 
+  <div class="answer-box" id="answerBox32"></div>
+
+
+  <div class="container">
+  <div class="text" id="text33">
+  <strong>Wie TV-Bilder die Fantasie von Kindern prägen</strong><br><br>
+  Werden Kinder und Jugendliche <select id="q31_33"><option value="">31</option></select> brutale, von Gewalt geprägte Medieninhalte gewaltbereiter? Zumindest prägen Bilder aus Kino und Fernsehen massiv ihre Fantasie. Das zeigt eine Studie von Forschern der Universität Bonn. <select id="q32_33"><option value="">32</option></select> allen Jungen scheinen für extrem gewalthaltige Bilder empfänglich zu sein.<br>
+
+  „Unsere Studie zeigt in der Tat, wie sehr Medienbilder inzwischen die Fantasie von Kindern beeinflussen“, erklärt Professor Lothar Ladenthin von der Universität Bonn. „Also auch jene Fantasie, mit der sie später ihr eigenes Handeln planen.“ Ladenthin hat zusammen mit seinen Forscherkollegen untersucht, <select id="q33_33"><option value="">33</option></select> Bilder in den Köpfen von Kindern herumgeistern. Die Wissenschaftler ließen nach Angaben knapp 300 Schüler der Klassenstufen 7 und 8 zu einem klassischen Märchenanfang einen Schluss schreiben. Die Fantasien der Jungen und Mädchen <select id="q34_33"><option value="">34</option></select> sich deutlich: so beendeten Schüler ihre Märchen oft in waren Blutorgien. Die Schülerinnen <select id="q35_33"><option value="">35</option></select> das Märchen dagegen meist gewaltfrei enden, verwendeten aber stattdessen gerne Anleihen an romantischen Fernsehsendungen.<br>
+
+  „Unsere Studie kann und will nicht nach den Ursachen von konkreten Gewaltverbrechen jugendlicher Täter fragen“, betont die an der Studie mitwirkende Medienwissenschaftlerin Jessica von Wölffing. Das Experiment zeige jedoch, <select id="q36_33"><option value="">36</option></select> sehr Bilder aus den Medien die Vorstellungswelt <select id="q37_33"><option value="">37</option></select> Jugendlichen prägen.<br>
+
+  „Das ist eine gefährliche Entwicklung“, warnt Ladenthin, der auf die Idee zu dem Projekt zurückgeht: „In der Jugend lernt man das Vokabular, <select id="q38_33"><option value="">38</option></select> dem man die Welt begreift. Wenn darin bestimmte Vokabeln fehlen – Mitgefühl, Liebe, aber auch Mitleid oder Schuld –, führt das zu Defiziten in der Wahrnehmung und in letzter Konsequenz auch im eigenen Verhalten”. Wer nie Musik gehört hat, kann keine Vorstellung davon entwickeln, <select id="q39_33"><option value="">39</option></select> Musik überhaupt ist. Ähnlich kann man in Horrorfilmen und Schießspielen vieles lernen, aber kein Mitgefühl. Sind die Jungen mit den brutalsten Märchen also allesamt potenzielle Gewalttäter? Sicherlich nicht, relativiert der Bonner Erziehungswissenschaftler. Gefährlich werde es aber <select id="q40_33"><option value="">40</option></select> ,wenn positive Alternativbilder fehlten: Dann bleibe das Vokabular lückenhaft. Aufgabe der Schule sei es daher, Gegenbilder anzubieten. Und ganz klar ist das Fazit: Der 
+Fernseher gehört nicht ins Kinderzimmer. .
+</div>
+  </div> 
+  <div class="answer-box" id="answerBox33"></div>
+
+
+  <div class="container">
+  <div class="text" id="text34">
+  <strong>Städte vor dem Infarkt</strong><br><br>
+  Schon immer haben Menschen <select id="q31_34"><option value="">31</option></select> geträumt, jederzeit mobil zu sein. Deswegen ist es nicht verwunderlich, dass das Auto das beliebteste Verkehrsmittel weltweit geworden ist.<br>
+
+  Es ist nicht nur die uneingeschränkte Mobilität, die das Auto so attraktiv macht, sondern auch die Symbolik, die dem Auto anhängt: <select id="q32_34"><option value="">32</option></select> Auto fährt, hat in seinem Leben etwas erreicht. Nicht selten soll die Größe eines Autos den gesellschaftlichen Status des Fahrers widerspiegeln.<br>
+
+  Der Wunsch nach einem „Auto für jeden“ ist zwar für viele Menschen Realität geworden, er hat aber auf der anderen Seite auch viele Probleme hervorgebracht. Denn die meisten Großstädte sind zu einer Zeit entstanden, als es noch keine Autos gab. Daraus folgt, <select id="q33_34"><option value="">33</option></select> für so viele Fahrzeuge der Platz nicht ausreicht. Die Straßen sind <select id="q34_34"><option value="">34</option></select> nicht breit genug, es gibt zu wenig Parkplätze. Staus und langes Suchen nach einem Platz, wo man sein Gefährt loswerden kann, rauben vielen städttischen Autofahrern inzwischen den letzten Nerv.<br>
+
+  In einigen Großstädten stehen die Fahrzeuge inzwischen länger, als sie <select id="q35_34"><option value="">35</option></select>. Manche Orte in der Stadt lassen sich zu Fuß schneller erreichen als mit dem Auto. Der Verkehrinfarkt tritt ein: Nichts geht mehr, <select id="q36_34"><option value="">36</option></select> die Zahl der Straßenfahrzeuge ist zu groß geworden.<br>
+
+  Hinzu kommen noch die durch den verkehr erzeugten Umweltprobleme . Die Erwärmung der Luft führt <select id="q37_34"><option value="">37</option></select>, dass sich das Klima verändert. Ruß und Feinstaub sind die Ursache dafür, dass immer mehr Großstädter am Atemwegserkrankungen leiden. Und schließlich benötigen immer mehr Fahrzeuge immer mehr Energie, die weltweit aber gleichzeitig immer knapper und damit immer teurer wird.<br>
+
+  <select id="q38_34"><option value="">38</option></select> dem Verkehrsinfarkt zuvorzukommen und nicht tatenlos zuzusehen, wie der Verkehr zu einem immer größeren Problem wird, haben einige Großstädte damit begonnen, den öffentlichen Personennahverkehr auszubauen. Eigene Spuren für Busse und Straßenbahnen werden eingerichtet, damit die öffentlichen Verkehrsmittel beschleunigt und damit attraktiv werden in den großen Metropolen. <select id="q39_34"><option value="">39</option></select> sich die Tunnel der U-Bahnen immer weiter durch das Erdreich.<br>
+
+  Diese Maßnahmen sind rech teuer. Doch langsam setzt sich das Bewusstsein dafür durch, dass das ungebremste Anwachsen des Individualverkehrs in eine Sackgasse führt, aus der wieder herauszukommen noch viel Überzeugungsarbeit <select id="q40_34"><option value="">40</option></select> wird.
+</div>
+  </div> 
+  <div class="answer-box" id="answerBox34"></div>
+
+  <div class="container">
+  <div class="text" id="text35">
+  <strong>Fische sind schlauer, als wir denken</strong><br><br>
+  Fische sind dumm, stumm und haben keine Empfindungen – diese Vorurteile halten sich hartnäckig. Doch <select id="q31_35"><option value="">31</option></select> das Gegenteil ist der Fall. Sie sind nämlich zu erstaunlichen kognitiven Leistungen <select id="q32_35"><option value="">32</option></select> und können sowohl Freude als auch Schmerz empfinden. Die meisten Menschen wüssten so gut wie nichts über Fische, beklagt der Verhaltensbiologe Douglas Allan.<br>
+
+  Wenn man genauer hinsiehe,verändere sich aber die sicht auf sie. Denn das leben im Wasser stellt die etwa 33000 existierenden Arten vor besondere Herausforderungen. Im laufe der zeit <select id="q33_35"><option value="">33</option></select>, sie hochspezialisierte Sinnesfähigkeiten und Kommunikationsformen. so verständigen sie sich über Geräusche, Gerüche oder Berührungen. Einige Arten lernen durch. <select id="q34_35"><option value="">34</option></select>.Oder benutzun sogar werkzeuge. Bis in die 1930 er jahre wurde fischen. <select id="q35_35"><option value="">35</option></select> nicht einmal zugetraut, dass sie hören können. Erst dem österreichischen Verhaltensforscher Karl von Frisch gelang der Nachweis: Er brachte seinem blinden Wels Xaverl bei, auf ein akustisches Signal zu reagieren. Wenn er pfiff, kann Xaverl aus seinem Versteck, um Futter in Empfang zu nehmen. Der Forscher bewies <select id="q36_35"><option value="">36</option></select> auch als erster. dass Fische farben sehen können.<br>
+ 
+<select id="q37_35"><option value="">37</option></select> <br> Warum wurden die Fähigkeiten der fische so lange unterschtäzt <select id="q38_35"><option value="">38</option></select> intelligent halten wir oft nur Tiere, die uns  ähnlich sindQUOT; Erklärt, Douglas Allan. Fische hätten daher schlehte, karten. schliesslich, müssen sie  mit ganz anderen lebensbedingungen, zürechtkommen. <select id="q39_35"><option value="">39</option></select> Tiere an Land. Allan rät, <select id="q40_35"><option value="">40</option></select> mehr über Fische herausfinden wolle, solle einfach mal in einem Zoo ein paar Minuten lang einen einzelnen Fisch beobachten. Dann erkenne man schnell, dass Fische nicht nur ein Bewusstsein, sondern auch einen eigenen Charakter und Bedürfnisse hätten.
+</div>
+  </div> 
+  <div class="answer-box" id="answerBox35"></div>
+
+  <div class="container">
+  <div class="text" id="text36">
+      <strong>Unter Jungen Großestad</strong><br><br>
+  unter Jungen Großstadtbewohner gibt es einen neuen Trend: sie wünschen sich eigenen Garten. Daher lassen sie sich auf lange War leisten für kleingarten parzellen <select id="q31_36"><option value="">31</option></select> auf Dächern für gärten, Mauer und grüne Grün streifen werden Blumen <select id="q32_36"><option value="">32</option></select> und WGs nutzen ihre balkons nicht mehr, um alt glas, sondern um pflanztöpfe abzustellen; in den deutschen Städten wird also gerabenig pflanzt, gegossen und geerntet.die <select id="q33_36"><option value="">33</option></select> von grünen städten liegen auf der Hand: je mehr pflanzen es in einer stadt gibt, desto <select id="q34_36"><option value="">34</option></select> ist die Lebensqualität. Pflanzen filtern und verunreinigen aus der Luft, nehmen kohlenstoff dioxid auf den gegebenen sauerstoff ab. Bäume sind natürliche schützwälle <select id="q35_36"><option value="">35</option></select> wind und Lärm, Park sind beliebte Treffpunkte. und zu guter letzt machen pflanzen eine Stadt, die ansonsten aus Ziegeln, Beton und Asphalt besteht, auch viel schöner.<br>
+  Das liegt daran, dass die auch einen psychologischen Effekt auf uns Menschen haben. Wo <select id="q36_36"><option value="">36</option></select> grünt und blüht, da fühlen wir uns <select id="q37_36"><option value="">37</option></select> wohl.<br>
+  <select id="q38_36"><option value="">38</option></select> haben viel Städte entdeckt, dass <select id="q39_36"><option value="">39</option></select> städtchen auch schnell zu sozialen Treffpunkten werden <select id="q40_36"><option value="">40</option></select>.
+</div>
+  </div> 
+  <div class="answer-box" id="answerBox36"></div>
+
+
+
+  <div class="container">
+  <div class="text" id="text37">
+  <strong>Kinder sind oft mit dem Straßenverkehr</strong><br><br>
+
+  Kinder sind oft mit dem Straßenverkehr überfordert, <select id="q31_37"><option value="">31</option></select> ist es wichtig, dass sich Eltern und Bezugspersonen den besten Schulweg überlegen und mit ihren Kindern üben. <select id="q32_37"><option value="">32</option></select> immer ist der kürzeste Weg auch der ungefährlichste. Zum Üben sollte man sich Zeit nehmen und sich voll auf das Kind <select id="q33_37"><option value="">33</option></select>. Eltern sollten im Verkehr immer auch an ihre Vorbildfunktion denken: Verkehrsregein nicht nur erklären, sondern sich auch <select id="q34_37"><option value="">34</option></select> daran halten. Wegen ihrer geringeren Körpergröße haben Kinder ein anderen Sichtfeld als Erwachsene. Dessen müssen sich die Erwachsenen bewusst sein. Manchmal ist es <select id="q35_37"><option value="">35</option></select>, wenn die Großen sich von ihren Kindern erzählen lassen, was diese sehen. Um das Kind langsam an den Schulweg zu gewöhnen, sollte es anfangs nur das letzte Stück allein gehen. Diese Strecke kann man dann Schritt <select id="q36_37"><option value="">36</option></select> Schritt verlängern. Dasselbe gilt für den Nachhauseweg.<br>
+
+  Auch ist es sinnvoll, zur Schulbeginn nochmals kurz und klar die wichtigsten Regeln für das <select id="q37_37"><option value="">37</option></select> im Straßenverkehr mit den Kindern zu wiederholen. Wenn der Schulweg kein Problem mehr darstellt, kann man noch mögliche <select id="q38_37"><option value="">38</option></select> Situationen besprechen. Wie zum Beispiel: „Was machst du, wenn der Gehweg gesperrt ist?“ oder „Was tust du, wenn die Ampel ausgefallen ist?“ oder „Was machst du, wenn auf der anderen Straßenseite jemand nach dir ruft oder jemand bei Rot über die Kreuzung rennt?“. So lernt das Kind, sich <select id="q39_37"><option value="">39</option></select> im Straßenverkehr zu verhalten und selbstständig <select id="q40_37"><option value="">40</option></select> zu finden. Und die Erwachsenen können sicher sein, dass ihr Kind zumindest auf die Standardsituationen vorbereitet ist.
+</div>
+  </div> 
+  <div class="answer-box" id="answerBox37"></div>
+
+
+  <div class="container">
+  <div class="text" id="text38">
+  <strong>Kinder sind oft mit dem Straßenverkehr</strong><br><br>
+
+  Mit dem sogenannten SMS-Daumen erbringen Kinder heutzutage Höchstleistungen. Das Handgelenk hingegen schmerzt schnell, <select id="q31_38"><option value="">31</option></select> Schreiben mit der Hand ungewohnt ist. Kinder haben damit in der Schule <select id="q32_38"><option value="">32</option></select> mehr Probleme. <br>
+
+Dennoch gibt es einen neuen Trend, der mit Handschrift zu <select id="q33_38"><option value="">33</option></select> hat: Unter dem Hashtag Lettering finden sich auf Instagram über zwölf Millionen Beiträge. Beim Lettering werden Buchstaben auf kunstvolle Weise gezeichnet und danach dekoriert. Vom klassischen Schönschreiben, wie es früher unterrichtet und von den einigen auch gefürchtet <select id="q34_38"><option value="">34</option></select>, ist das alles weit entfernt. Die Verbindung <select id="q35_38"><option value="">35</option></select>  Schrift und Bild lässt sich auch im Alltag anwenden.<br>
+
+  Erfahrungen <select id="q36_38"><option value="">36</option></select> hat auch die Wiener Designerin Nina Holler gemacht: „Die Schrift-Workshops für Kinder und Erwachsene anbietet. Auf  <select id="q37_38"><option value="">37</option></select> Weise vermittelt die Künstlerin das Thema Schrift aus unterschiedlichen Zeitepochen bis hin zum handgezeichneten modernen Alphabet. So weil sie dem persönlichen sprachlichen Ausdruck wieder mehr Tiefe verleihen. Der Rhythmus der Künstlerin ist ein Anliegen <select id="q38_38"><option value="">38</option></select>“.<br> 
+
+ kinder die Freude am Schreiben wieder entdecken, Die Schülerinnen und Schüler lernen durch Lettering nebenbei auch „coole Einladungen und Logos“ zu.<br>
+
+  <select id="q39_38"><option value="">39</option></select> Der Rhythmus mache den individuellen Ausdruck beim Schreiben mit der Hand aus. Es nütze wenig, an einzelen Elemente von Buchstaben schreiben, „bis ihnen das flüssig von der Hand <select id="q40_38"><option value="">40</option></select>. So wird die Feinmotorik wieder gestärkt, die bei vielen Kindern abhanden gekommen ist.
+ Gerade Jugendlichen im Alter zwischen 13 und 15 Jahren biete die Auseinandersetzung mit Schrift eine Möglichkeit, „die eigene Handschrift zu beurteilen und zu entwickeln. So sollen sie neue Wege finden, sich auszudrücken.“
+</div>
+  </div> 
+  <div class="answer-box" id="answerBox38"></div>
+
+
+  <div class="container">
+  <div class="text" id="text39">
+ <strong>Die Reise im Schlafwagen</strong><br><br>
+  Lange sah es so aus, als würde er ganz verschwinden: Die Rede ist vom Nachtzug. In den letzten Jahrzehnten wurde er immer mehr von Billigfliegern verdrängt und viele Angebote wurden <select id="q31_39"><option value="">31</option></select>. Noch in den 1990er Jahren fuhren allerdings Nachtzüge von Deutschland aus direkt bis nach Venedig, Stockholm oder Warschau. Heute sind die Österreichischen Bundesbahnen der größte Nachtzuganbieter in Europa. Und das Geschäft läuft: Das Angebot gewinne kontinuierlich neue <select id="q32_39"><option value="">32</option></select>, erklärt Sprecher Olaf Hiese. Die Zahl der Flugreisen steigt zwar weiter an, aber aus <select id="q33_39"><option value="">33</option></select> des Umweltschutzes rücken andere Transportmittel wieder stärker in den Fokus. Kommt der Nachtzug also wieder in <select id="q34_39"><option value="">34</option></select>? Und könnten komfortable Schlafwagen tatsächlich dem Flugzeug als Reisemittel <select id="q35_39"><option value="">35</option></select> machen?<br>
+
+  Stefan Wiese, der als passionierter Bahnfahrer einen Blog für Zugreisende betreibt, ist skeptisch: „In den engen Schlafabteilen ist es manchmal <select id="q36_39"><option value="">36</option></select> schön ungemütlich und stickig.“ „<select id="q37_39"><option value="">37</option></select> schrecke die lange Reisezeit viele ab. Mit dem Flugzeug schaffe man es in 90 Minuten von München nach Rom, mit der Bahn brauche man 13 Stunden. Dennoch: Es muss nicht immer das Flugzeug sein. <select id="q38_39"><option value="">38</option></select> umweltschonendes Transportmittel ist der Nachtzug aktüeller denn je. Zumal er auch einige romantische  Vorstellungen weckt: Vor den Zugfenstern ziehen malerische Landschaften vorbei, <select id="q39_39"><option value="">39</option></select> man von dem sanften Rattern des Zuges in den Schlaf gewiegt wird. Sicher ist jedenfalls: Wer schon beadauert hatte , dass mit dem Verschwinden des Nachtzugs ein Stück Reisekultur verloren gehen könnte, war etwas<select id="q40_39"><option value="">40</option></select>. Als sanfte Alternative zum Fliegen hat er durchaus eine Zukunft. 
+</div>
+  </div> 
+  <div class="answer-box" id="answerBox39"></div>
+
+
+  <div class="container">
+  <div class="text" id="text40">
+  <b>Katzen kennen ihren Namen</b><br>
+
+  Sitz, Platz, Pfötchen geben: Nur die wenigsten Katzen befolgen Kommandos. Dabei sind sie durchaus in der <select id="q31_40"><option value="">31</option></select> ihren Namen aus anderen Wörtern herauszuhören, berichtet ein japanisches Forschungsteam im Fachblatt „Scientific Reports“. Nach eigenen <select id="q32_40"><option value="">32</option></select> lieferten die Forscher den ersten experimentellen Nachweis, dass Katzen Laute von Menschen verstehen können.<br>
+
+  Die Forscher hatten das (33) von 78 Katzen untersucht. <select id="q34_40"><option value="">34</option></select> spielten sie den Tieren vier japanische Wörter vom Band vor, die ähnlich klangen wie deren Namen. Dabei nahm die Aufmerksamkeit der Katzen immer <select id="q35_40"><option value="">35</option></select> ab, Erst als ihnen ihr eigener Name vorgespielt wurde, zeigten die meisten eine Reaktion. Sie bewegten beispielsweise ihre Ohren oder drehten den Kopf. Dies war auch dann zu beobachten, wenn nicht der Katzenbesitzer selbst zu seinem tier sprach <select id="q36_40"><option value="">36</option></select> eine fremde person. Lebten mehrere Katzen in einem Haushalt, konnten einige sogar ihren Namen von “ <select id="q37_40"><option value="">37</option></select>Artgenossen unterscheiden.<br>
+
+  Biologe Dennis Turner von dem Ergebnis nicht überrascht: „Katzen sind sehr intelligente und lernfähige Tiere – <select id="q38_40"><option value="">38</option></select>. sie bereit sind mitzumachen sagt Turner, der nicht an der Studie beteiligt war . Aus vorherigen Untersuchungen ist <select id="q39_40"><option value="">39</option></select>, dass Katzen es verstehen, wenn Menschen mit dem Finger den Weg zum Fressnapf zeigen. Doch wenn die Tiere ihren Namen und einzelne Gesten verstehen, warum ist es dann <select id="q40_40"><option value="">40</option></select> so schwierig, ihnen Tricks beizubringen? Laut Turner sei dies schon möglich, allerdings verlieren die meisten Halter allzu schnell die Geduld.
+</div>
+  </div> 
+  <div class="answer-box" id="answerBox40"></div>
+
+
+
+
+  <div class="container">
+  <div class="text" id="text41">
+  <b>Die Rückkehr des Nachtzugs</b><br>
+  Warum die Klimadebatte Schlafwagen wieder in <select id="q31_41"><option value="">31</option></select> bringt? Der Zug heißt "Nightjet", aber ... <select id="q32_41"><option value="">32</option></select> so schnell wie mit dem Flugzeug ist es nicht.<br>
+
+ Eine Bahnreise von Wien nach Brüssel verursacht nur einen Bruchteil des CO2-Ausstoßes eines Fluges. Bis Dezember soll als 28. Nachtzug-Linie eine von Wien und München nach Amsterdam hinzukommen. "Wenn wir mehr Schlafwagen hätten, könnten wir das Angebot rasch deutlich ... <select id="q33_41"><option value="">33</option></select>," sagt Bernhard Rieder von der ÖBB. Fünf Jahre dauerte es vom Beschluss für einen neuen Zug bis zur Inbetriebnahme, auch weil  Aufträge europaweit ausgeschrieben werden müssen. Man könne sich aber inzwischen kostendeckend betreiben . Pro schlafwagen sei Ein "Night Steward" an Bord ... <select id="q34_41"><option value="">34</option></select> seien in der Regel acht Mitarbeiter in einem Nachtzug unterwegs tagsüber seien es nur zwei – plus die Lokführer. Die Bahn betont, es gebe auch Züge, die in der Nacht fahren, aber mit Sitzplätzen. Wer das mal gemacht hat, kommt gerädertt am Zielort an. Am 15. Dezember hat die Bahn in Kooperation mit den ÖBB auf den Strecken Zürich-Berlin und Zürich-Hamburg eine ... <select id="q35_41"><option value="">35</option></select> Intercity-Nachtverbindung gestartet.<br>
+
+  "Daher investieren wir in den kommenden Jahren rund zwei Milliarden Euro in unsere Fahrzeugflotte, die allein im fernverkehr insgesamt 600 Züge ausmachen wird." Dazu sollen auch rund tausend zusätzliche Mitarbeiter ... <select id="q36_41"><option value="">36</option></select>. werden. "Wenn die Deutsche Bahn nicht will, ist das bedauerenswert." Er sehe aber kein Hindernis, warum nicht ... <select id="q37_41"><option value="">37</option></select> dieses Angebot bei Nachtzügen übernehmen sollten – ihnen dürften nur keine steine in den we gelegt werden.Sie betonen, mit einem Nachtzug gebe es die Chance die vielen Flugreisen die im Rahmen der Ratspräsidentschaft zwischen Berlin und Brüksel anfallen werden  <select id="q38_41"><option value="">38</option></select> ein klimafreundliches Mobilitätsangebot zu reduzieren. Bisher müssten viele das Flugzeug nutzen, weil sie mit den aktuellen Zugverbindungen für Reisen zwischen Berlin und Brüssel nur tagsüber reisen können, damit sechs bis acht Stunden Zeit verlieren und in der Regel einen Tag vorher anreisen müssen. Am liebsten würden sie es sehen wenn so dieser neue Nachtzug in den blau-gelben Europafarben <select id="q39_41"><option value="">39</option></select> ware der Nachtzug  weckt bei vielen Menschen auch die Sehnsucht nach unvergeswöhnlichen Fernreisen. Der Nachtzug der Deutschen Bahn wurde <select id="q40_41"><option value="">40</option></select> damals hoher Verluste 2016 eingestellt.
+</div>
+  </div> 
+  <div class="answer-box" id="answerBox41"></div>
+
+   <div class="container">
+  <div class="text" id="text42">
+  <b>Joggen: Mehr als nur Laufen</b><br>
+  Auto, Rolltreppe, Fahrstuhl – das moderne Leben ist <select id="q31_42"><option value="">31</option></select> geworden. Ein Großteil der Bevölkerung verbringt den Tag sitzend. Zu Leidwesen unseres Körpers, denn das geht zu Lasten der Gesundheit. Herz-Kreislauf-Erkrankungen (<select id="q32_42"><option value="">32</option></select>) in den westlichen Industrieländern mittlerweile die Todes ursache Nummer Eins. Dennoch: Rund zehn Millionen Menschen in Deutschland joggen, etwa acht Millionen gehen Inline-Skaten oder Rad fahren, jeder Dritte schwimmt. Wer regelmäßig, richtig und vor allem in Maßen trainiert, fördert Gesundheit, Körper- und Selbstbewusstsein.<br>
+
+  Zahlreiche Sportarten bieten einen einfachen und abwechslungsreichen Einstieg auch für Ungeübte. Vom Klassiker Jogging bis hin zu Walking, Radfahren, Schwimmen, Aerobic, Inline-Skating und Langlauf im Winter. Wichtig ist <select id="q33_42"><option value="">33</option></select>  richtig zu trainieren , den Körper nicht zu überfordern - vor allem nach einer längeren ' Sportpause ! Empfehlenswert ist aerobes Herz - Kreislauf - Training , Das 
+bedeutet Ausdauertraining (<select id="q34_42"><option value="">34</option></select>) Verbrennung von Sauerstoff. Dreimal in der Woche 30 bis 40 Minuten genügen. Dabei (<select id="q35_42"><option value="">35</option></select>) der Puls kontrolliert werden. Der Richtwert ist hier 180 minus Lebensalter. Dann wird auch Fett verbrannt, der Körper nicht überfordert.<br>
+
+  <select id="q36_42"><option value="">36</option></select> mehr Menschen den Schritt in ein aktiveres Leben wagen sollten, machen zahlreiche Studien deutlich: Rund 40 Prozent (<select id="q37_42"><option value="">37</option></select>) bringen zu viel auf die Waage, jeder zehnte ist sogar stark fettleibig – Tendenz steigend. Auch vor Kindern und Jugendlichen macht diese Entwick lung nicht halt. Oft fehlt die Zeit für regelmäßiges Essen, Sport und Entspannung. Der Körper quit tiert dies meist mit Herz-Kreislauf-Erkrankungen, nicht selten mit (<select id="q38_42"><option value="">38</option></select>) Herzinfarkt – auch und immer häufiger (<select id="q39_42"><option value="">39</option></select>) Frauen.<br>
+
+  Ausdauersport hingegen wirkt auf Herz, Gefäße, Muskeln, Körpergewicht, Hormone und Stimmung. Stress wird wegtrainiert, Krankheiten geheilt und vorgebeugt. Zusammen mit der richtigen Ernährung minimiert sich das Risiko, einen Herzinfarkt oder Schlaganfall zu erleiden, <select id="q40_42"><option value="">40</option></select> Milch und Milchprodukte, pflanzliche Lebensmittel wie Vollkornprodukte, Obst, Gemüse, Salat, magere Wurst und Käsesorten unterstützen das richtige Training.
+</div>
+  </div> 
+  <div class="answer-box" id="answerBox42"></div>
+
+   <div class="container">
+  <div class="text" id="text43">
+  <b>Lernen ist kein Privileg der Jugend</b><br>
+
+  Senioren sind heute höchst <select id="q31_43"><option value="">31</option></select>, aktiv und nutzen vielfach die Chance, sich der so genannten dritten Lebensphase Wünsche oder Träume zu erfüllen. Dazu gehören oft Weiterbildung oder in der Jugend verpasste Bildung.<br>
+
+  Die Folge: Das Seniorstudium, wie es <select id="q32_43"><option value="">32</option></select> verschiedenen deutschen Universitäten angeboten wird, erfreut sich zunehmender Beliebtheit. <select id="q33_43"><option value="">33</option></select> in Trier waren im vergangenen Sommersemester über 130 Personen der Altersgruppe 50+ als Gasthörer eingeschrieben und nahmen am regulären Lehrbetrieb teil.<br>
+
+  Besonders gefragt waren allgemeine Veranstaltungen aus den Fächern Geschichte, Kunstgeschichte und Politik. <select id="q34_43"><option value="">34</option></select> die neueren Sprach- und Literaturwissenschaften sowie Themen aus Philosophie, Psychologie und Pädagogik. Angebote aus Sozial-, Wirtschafts-, Geo- und Rechtswissenschaften wurden dagegen weniger häufig gewählt. Hier finde ich insbesondere solche Seniorenstudierende wieder, die gezielt an der Vertiefung ihres fachspezifischen Wissens arbeiten.<br>
+
+  Der größte Teil der studierenden Senioren besteht übrigens aus Frauen. Die Gründe dafür <select id="q35_43"><option value="">35</option></select>, sein dass Frauen in ihren jüngeren Lebensjahren häufig <select id="q36_43"><option value="">36</option></select> einen berufliche Karriere verzichteten. <select id="q37_43"><option value="">37</option></select> setzen sie sich für die Familie und insbesondere für ihre Kinder ein. Nun sind die Kinder erwachsen und aus dem Haus, die Frauen verspüren den Wunsch, ihre geistigen Fähigkeiten, deren Einsatz in den "Familienjahren" häufig zu <select id="q38_43"><option value="">38</option></select> gekommen war, wieder zu trainieren und zu erweitern.<br>
+
+  Männern hingegen konnten häufiger während ihres Arbeitslebens ihre Karriere verwirklichen, sich weiterbilden ihr Wissen in gesellschaftlich angesehener Weise an den Mann (weniger an die Frau) bringen. <select id="q39_43"><option value="">39</option></select> dessen sehen sie keine Veranlassung , ihren Lebensabend an einer Weiterbildungssituation oder gar an einer Universität zu verbringen.<br>
+
+  Lernen ist kein Privileg der Jugend! Vielmehr besteht gerade in Bezug auf das Bildungsangebot für ältere Menschen ein nesiger Bedarf. Er wird gespeist <select id="q40_43"><option value="">40</option></select> die Vitalität und die hohe Bildungsmotivation der heutigen "Alten". Mit der wachsenden Fitness der Generation 50+ wächst auch das Interesse, neues Wissen zu erwerben, neue Kompetenzen zu entwickeln und bisher eventuel vernächlassige Ressourcen zu aktivieren. Gleichzeitig tragen Bildungsaktivitäten wesentlich dazu bei, dass immer mehr Menschen ihre kognitive Leistungsfähigkeit und psychische Gesundheit bis ins hohe Alter erhalten können. 
+</div>
+  </div> 
+  <div class="answer-box" id="answerBox43"></div>
+
+
+  <div class="container">
+  <div class="text" id="text44">
+  <b>Katzen kennen ihren Namen</b><br>
+  Sitz, Platz, Pfötchen geben: Nur die wenigsten Katzen befolgen Kommandos. Dabei sind sie durchaus in der <select id="q31_44"><option value="">31</option></select>, ihren Namen aus anderen Wörtern herauszuhören, berichtet ein japanisches Forschungsteam im Fachblatt "Scientific Reports". Nach eigenen <select id="q32_44"><option value="">32</option></select> haben sie den ersten experimentellen Nachweis geliefert, dass Katzen Laute von Menschen verstehen können. Erst als ihnen ihr eigener name vorgespielt wurdezeigten die meisten Versuchstiere eine Reaktion. Sie bewegten beispielsweise ihre Ohren oder drehten den Kopf. Der Effekt war auch zu beobachten, wenn nicht der Katzenbesitzer selbst zu seinem Tier sprach, <select id="q33_44"><option value="">33</option></select> eine fremde Person. Lebten mehrere Katzen in einem Haushalt, konnten einige Katzen ihren Namen von <select id="q34_44"><option value="">34</option></select> ihrer Artgenossen unterscheiden. Die Forscher hatten das <select id="q35_44"><option value="">35</option></select> von 78 Katzen untersucht. <select id="q36_44"><option value="">36</option></select> spielten sie den Tieren vier japanische Wörter vom Band vor, die ähnlich klangen wie der Name der Katze. Dabei nahm die Aufmerksamkeit der Katzen immer <select id="q37_44"><option value="">37</option></select> ab. Doch wenn die Tiere ihren Namen und einzelne Gesten verstehen, warum ist es <select id="q38_44"><option value="">38</option></select> schwierig, ihnen Tricks beizubringen? Laut Turner sei dies durchaus möglich; allerdings verlören die meisten Halter schnell die Geduld. Biologe Dennis Turner hält die japanische Studie für 'seriös durchgeführt'. Die Ergebnisse aus Japan seien sicherlich auch auf deutsche Katzen übertragbar, so Turner. "Ich er ist er von dem Ergebnis allerdings nicht. "Katzen sind sehr intelligente und lernfähige Tiere – <select id="q39_44"><option value="">39</option></select> sie bereit sind mitzumachen", sagt Turner, der nicht an der Studie beteiligt war. Aus vorherigen Untersuchungen ist <select id="q40_44"><option value="">40</option></select>, dass es Katzen verstehen, wenn Menschen mit dem Finger den Weg zum Fressnapf zeigen. Zudem ändern zumindest einige Katzen ihr Verhalten, je nachdem, ob ihr Herrchen grimmig oder fröhlich schaute.
+</div>
+  </div> 
+  <div class="answer-box" id="answerBox44"></div>
+
+
+
+  <div class="nav-buttons">
+    <button onclick="prevTest()">⬅️ Geri</button>
+    <button onclick="window.location.href='index.html'">🏠 Anasayfa</button>
+    <button onclick="nextTest()">İleri ➡️</button>
+  </div>
+
+  <script>
+    // Her sayfa için ayrı cevap anahtarı ve seçenekler
+    const correctAnswersArray = [
+      {
+        q31_1: 'i', q32_1: 'o', q33_1: 'k', q34_1: 'c', q35_1: 'b',
+        q36_1: 'a', q37_1: 'd', q38_1: 'm', q39_1: 'l', q40_1: 'n'
+      },
+
+      {
+        q31_2: 'e', q32_2: 'h', q33_2: 'c', q34_2: 'b', q35_2: 'n',
+        q36_2: 'l', q37_2: 'g', q38_2: 'm', q39_2: 'k', q40_2: 'j'
+      },
+
+      {
+        q31_3: 'g', q32_3: 'b', q33_3: 'j', q34_3: 'k', q35_3: 'e',
+        q36_3: 'o', q37_3: 'f', q38_3: 'l', q39_3: 'i', q40_3: 'n'
+      },
+{
+  q31_4: 'k', // DA
+  q32_4: 'j', // SEIT
+  q33_4: 'o', // DIE
+  q34_4: 'a', // AM
+  q35_4: 'c', // AUF
+  q36_4: 'h', // SONDERN
+  q37_4: 'e', // DARUM
+  q38_4: 'f', // UM
+  q39_4: 'd', // WEGEN
+  q40_4: 'm'  // DAZU
+},
+{
+  q31_5: 'o',   
+  q32_5: 'b',   
+  q33_5: 'd',   
+  q34_5: 'm',   
+  q35_5: 'i',   
+  q36_5: 'c',   
+  q37_5: 'e',   
+  q38_5: 'f',   
+  q39_5: 'j',   
+  q40_5: 'g', 
+},
+
+{
+  q31_6: 'f',  // ALLERDINGS
+  q32_6: 'i',  // GÜLTIG
+  q33_6: 'b',  // GELTEN
+  q34_6: 'd',  // SOLLTE
+  q35_6: 'e',  // RECHNEN
+  q36_6: 'm',  // ANPASSEN
+  q37_6: 'o',  // KANN
+  q38_6: 'g',  // DARF
+  q39_6: 'c',  // RAND
+  q40_6: 'n'   // ANGEBEN
+},
+
+ 
+{
+  q31_7: 'i',
+  q32_7: 'o',
+  q33_7: 'k',
+  q34_7: 'c',
+  q35_7: 'b',
+  q36_7: 'a',
+  q37_7: 'd',
+  q38_7: 'm',
+  q39_7: 'l',
+  q40_7: 'n'
+},
+
+{
+  q31_8: 'e',   // Flut
+  q32_8: 'h',   // diesen
+  q33_8: 'a',   // aber
+  q34_8: 'k',   // stellt
+  q35_8: 'd',   // meisten
+  q36_8: 'g',   // korrekt
+  q37_8: 'f',   // unterscheiden
+  q38_8: 'l',   // unlogische
+  q39_8: 'm',   // abgrenzen
+  q40_8: 'j'    // somit
+},
+
+{
+  q31_9: 'o',  // AB
+  q32_9: 'n',  // WURDEN
+  q33_9: 'a',  // AN
+  q34_9: 'd',  // AUF
+  q35_9: 'h',  // DARÜBER
+  q36_9: 'm',  // DARAUF
+  q37_9: 'l',  // HIN
+  q38_9: 'g',  // UM
+  q39_9: 'e',  // ZWAR
+  q40_9: 'j'   // SONDERN
+},
+
+{
+  q31_10: 'a',  // AB
+  q32_10: 'm',  // WURDEN
+  q33_10: 'c',  // AN
+  q34_10: 'd',  // AUF
+  q35_10: 'f',  // DARÜBER
+  q36_10: 'e',  // DARAUF
+  q37_10: 'h',  // HIN
+  q38_10: 'l',  // UM
+  q39_10: 'o',  // ZWAR
+  q40_10: 'j'   // SONDERN
+},
+
+{
+  q31_11: 'a',  // AB
+  q32_11: 'm',  // WURDEN
+  q33_11: 'c',  // AN
+  q34_11: 'd',  // AUF
+  q35_11: 'f',  // DARÜBER
+  q36_11: 'e',  // DARAUF
+  q37_11: 'h',  // HIN
+  q38_11: 'l',  // UM
+  q39_11: 'o',  // ZWAR
+  q40_11: 'j'   // SONDERN
+},
+{
+  q31_12: 'd',  // ALS
+  q32_12: 'k',  // NUR
+  q33_12: 'a',  // DA
+  q34_12: 'o',  // WEDER
+  q35_12: 'j',  // DAS
+  q36_12: 'c',  // DARUM
+  q37_12: 'f',
+  q38_12: 'l',
+  q39_12: 'h',  // DÜRFEN
+  q40_12: 'g'   // SONDERN
+},
+
+{
+  q31_13: 'm', // ALS
+  q32_13: 'e', // NUR
+  q33_13: 'h', // DA
+  q34_13: 'f', // WEDER
+  q35_13: 'o', // HABE
+  q36_13: 'b', // DARUM
+  q37_13: 'g', // SOLLEN
+  q38_13: 'n',
+  q39_13: 'c', // DARÜBER
+  q40_13: 'k'  // SONDERN
+},
+
+{
+  q31_14: 'j', // BEINAHE
+  q32_14: 'b', // AUF
+  q33_14: 'o', // AN
+  q34_14: 'm', // INNERHALB
+  q35_14: 'i', // DENN
+  q36_14: 'k', // STATT
+  q37_14: 'a', // MÜSSEN
+  q38_14: 'l', // KAUM
+  q39_14: 'e',  // DANN
+  q40_14: 'f'
+},
+
+{
+  q31_15: 'j', // BEINAHE
+  q32_15: 'b', // AUF
+  q33_15: 'o', // AN
+  q34_15: 'm', // INNERHALB
+  q35_15: 'i', // DENN
+  q36_15: 'k', // STATT
+  q37_15: 'a', // MÜSSEN
+  q38_15: 'l', // KAUM
+  q39_15: 'e',  // DANN
+  q40_15: 'f'
+},
+{
+  q31_16: 'o', // ALS
+  q32_16: 'f', // VERGANGENEN
+  q33_16: 'a', // ZWAR
+  q34_16: 'l', // DURCH
+  q35_16: 'm', // AUCH
+  q36_16: 'b', // WURDEN
+  q37_16: 'h', // GERINGERES
+  q38_16: 'd', // WENIGER
+  q39_16: 'n', // DEUTLICH
+  q40_16: 'i'  // GEGENTEIL
+},
+
+{
+  q31_17: 'b', // WIE
+  q32_17: 'j', // ALLES
+  q33_17: 'h', // GEGEN
+  q34_17: 'g', // DAGEGEN
+  q35_17: 'n', // JEDE
+  q36_17: 'e', // HÖCHSTENS
+  q37_17: 'c', // AUSGEHEN
+  q38_17: 'L',
+  q39_17: 'd', // BEKOMMEN
+  q40_17: 'k'  // WÜNSCHT
+},
+{
+  q31_18: 'b', // WIE
+  q32_18: 'j', // ALLES
+  q33_18: 'h', // GEGEN
+  q34_18: 'g', // DAGEGEN
+  q35_18: 'n', // JEDE
+  q36_18: 'i', // HÖCHSTENS
+  q37_18: 'c', // AUSGEHEN
+  q38_18: 'l',
+  q39_18: 'd', // BEKOMMEN
+  q40_18: 'k'  // WÜNSCHT
+},
+
+{
+  q31_19: 'j', // WENN
+  q32_19: 'd', // SOGAR
+  q33_19: 'f', // ENTHALTEN
+  q34_19: 'ı', // AUF
+  q35_19: 'g', // ENTLASTET
+  q36_19: 'c', // IN
+  q37_19: 'b', // VERWENDET
+  q38_19: 'm', // DASS
+  q39_19: 'o', // AUS
+  q40_19: 'e'  // WIRKLICH
+},
+{
+  q31_20: 'j', // WENN
+  q32_20: 'd', // SOGAR
+  q33_20: 'f', // ENTHALTEN
+  q34_20: 'ı', // AUF
+  q35_20: 'g', // ENTLASTET
+  q36_20: 'c', // IN
+  q37_20: 'b', // VERWENDET
+  q38_20: 'm', // DASS
+  q39_20: 'o', // AUS
+  q40_20: 'e'  // WIRKLICH
+},
+
+{
+  q31_21: 'e', // NACHWEISEN
+  q32_21: 'a', // WIE
+  q33_21: 'm', // HABEN
+  q34_21: 'n', // GEBEN
+  q35_21: 'c', // MUSSTEN
+  q36_21: 'd', // SEI
+  q37_21: 'h', // KONNTEN
+  q38_21: 'g', // NACHWEISEN
+  q39_21: 'j', // DAZU
+  q40_21: 'b'  // BEKANNTLICH
+},
+
+{
+  q31_22: 'm',  // MEINEN
+  q32_22: 'e',  // STIMMEN
+  q33_22: 'h',  // MITEINANDER
+  q34_22: 'f',  // NACH
+  q35_22: 'o',  // VERGEBLICH
+  q36_22: 'b',  // MAN
+  q37_22: 'g',  // SICH
+  q38_22: 'n',  // MÖGEN
+  q39_22: 'c',  // NEHMEN
+  q40_22: 'k'   // GUT
+},
+{
+  q31_23: 'g', // GEHÖREN
+  q32_23: 'b', // BEHÄLT
+  q33_23: 'j', // MANCHER
+  q34_23: 'k', // KLAR
+  q35_23: 'e', // ALS
+  q36_23: 'o', // WINK
+  q37_23: 'f', // FERTIG
+  q38_23: 'l', // TAKT
+  q39_23: 'i',  // TIPP
+  q40_23: 'n'  // TIPP
+},
+
+{
+  q31_24: 'k', // MIT
+  q32_24: 'f', // FÜR
+  q33_24: 'm', // SOGAR
+  q34_24: 'h', // SOLLTE
+  q35_24: 'b', // ANSTATT
+  q36_24: 'c', // BESONDERS
+  q37_24: 'a', // ABER
+  q38_24: 'l', // UM
+  q39_24: 'n', // SO
+  q40_24: 'i'  // SCHON
+},
+
+{
+  q31_25: 'a', // ANHAND
+  q32_25: 'l', // VON
+  q33_25: 'k', // SOWIE
+  q34_25: 'd', // AUS
+  q35_25: 'c', // AUF
+  q36_25: 'b', // ANSTRENGEND
+  q37_25: 'g', // FOLGLICH
+  q38_25: 'e', // EHER
+  q39_25: 'o', // WOHL
+  q40_25: 'n'  // KAUM
+},
+
+{
+  q31_26: 'a', // ZUFOLGE
+  q32_26: 'l', // VON
+  q33_26: 'k', // JEDE
+  q34_26: 'd', // ZU
+  q35_26: 'c', // AUF
+  q36_26: 'b', // ANSTRENGEND
+  q37_26: 'g', // FOLGLICH
+  q38_26: 'e', // KAUM
+  q39_26: 'o', // VERMUTLICH
+  q40_26: 'n'  // WOHL
+},
+
+{
+  q31_27: 'a', // ZUFOLGE
+  q32_27: 'l', // VON
+  q33_27: 'k', // SOWIE
+  q34_27: 'n', // ZU
+  q35_27: 'e', // JEDE
+  q36_27: 'b', // AUF
+  q37_27: 'g', // ANSTRENGEND
+  q38_27: 'i', // FOLGLICH
+  q39_27: 'o', // OB
+  q40_27: 'd'  // WOHL
+},
+
+{
+  q31_28: 'h', // DENN
+  q32_28: 'i', // DAVON
+  q33_28: 'o', // ZWISCHEN
+  q34_28: 'k', // IRGENDEIN
+  q35_28: 'a', // DASS
+  q36_28: 'f', // DARAN
+  q37_28: 'm', // WEITER
+  q38_28: 'g', // DAFÜR
+  q39_28: 'e', // DASS
+  q40_28: 'd'  // DAHER
+},
+
+{
+  q31_29: 'm', // KEINE
+  q32_29: 'h', // JETZT
+  q33_29: 'a', // AN
+  q34_29: 'b', // DENEN
+  q36_29: 'k', // DEM
+  q37_29: 'j', // NICHT NUR
+  q38_29: 'g', // WELCHE
+  q39_29: 'e', // DASS
+  q40_29: 'i'  // ÜBRIGENS
+},
+
+{
+  q31_30: 'k', // VON
+  q32_30: 'b', // MIT
+  q33_30: 'e', // DAS
+  q34_30: 'd', // DAFÜR
+  q35_30: 'm', // SONDERN
+  q36_30: 'l', // BEI
+  q37_30: 'o', // AUF
+  q38_30: 'f', // OBWOHL
+  q39_30: 'a', // DABEI
+  q40_30: 'n'  // DASS
+},
+
+{
+  q31_31: 'k', // BEI
+  q32_31: 'b', // ZUR
+  q33_31: 'e', // DAS
+  q34_31: 'd', // DAVON
+  q35_31: 'n', // SONDERN
+  q36_31: 'm', // NIEMANDEN
+  q37_31: 'l', // AUF
+  q38_31: 'o', // DENNOCH
+  q39_31: 'f', // DABEI
+  q40_31: 'a'  // DASS
+},
+
+{
+  q31_32: 'k', // AUF
+  q32_32: 'h', // ZUR
+  q33_32: 'e', // DIE
+  q34_32: 'd', // VEREINBAREN
+  q35_32: 'o', // DABEI
+  q36_32: 'm', // NIEMANDEN
+  q37_32: 'f', // AUF
+  q38_32: 'b', // JEDOCH
+  q39_32: 'a', // SICH
+  q40_32: 'n'  // WEIL
+},
+
+{
+  q31_33: 'c', // DURCH
+  q32_33: 'l', // VON
+  q33_33: 'n', // WIE
+  q34_33: 'i', // UNTERSCHIEDEN
+  q35_33: 'e', // LIESSEN
+  q36_33: 'o', // WIE
+  q37_33: 'k', // WELCHE
+  q38_33: 'g', // WIE
+  q39_33: 'm', // WAS
+  q40_33: 'b'  // DANN
+},
+
+{
+  q31_34: 'b',   // DAVON
+  q32_34: 'o',   // WER
+  q33_34: 'a',   // DASS
+  q34_34: 'j',   // OFT
+  q35_34: 'e',   // FAHREN
+  q36_34: 'd',   // DENN
+  q37_34: 'c',   // UM
+  q38_34: 'm',   // DAZU
+  q39_34: 'f',   // GRABEN
+  q40_34: 'i'    // KOSTEN
+},
+
+{
+  q31_35: "l",   // DENN
+  q32_35: "j",   // FÄHIG
+  q33_35: "i",   // BEOBACHTUNG
+  q34_35: "b",   // ENTWICKELTEN
+  q35_35: "m",   // GENAU
+  q36_35: "n",   // NOCH
+  q37_35: "g",   // DOCH
+  q38_35: "k",   // DEUTLICH
+  q39_35: "a",   // ALS
+  q40_35: "o"    // WER
+},
+
+{
+  q31_36: "a",   // SETZEN
+  q32_36: "b",   // GEZÜCHTET
+  q33_36: "c",   // VORTEILE
+  q34_36: "m",   // HÖHER
+  q35_36: "d",   // VOR
+  q36_36: "e",   // ES
+  q37_36: "f",   // EINFACH
+  q38_36: "g",   // MITTLERWEILE
+  q39_36: "h",   // SOLCHE
+  q40_36: "i"   // DADURCH
+},
+
+{
+  q31_37: "c",   // DESHALB
+  q32_37: "i",   // NICHT
+  q33_37: "f",   // KONZENTRIEREN
+  q34_37: "l",   // DOCH
+  q35_37: "e",   // HILFREICH
+  q36_37: "b",   // FÜR
+  q37_37: "o",   // VERHALTEN
+  q38_37: "8",   // KRITISCHE
+  q39_37: "n",   // SELBSTBEWUSST
+  q40_37: "h"   // LÖSUNGEN
+},
+
+{
+  q31_38: "n",   // DAMIT
+  q32_38: "h",   // IMMER
+  q33_38: "l",   // DASS
+  q34_38: "o",   // WURDE
+  q35_38: "m",   // DASS
+  q36_38: "a",   // SPIELERISCHE
+  q37_38: "j",   // DASS
+  q38_38: "c",
+  q39_38: "g",   // DASS
+  q40_38: "f"   // GEHT
+},
+
+{
+    "q31_39": "k",   // eingestellt
+    "q32_39": "d",   // Mode
+    "q33_39": "f",   // Gründen
+    "q34_39": "c",   // Form
+    "q35_39": "e",   // Konkurrenz
+    "q36_39": "i",   // Gemütlich
+    "q37_39": "n",   // während
+    "q38_39": "o",   // ungewöhnliches
+    "q39_39": "a",   // ganz
+    "q40_39": "b"    // als
+  },
+
+  {
+  q31_40: "g",   // DAMIT
+  q32_40: "a",   // IMMER
+  q33_40: "k",   // DASS
+  q34_40: "o",   // WURDE
+  q35_40: "m",   // DASS
+  q36_40: "i",   // SPIELERISCHE
+  q37_40: "e",   // DASS
+  q38_40: "h",
+  q39_40: "c",   // DASS
+  q40_40: "d"   // GEHT
+},
+
+{
+  q31_41: "d",   // Mode
+  q32_41: "h",   // Als
+  q33_41: "f",   // Ausweiten
+  q34_41: "i",   // Ein
+  q35_41: "b",   // Insgesamt
+  q36_41: "n",   // Kunden
+  q37_41: "k",   // Einstehen
+  q38_41: "l",   // Konkurrenten
+  q39_41: "j",   // Ganz
+  q40_41: "g"    // Eingestellt
+},
+
+{
+  q31_42: "k",
+  q32_42: "i",
+  q33_42: "h",
+  q34_42: "e",
+  q35_42: "o",
+  q36_42: "d",
+  q37_42: "j",
+  q38_42: "a",
+  q39_42: "c",
+  q40_42: "m"
+},
+
+{
+  q31_43: "l",    // REGE
+  q32_43: "b",    // AUF
+  q33_43: "a",    // KURZ
+  q34_43: "e",    // STATTESSEN
+  q35_43: "g",    // AUFGRUND
+  q36_43: "c",    // AN
+  q37_43: "m",    // DARAUF
+  q38_43: "j",   // KNAPP
+  q39_43: "d",    // DÜRTEN
+  q40_43: "f"     // ALLEIN
+},
+
+{
+  q31_44: "a",    // REGE
+  q32_44: "b",    // AUF
+  q33_44: "c",    // KURZ
+  q34_44: "d",    // STATTESSEN
+  q35_44: "e",    // AUFGRUND
+  q36_44: "f",    // AN
+  q37_44: "h",    // DARAUF
+  q38_44: "i",   // KNAPP
+  q39_44: "j",    // DÜRTEN
+  q40_44: "g"     // ALLEIN
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     
+    ];
+
+    const optionsArray = [
+
+// 1
+      {
+        a: 'ALS', b: 'AN', c: 'AUSSERDEM', d: 'BEI', e: 'DARUNTER',
+        f: 'DIE', g: 'NACHDEM', h: 'OBWOHL', i: 'SEIT', j: 'VOR',
+        k: 'WARUM', l: 'WAS', m: 'WEIL', n: 'WER', o: 'WIE'
+      },
+
+// 2
+      {
+       a: 'AUSWAHL', b: 'CHANCE', c: 'DA', d: 'DAGEGEN', e: 'DENN',
+       f: 'DURFTEN', g: 'KöNNTEN',  h: 'MöCHTE',  i: 'SOLLTE',  j: 'SONDERN',  
+       k: 'TROTZDEM', l: 'üBERNEHMEN', m: 'VERFüGUNG', n: 'WARUM', o: 'ZiEHEN'
+      },
+
+// 3
+      {
+    a: 'ALS', b: 'BEHALT', c: 'BEREIT', d: 'BLEIBT', e: 'DAGEGEN',
+    f: 'FERTIG', g: 'GEHÖREN', h: 'JEDER', i: 'KLAR', j: 'MANCHER', 
+    k: 'MIT', l: 'TAKT', m: 'TIPP', n: 'WAS', o: 'WINK'
+      },
+
+    // 4
+  {
+  a: 'AB',
+  b: 'ABER',
+  c: 'AM',
+  d: 'AUF',
+  e: 'DA',
+  f: 'DARUM',
+  g: 'DAZU',
+  h: 'ES',
+  i: 'OHNE',
+  j: 'SEIT',
+  k: 'SONDERN',
+  l: 'TROTZ',
+  m: 'UM',
+  n: 'VOR',
+  o: 'WEGEN'
+},
+
+// 5
+{
+  a: 'BEGRIFFE',
+  b: 'DADURCH',
+  c: 'DAFÜR',
+  d: 'DASS',
+  e: 'DENN',
+  f: 'EINGRIFFE',
+  g: 'GING',
+  h: 'KAM',
+  i: 'NACHKOMMEN',
+  j: 'NOCH',
+  k: 'SODASS',
+  l: 'SOWIE',
+  m: 'UM',
+  n: 'VORKOMMEN',
+  o: 'Während'
+},
+// 6
+{
+  a: 'ZWAR',
+  b: 'VORSCHIEN',
+  c: 'STELLE',
+  d: 'SOLLTE',
+  e: 'SO',
+  f: 'RECHNEN',
+  g: 'RAND',
+  h: 'KANN',
+  i: 'GÜLTIG',
+  j: 'GELTEN',
+  k: 'EINORDNEN',
+  l: 'DARF',
+  m: 'ANPASSEN',
+  n: 'ANGEBEN',
+  o: 'ALLERDINGS'
+},
+
+// 7
+{
+  a: 'ALS',
+  b: 'AN',
+  c: 'AUSSERDEM',
+  d: 'BEI',
+  e: 'DARUNTER',
+  f: 'DIE',
+  g: 'NACHDEM',
+  h: 'OBWOHL',
+  i: 'SEIT',
+  j: 'VOR',
+  k: 'WARUM',
+  l: 'WAS',
+  m: 'WEIL',
+  n: 'WER',
+  o: 'WIE'
+},
+
+// 8
+
+{
+  a: 'aber',
+  b: 'abgrenzen',
+  c: 'als',
+  d: 'diesen',
+  e: 'Flut',
+  f: 'korrekt',
+  g: 'meisten',
+  h: 'recht',
+  i: 'reisedn',
+  j: 'somit',
+  k: 'stellt',
+  l: 'unlogische',
+  m: 'unterscheiden',
+  n: 'verschieden',
+  o: 'zwar'
+},
+//9
+{
+  a: 'AB',
+  b: 'ABER',
+  c: 'AN',
+  d: 'AUF',
+  e: 'DARAUF',
+  f: 'DARÜBER',
+  g: 'DAVON',
+  h: 'SEI',
+  i: 'SEIEN',
+  j: 'SONDERN',
+  k: 'ÜBER',
+  l: 'UM',
+  m: 'WAR',
+  n: 'WURDEN',
+  o: 'ZWAR'
+},
+
+//10
+{
+  a: 'AB',
+  b: 'ABER',
+  c: 'AN',
+  d: 'AUF',
+  e: 'DARAUF',
+  f: 'DARÜBER',
+  g: 'DAVON',
+  h: 'SEI',
+  i: 'SEIEN',
+  j: 'SONDERN',
+  k: 'ÜBER',
+  l: 'UM',
+  m: 'WAR',
+  n: 'WURDEN',
+  o: 'ZWAR'
+},
+//11
+{
+  a: 'AB',
+  b: 'ABER',
+  c: 'AN',
+  d: 'AUF',
+  e: 'DARAUF',
+  f: 'DARÜBER',
+  g: 'DAVON',
+  h: 'HIN',
+  i: 'SEIN',
+  j: 'SONDERN',
+  k: 'ÜBER',
+  l: 'UM',
+  m: 'WURDEN',
+  n: 'ZWEI',
+  o: 'ZWAR'
+},
+//12
+{
+  a: 'ANS',
+  b: 'ALS',
+  c: 'DA',
+  d: 'DARÜBER',
+  e: 'DARUM',
+  f: 'DAS',
+  g: 'DASS',
+  h: 'DÜRFEN',
+  i: 'INS',
+  j: 'MÜSSEN',
+  k: 'NUR',
+  l: 'SOLLEN',
+  m: 'SONDERN',
+  n: 'SOWIE',
+  o: 'WEDER'
+},
+
+//13
+{
+  a: 'ALS',
+  b: 'DA',
+  c: 'DARÜBER',
+  d: 'DARUM',
+  e: 'DAS',
+  f: 'DASS',
+  g: 'GLEICH',
+  h: 'HABE',
+  i: 'INS',
+  j: 'KAM',
+  k: 'NUR',
+  l: 'SOLLEN',
+  m: 'SONDERN',
+  n: 'SOWIE',
+  o: 'WEDER'
+},
+
+
+//14
+{
+  a: 'AN',
+  b: 'AUF',
+  c: 'BEINAHE',
+  d: 'DAFÜR',
+  e: 'DANN',
+  f: 'DENN',
+  g: 'DÜRFEN',
+  h: 'FAST',
+  i: 'INNERHALB',
+  j: 'KAUM',
+  k: 'MÜSSEN',
+  l: 'SOLLEN',
+  m: 'STATT',
+  n: 'VOR',
+  o: 'VORBEİ'
+},
+
+//15
+
+{
+  a: 'AN',
+  b: 'AUF',
+  c: 'BEINAHE',
+  d: 'DAFÜR',
+  e: 'DANN',
+  f: 'DENN',
+  g: 'DÜRFEN',
+  h: 'FAST',
+  i: 'INNERHALB',
+  j: 'KAUM',
+  k: 'MÜSSEN',
+  l: 'SOLLEN',
+  m: 'STATT',
+  n: 'VOR',
+  o: 'ZUMEİST'
+},
+
+//16
+
+{
+  a: 'ZWAR',
+  b: 'WURDEN',
+  c: 'WIE',
+  d: 'WENIGER',
+  e: 'WAREN',
+  f: 'VERGANGENEN',
+  g: 'UM',
+  h: 'GERINGERES',
+  i: 'GEGENTEIL',
+  j: 'GEGENSATZ',
+  k: 'FRÜHEREN',
+  l: 'DURCH',
+  m: 'DIESELBE',
+  n: 'DEUTLICH',
+  o: 'ALS'
+},
+//17
+
+{
+  a: 'ALLES',
+  b: 'ANSTATT',
+  c: 'AUSGEHEN',
+  d: 'BEKOMMEN',
+  e: 'BİLDEN',
+  f: 'DAGEGEN',
+  g: 'DAVON',
+  h: 'GEGEN',
+  i: 'HÖCHTENS',
+  j: 'JEDE',
+  k: 'MEİSTENS',
+  l: 'SOLCHE',
+  m: 'UM',
+  n: 'WİLL',
+  o: 'WÜNSCHT'
+},
+
+//18
+
+{
+  a: 'ALLES',
+  b: 'ANSTATT',
+  c: 'AUSGEHEN',
+  d: 'BEKOMMEN',
+  e: 'WECHSELN',
+  f: 'DAGEGEN',
+  g: 'DAVON',
+  h: 'GEGEN',
+  i: 'STELLEN',
+  j: 'JEDE',
+  k: 'MEİSTENS',
+  l: 'SOLCHE',
+  m: 'UM',
+  n: 'WİLL',
+  o: 'WÜNSCHT'
+},
+
+//19
+
+{
+  a: 'AN',
+  b: 'AUF',
+  c: 'AUS',
+  d: 'AUSSERDEM',
+  e: 'DASS',
+  f: 'ENTHALTEN',
+  g: 'ENTLASTET',
+  h: 'FÜR',
+  i: 'HINTER',
+  j: 'OB',
+  k: 'SOGAR',
+  l: 'SONTERN',
+  m: 'VERWENDET',
+  n: 'WENN',
+  o: 'WIRKLICH'
+},
+
+//20
+
+{
+  a: 'AN',
+  b: 'AUF',
+  c: 'AUS',
+  d: 'AUSSERDEM',
+  e: 'DASS',
+  f: 'ENTHALTEN',
+  g: 'ENTLASTET',
+  h: 'FÜR',
+  i: 'HINTER',
+  j: 'OB',
+  k: 'SOGAR',
+  l: 'SONTERN',
+  m: 'VERWENDET',
+  n: 'WENN',
+  o: 'WIRKLICH'
+},
+
+//21
+
+{
+  a: 'ZU',
+  b: 'WIE',
+  c: 'SEI',
+  d: 'NUR',
+  e: 'NACHWEISEN',
+  f: 'MUSSTEN',
+  g: 'LIEFERT',
+  h: 'KONNTEN',
+  i: 'HABEN',
+  j: 'GEBEN',
+  k: 'FÖRDERTE',
+  l: 'ERBRINGEN',
+  m: 'DAZU',
+  n: 'DAVON',
+  o: 'BEKANNTLICH'
+},
+ //22
+{
+  a: 'FEIN',
+  b: 'GUT',
+  c: 'LASSEN',
+  d: 'MAN',
+  e: 'MEINEN',
+  f: 'MITEINANDER',
+  g: 'MÖGEN',
+  h: 'NACH',
+  i: 'NACHEINANDER',
+  j: 'NEHMEN',
+  k: 'SICH',
+  l: 'SINNLOS',
+  m: 'STIMMEN',
+  n: 'STÖREN',
+  o: 'VERGEBLICH'
+},
+
+//23
+{
+  a: 'ALS',
+  b: 'BEHÄLT',
+  c: 'BEREIT',
+  d: 'BLEIBT',
+  e: 'DAGEGEN',
+  f: 'FERTIG',
+  g: 'GEHÖREN',
+  h: 'JEDER',
+  i: 'KLAR',
+  j: 'MANCHER',
+  k: 'MIT',
+  l: 'TAKT',
+  m: 'TIPP',
+  n: 'WAS',
+  o: 'WINK'
+},
+
+//24
+
+{
+  a: 'ABER',
+  b: 'ANSTATT',
+  c: 'BESONDERS',
+  d: 'FÜR',
+  e: 'KAUM',
+  f: 'MIT',
+  g: 'MÜSSTE',
+  h: 'OHNE',
+  i: 'SCHON',
+  j: 'SO',
+  k: 'SOGAR',
+  l: 'SOLLTE',
+  m: 'SONDERN',
+  n: 'UM',
+  o: 'VON'
+},
+
+//25
+
+{
+  a: 'ANHAND',
+  b: 'ANSTRENGEND',
+  c: 'AUF',
+  d: 'AUS',
+  e: 'EHER',
+  f: 'FAST',
+  g: 'FOLGLICH',
+  h: 'IN',
+  i: 'KAUM',
+  j: 'LANGWEILIG',
+  k: 'SOWIE',
+  l: 'VON',
+  m: 'WEGEN',
+  n: 'WOHL',
+  o: 'ZU'
+},
+
+//26
+
+{
+  a: 'ZUFOLGE',
+  b: 'ANSTRENGEND',
+  c: 'AUF',
+  d: 'ZU',
+  e: 'OB',
+  f: 'FAST',
+  g: 'FOLGLICH',
+  h: 'IN',
+  i: 'KAUM',
+  j: 'LANGWEILIG',
+  k: 'JEDE',
+  l: 'VON',
+  m: 'WEGEN',
+  n: 'WOHL',
+  o: 'VERMUTLICH'
+},
+
+//27
+
+{
+  a: 'ZUFOLGE',
+  b: 'ANSTRENGEND',
+  c: 'AUF',
+  d: 'VERMUTLICH',
+  e: 'JEDE',
+  f: 'FAST',
+  g: 'FOLGLICH',
+  h: 'IN',
+  i: 'OB',
+  j: 'LANGWEILIG',
+  k: 'SOWIE',
+  l: 'VON',
+  m: 'WEGEN',
+  n: 'DENEN',
+  o: 'ZU'
+ 
+},
+
+//28
+
+{
+  a: 'DAFÜR',
+  b: 'DAHER',
+  c: 'DAMIT',
+  d: 'DARAN',
+  e: 'DASS',
+  f: 'DAVON',
+  g: 'DAZU',
+  h: 'DENN',
+  i: 'FÜR',
+  j: 'GEGEN',
+  k: 'IRGENDEIN',
+  l: 'WAS',
+  m: 'WEITER',
+  n: 'ZU',
+  o: 'ZWISCHEN'
+},  
+//29
+{
+  a: 'AN',
+  b: 'AUS',
+  c: 'DARAUF',
+  d: 'DAS',
+  e: 'DASS',
+  f: 'DEM',
+  g: 'DENEN',
+  h: 'JETZT',
+  i: 'KEINE',
+  j: 'NICHT NUR',
+  k: 'SO DASS',
+  l: 'ÜBRIGENS',
+  m: 'WAS',
+  n: 'WELCHE',
+  o: 'ZU'
+},
+//30
+{
+  a: 'AUF',
+  b: 'BEI',
+  c: 'DABEI',
+  d: 'DAFÜR',
+  e: 'DAS',
+  f: 'DASS',
+  g: 'DAVON',
+  h: 'DENNOCH',
+  i: 'DOCH',
+  j: 'JEDOCH',
+  k: 'MIT',
+  l: 'OBWOHL',
+  m: 'SONDERN',
+  n: 'VON',
+  o: 'WEIL'
+},
+
+//31
+
+{
+  a: 'AUF',
+  b: 'BEI',
+  c: 'DABEI',
+  d: 'DENNOCH',
+  e: 'DAS',
+  f: 'DASS',
+  g: 'DAVON',
+  h: 'DENNOCH',
+  i: 'DOCH',
+  j: 'JEDOCH',
+  k: 'ZUR',
+  l: 'NIEMANDEN',
+  m: 'SONDER',
+  n: 'DOCH',
+  o: 'WEIL'
+},
+
+//32
+
+{
+  a: 'AUF',
+  b: 'SICH',
+  c: 'DABEI',
+  d: 'NIEMANDEN',
+  e: 'VEREINBAREN',
+  f: 'DASS',
+  g: 'DAVON',
+  h: 'DENNOCH',
+  i: 'DOCH',
+  j: 'JEDOCH',
+  k: 'ZUR',
+  l: 'OBWOHL',
+  m: 'WERDEN',
+  n: 'DIE',
+  o: 'WEIL'
+},
+
+//33
+{
+  a: 'AUS',
+  b: 'DANN',
+  c: 'DURCH',
+  d: 'JENE',
+  e: 'LIESSEN',
+  f: 'MACHTEN',
+  g: 'MIT',
+  h: 'SO',
+  i: 'UNTERSCHADEN',
+  j: 'VERÄNDERTEN',
+  k: 'VON',
+  l: 'VOR',
+  m: 'WAS',
+  n: 'WELCHE',
+  o: 'WIE'
+},
+//34
+
+{
+  a: 'DASS',
+  b: 'DAVON',
+  c: 'DAZU',
+  d: 'DENN',
+  e: 'FAHREN',
+  f: 'GRABEN',
+  g: 'HERMIT',
+  h: 'KLAUEN',
+  i: 'KOSTEN',
+  j: 'OFT',
+  k: 'REIBEN',
+  l: 'SO',
+  m: 'UM',
+  n: 'WEN',
+  o: 'WER'
+},
+//35
+{
+  a: "ALS",
+  b: "BEOBACHTUNG",
+  c: "BETRACHTUNG",
+  d: "DENN",
+  e: "DER",
+  f: "DEUTLICH",
+  g: "DOCH",
+  h: "ENTWARFEN",
+  i: "ENTWICKELTEN",
+  j: "FÄHIG",
+  k: "FÜR",
+  l: "GENAU",
+  m: "NOCH",
+  n: "OBERIGENS",
+  o: "WER"
+},
+
+//36
+{
+  a: "SETZEN",
+  b: "GEZÜCHTET",
+  c: "VORTEILE",
+  d: "VOR",
+  e: "ES",
+  f: "EINFACH",
+  g: "MITTLERWEILE",
+  h: "SOLCHE",
+  i: "DADURCH",
+  j: "VON",
+  k: "KLEIN",
+  l: "KEIN",
+  m: "HÖHER",
+  n: "ERZOGEN",
+  o: "BESÜCHTET",
+},
+//37
+{
+  a: "BEMÜHEN", 
+  b: "FÜR", 
+  c: "DESHALB",
+  d: "DOCH",
+  e: "HILFREICH",
+  f: "KONZENTRIEREN",
+  g: "KRITISCHE",
+  h: "LÖSUNGEN",
+  i: "NICHT",
+  j: "PROBLEME",
+  k: "SCHON",
+  l: "SELBST",
+  m: "STYST",
+  n: "SELBSTBEWUSST",
+  o: "VERHALTEN"
+},
+//38
+
+{
+  a: "DAMIT",
+  b: "DAS",
+  c: "DASS",
+  d: "FIGUREN",
+  e: "FÜR",
+  f: "GEHT",
+  g: "GESTALTEN",
+  h: "IMMER",
+  i: "NIE",
+  J: "SPIELERISCHE",
+  k: "SUCHEN",
+  l: "TUN",
+  m: "VON",
+  n: "WEIL",
+  o: "WURDE"
+},
+
+//39
+
+{
+
+  a: "WÄHREND",
+  b: "VOREILIG",
+  c: "MODE",
+  d: "KUNDEN",
+  e: "KONKURRENZ",
+  f: "GRÜNDEN",
+  g: "GESAMT",
+  h: "GENAU",
+  i: "GANZ",
+  j: "FORM",
+  k: "EINGESTELLT",
+  l: "EINGESETZT",
+  m: "EIN",
+  n: "AUSSERDEM",
+  o: "ALS"
+},
+
+//40
+
+
+{
+  a: "ANGABEN",
+  b: "ANZEIGEN",
+  c: "BEKANNT",
+  d: "BLOSS",
+  e: "DENEN",
+  f: "DEREN",
+  g: "LAGE",
+  h: "SOFERN",
+  i: "SONDERN",
+  j: "STELLUNG",
+  k: "VERHALTEN",
+  l: "VERTAUT",
+  m: "WEITER",
+  n: "ZUDEM",
+  o: "ZUNÄCHST"
+},
+
+//41
+{
+  a: "Als",
+  b: "Neue",
+  c: "Form",
+  d: "Mode",
+  e: "Einstehen",
+  f: "Ausweiten",
+  g: "Wegen",
+  h: "Ganz",
+  i: "Insgesamt",
+  j: "Gestaltet",
+  k: "Konkurrenten",
+  l: "Durch",
+  m: "Ein",
+  n: "Eingestellt",
+  o: "Kunden"
+},
+//42
+{
+  a: "erheblich",
+  b: "schnell",
+  c: "immer",
+  d: "wird",
+  e: "dass",
+  f: "einem",
+  g: "aller",
+  h: "sollte",
+  i: "ist",
+  j: "sind",
+  k: "bequem",
+  l: "unter",
+  m: "bei",
+  n: "dabei",
+  o: "wie"
+},
+
+//43
+
+{
+  a: "ALLEIN",
+  b: "AN",
+  c: "AUF",
+  d: "AUGRUND",
+  e: "DARAUF",
+  f: "DURCH",
+  g: "DÜRFTEN",
+  h: "EINZIGE",
+  i: "KNAPP",
+  j: "KURZ",
+  k: "MÖCHTEN",
+  l: "REGE",
+  m: "STADESSEN",
+  n: "WÄHREND",
+  o: "WEGEN"
+},
+
+//44
+
+{
+  a: "lage",
+  b: "angaben",
+  c: "sondern",
+  d: "denen",
+  e: "verhalten",
+  f: "zunächst",
+  g: "weiter",
+  h: "bloß",
+  i: "sofern",
+  j: "bekannt",
+  k: "ihres",
+  l: "nennen",
+  m: "weiterem",
+  n: "genannt",
+  o: "solange"
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ];
+
+    let correctTotal = 0;
+    let incorrectTotal = 0;
+    let alreadyCheckedArray = Array.from({length: correctAnswersArray.length}, () => ({}));
+    let usedCorrectKeysArray = Array.from({length: correctAnswersArray.length}, () => new Set());
+    const containers = document.querySelectorAll('.container');
+    const answerBoxes = document.querySelectorAll('.answer-box');
+    let currentIndex = 0;
+
+    function updatePageNumber() {
+      document.getElementById('pageIndex').innerText = currentIndex + 1;
+    }
+
+    function showTest(index) {
+      containers.forEach((c, i) => {
+        c.classList.toggle('active', i === index);
+      });
+      answerBoxes.forEach((b, i) => {
+        b.classList.toggle('active', i === index);
+      });
+      updatePageNumber();
+    }
+
+    function nextTest() {
+      if (currentIndex < containers.length - 1) {
+        currentIndex++;
+        showTest(currentIndex);
+      }
+    }
+
+    function prevTest() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        showTest(currentIndex);
+      }
+    }
+
+    function updateScoreboard() {
+      document.getElementById("correctCount").innerText = correctTotal;
+      document.getElementById("incorrectCount").innerText = incorrectTotal;
+    }
+
+    function highlightUsedCorrectOptions(currentPage) {
+      document.querySelectorAll(`.container.active select option`).forEach(opt => {
+        opt.classList.remove('highlight');
+        if (usedCorrectKeysArray[currentPage].has(opt.value)) {
+          opt.classList.add('highlight');
+        }
+      });
+    }
+
+    function fillSelects(textId, correctAnswers, options, pageIdx) {
+      const textBlock = document.getElementById(textId);
+      const selects = textBlock.querySelectorAll("select");
+      selects.forEach((select, idx) => {
+        select.innerHTML = "";
+        const placeholder = document.createElement("option");
+        placeholder.value = '';
+        placeholder.text = 31 + idx;
+        select.appendChild(placeholder);
+        for (let key in options) {
+          const opt = document.createElement("option");
+          opt.value = key;
+          opt.text = `${key} ${options[key]}`;
+          select.appendChild(opt);
+        }
+      });
+
+      selects.forEach(select => {
+        const qid = select.id;
+        select.addEventListener('change', () => {
+          const selected = select.value;
+          const correct = correctAnswers[qid];
+          const optionText = options[selected];
+          select.classList.remove("correct", "incorrect");
+
+          if (selected === correct) {
+            if (!alreadyCheckedArray[pageIdx][qid]) {
+              correctTotal++;
+              alreadyCheckedArray[pageIdx][qid] = true;
+              usedCorrectKeysArray[pageIdx].add(selected);
+              highlightUsedCorrectOptions(pageIdx);
+            }
+            select.classList.add("correct");
+            document.getElementById(`answerBox${pageIdx+1}`)?.querySelector(`#option-${selected}`)?.classList.add("highlight");
+            const span = document.createElement("span");
+            span.innerHTML = " <strong>" + optionText + "</strong> ";
+            select.replaceWith(span);
+          } else {
+            if (!alreadyCheckedArray[pageIdx][qid]) {
+              incorrectTotal++;
+            }
+            select.classList.add("incorrect");
+          }
+          updateScoreboard();
+        });
+      });
+    }
+
+    function setupAnswerBox(answerBoxId, options) {
+      const container = document.getElementById(answerBoxId);
+      container.innerHTML = '';
+      const keys = Object.keys(options);
+      const columns = 3;
+      const rows = Math.ceil(keys.length / columns);
+      const grid = Array.from({ length: rows }, () => []);
+      keys.forEach((key, index) => {
+        const col = Math.floor(index / rows);
+        const row = index % rows;
+        if (!grid[row]) grid[row] = [];
+        grid[row][col] = key;
+      });
+      grid.forEach(row => {
+        row.forEach(key => {
+          if (key) {
+            const div = document.createElement("div");
+            div.className = "answer-option";
+            div.id = `option-${key}`;
+            div.innerHTML = `<span>${key}</span> ${options[key]}`;
+            container.appendChild(div);
+          }
+        });
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      for (let i = 0; i < correctAnswersArray.length; i++) {
+        fillSelects(`text${i+1}`, correctAnswersArray[i], optionsArray[i], i);
+        setupAnswerBox(`answerBox${i+1}`, optionsArray[i]);
+      }
+      showTest(0);
+    });
+  </script>
+</body>
+</html> 
