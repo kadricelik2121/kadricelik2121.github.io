@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>telc Sprachbausteine Teil 1</title>
+  <style>
+    body { background: #f5f5f7; font-family: Arial, sans-serif; margin:0; }
+    .topbar {
+      display:flex; align-items:center; justify-content:space-between;
+      background:#fff; font-size:19px; padding:9px 16px 8px 13px; margin-bottom:19px; border-bottom:2px solid #eee;
+    }
+    .topbar .stats { margin-left:14px; }
+    .topbar .ok {color:#119c0d; font-weight:bold;}
+    .topbar .wrong {color:#a11e00; font-weight:bold;}
+    .seite {color:#6d6d6d; font-size:1em; opacity:0.7; font-weight:normal;}
+    .flex-container { max-width:1350px; margin:0 auto 35px auto; display: flex; gap: 44px;}
+    .left { min-width:390px;}
+.titles {
+  position: relative;
+  background: #fff;
+  align-self: flex-start;
+  margin-left: 30px;
+  padding: 14px 10px;
+  border-radius:12px;
+  box-shadow:0 0 16px #bbb8;
+  max-height: 1000px;
+  width: 700px;
+  overflow-y: auto;
+  font-size: 16px;
+}
+
+/* YENİ: Arka plana silik resim ekle */
+.titles::before {
+  content: "";
+  position: absolute;
+  top:0; left:0; right:0; bottom:0;
+  background: url('30.png') no-repeat center center;
+  background-size: 75% auto;      /* Gerekirse % ile oyna */
+  opacity: 0.16;                  /* Siliklik miktarı, 0.1-0.3 arasında deneyebilirsin */
+  pointer-events: none;
+  z-index: 0;
+}
+.titles > * {
+  position: relative;
+  z-index: 1;
+}
+
+    .title-row {
+      font-size:22.5px; padding:18px 0 18px 8px; font-weight:bold; margin-bottom:6px; border-radius:12px;
+      transition: background 0.16s; letter-spacing:0.01em;
+      line-height:1.1; display: flex; align-items: center;
+      font-size: 23px;         /* ← Yazı boyutunu küçült! */
+       padding: 8px 10px;       /* ← Üst-alt ve sağ-sol iç boşluk (padding) azalt */
+     margin-bottom: 6px;      /* ← Satır arası boşluk */
+     border-radius: 8px;      /* ← Köşe yumuşaklığı */
+     font-weight: bold;
+     display: flex;
+     align-items: center;
+     transition: background 0.16s;
+    }
+    .title-row.selected { background:#caffc7; color:#167e10;}
+    .title-num {
+      font-weight:900; font-size: 1.25em; margin-right:17px;
+      color:#c20000; line-height:1; text-shadow:0 1px 2px #ff000030;
+      letter-spacing:0.05em; padding:2px 7px;
+      font-family: Arial Black, Arial, sans-serif; display:inline-block;
+    }
+    .main-right-area {
+      flex:1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 30px;
+    }
+    .ana-metin { margin-left: 5px; margin-right: 30px; }
+    .alt-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 28px;
+      padding-left: -735px;
+       margin-left: -735px; 
+    }
+
+    .question-box {
+      border-radius:16px;
+      box-shadow:0 0 11px #bbb7;
+      margin-bottom:3px;
+      display:flex; flex-direction:column; gap:14px;
+      padding:20px 24px 19px 24px;
+      cursor:pointer;
+      position:relative;
+      transition: box-shadow 0.15s;
+      min-width:180px;
+      min-height: 120px;
+      box-sizing: border-box;
+    }
+
+    .kutu-metin-gizli-ana {
+  display: -webkit-box;
+  -webkit-line-clamp: 18;   /* ← 15 satır görünsün */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 28em;         /* Yaklaşık 15 satıra denk gelir, gerekirse değiştir */
+  cursor: pointer;
+}
+
+    /* ÖZEL: Küçük kutularda metni kısalt */
+    .kutu-metin-gizli {
+      display: -webkit-box;
+      -webkit-line-clamp: 5;   /* Burada görünen SATIR sayısı */
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-height: 9em;
+      cursor: pointer;
+    }
+    .question-box:hover { box-shadow:0 0 22px #2ad07538; }
+    .q-header {display:flex; align-items:center; justify-content:space-between;}
+    .q-number { font-size:22px; font-weight:bold;}
+    .zoom-btns {display:flex; gap:8px;}
+    .zoom-btn {
+      border:none; background:#f4f4f4; border-radius:5px; font-size:19px; cursor:pointer; padding:4px 8px; margin-left:1px;
+      box-shadow:0 0 3px #bbb5;
+    }
+    .select-full { font-size:19px; margin-bottom:11px; border-radius:7px; padding:7px 14px; width:100%; min-width:0; box-sizing:border-box;}
+    .dogruOpt, .dogruSelected { background:#caffc7 !important; color:#167e10; font-weight:bold; }
+    .yanlisOpt, .yanlisSelected { background:#ffd6d6 !important; color:#c20000; font-weight:bold; }
+    .alreadyCorrect { background:#baf4b6 !important; color:#167e10; font-weight:bold; }
+    .dogru {color:#119c0d; font-size:19px; font-weight:bold;}
+    .yanlis {color:#c20000; font-size:19px; font-weight:bold;}
+    /* Modal */
+    .modal-bg { display:none; position:fixed; z-index:10000; left:0; top:0; right:0; bottom:0;
+      background:rgba(30,30,50,0.87); justify-content:center; align-items:center;}
+    .modal-bg.active { display:flex; }
+    .modal-content { background:#fff; border-radius:18px; padding:40px 32px 40px 32px; max-width:950px; width:99vw;
+      box-shadow:0 0 60px #0008; position:relative; animation: zoomIn 0.19s;
+      display: flex; flex-direction: column; gap: 0;
+    }
+    @keyframes zoomIn { from{transform:scale(0.94);} to{transform:scale(1);} }
+    .modal-q-number { font-size:26px; font-weight:bold; margin-bottom:14px;}
+    .modal-close {position:absolute; top:16px; right:29px; font-size:31px; color:#333; background:none; border:none; cursor:pointer;}
+    .modal-header {display:flex; align-items:center; justify-content:space-between;}
+    .modal-zoom-btns{margin-left:11px;}
+    .modal-select-box{margin-bottom:12px;}
+    #modalMetin {
+      background: none !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0;
+      margin: 16px 0 0 0;
+      font-size: 1.07em;
+      color: #222;
+    }
+    @media (max-width:1100px){
+      .flex-container{flex-direction:column;}
+      .left{max-width:98vw;}
+      .main-right-area{align-items:center;}
+      .ana-metin{align-self:center;}
+    }
+    @media (max-width:700px){
+      .modal-content{padding:10px;}
+      .alt-grid{grid-template-columns: 1fr;  grid-template-rows: repeat(4,1fr);}
+    }
+
+.alt-butonlar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 55px 0 22px 0;
+  padding-bottom: 18px;
+  max-width: 900px;   /* isteğe göre genişlik ayarı */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.alt-btn {
+  font-size: 1.16em;
+  padding: 10px 38px;
+  border-radius: 8px;
+  background: #f5f5f7;
+  border: 1.5px solid #aaa;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 2px 10px #bbb4;
+  transition: background 0.13s, color 0.13s;
+  min-width: 140px;
+}
+
+.alt-btn:hover {
+  background: #ddeedc;
+  color: #129d1d;
+  border-color: #129d1d;
+}
+
+.orta-btn {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <span style="font-weight:bold;font-size:19px;">telc Sprachbausteine Teil 1</span>
+    <span class="stats">
+      <span class="ok"><span class="icon">&#x2714;</span> Doğru Cevap: <span id="dogruSay">0</span></span>
+      <span class="wrong" style="margin-left:12px;"><span class="icon">&#10006;</span> Yanlış Cevap: <span id="yanlisSay">0</span></span>
+    </span>
+    <span class="seite">Seite 30</span>
+  </div>
+<div class="flex-container">
+  <div class="left">
+    <div class="titles" id="basliklar"></div>
+  </div>
+  <div class="main-right-area">
+    <div class="ana-metin" id="anaMetin"></div>
+    <div class="alt-grid" id="altGrid"></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBG" onclick="kapatModal(event)">
+  <div class="modal-content" onclick="event.stopPropagation();">
+    <button class="modal-close" onclick="kapatModal(event)">&times;</button>
+    <div class="modal-header">
+      <span class="modal-q-number" id="modalNum"></span>
+      <span class="zoom-btns modal-zoom-btns">
+        <button class="zoom-btn" onclick="zoomModal(-1);event.stopPropagation();">➖</button>
+        <button class="zoom-btn" onclick="zoomModal(1);event.stopPropagation();">➕</button>
+      </span>
+    </div>
+    <div class="modal-select-box">
+      <select class="select-full" id="modalSelect" onchange="modalSecim(event)">
+        <!-- Dinamik -->
+      </select>
+    </div>
+    <div id="modalMetin"></div>
+    <div id="modalSonuc" style="margin-top:18px;"></div>
+  </div>
+</div>
+<div class="alt-butonlar">
+  <button onclick="geriGit()" class="alt-btn sol-btn">&#8592; Geri</button>
+  <button onclick="anaSayfa()" class="alt-btn orta-btn">Ana Sayfa</button>
+  <button onclick="ileriGit()" class="alt-btn sag-btn">İleri &#8594;</button>
+</div>
+
+<script>
+const basliklarArr =[
+  { "k": "a", "t": " Der Wald als neues Zuhause" },
+  { "k": "b", "t": "Die Auswirkungen kUnstlichen Lichts" },
+  { "k": "c", "t": "Landbewohner fordern besseren offentlichen Nahverkehr" },
+  { "k": "d", "t": "Plotzlich geht das Licht aus - was tun bei Strom" },
+  { "k": "e", "t": "Stadtbewohner entdecken das Landleben" },
+  { "k": "f", "t": "Stadtbewohner leben umweltfreundlicher" },
+  { "k": "g", "t": "Trend: GroBstadter machen Urlaub im Wald" },
+  { "k": "h", "t": "Warum Licht fUr unser Wohlbefinden wichtig ist" },
+  { "k": "i", "t": "Was tun, wenn es Nacht wird? Lichtquellen vergangener Zeiten" },
+  { "k": "j", "t": " Wohnungsnot in Metropolen" }
+];
+
+
+
+//1. METİN
+
+const metinler = [
+  { text: `Heute machen die elektrische
+Beleuchtung in Wohnhausern.
+StraBenlaternen,Ampeln,
+Neonreklame und Scheinwerferlicht
+drauBen die Nacht fast zum Tag.
+Vor der Erfindung der Elektrizitat
+war das anders.Der Arbeitsalltag
+der Menschen wurde von den
+Jahreszeiten und vom Tageslicht
+bestimmt. Gearbeitet wurde von
+Sonnenaufgang bis
+Sonnenuntergang. Danach war
+Beleuchtung nur mit anderen
+Hilfsmitteln wie z. B. Feuer, Kerzen
+und Petroleum moglich. Das
+Museum fUr Dorfkultur in Weinheim
+zeigt in einer Sonderausstellung,
+wie sich das Landleben frUher nach
+Einbruch der Dunkelheit abspielte.
+Man erfahrt zum Beispiel, wie man
+vor Erfindung des Streichholzes
+Feuer entfachte. Es geht um die
+Bedeutung der Kerzen im
+bauerlichen Leben und darum ,
+welche weitreichenden UmbrUche
+die Erfindung der Gasbeleuchtung
+und des elektrischen Lichts mit sich
+brachte.
+`
+  , bg: "#F2F5FF", fontSize: "18px", dogru:"i", width: "500px", minHeight: "600px", padding: "15px 15px 15px 15px" },
+
+  //2. METİN 
+  { text: `Jahrelang zog es vor allem junge Berufstatige in die GroBstadte--denn diese sind attraktiv, bieten
+umfangreiche Einkaufsmoglichkeiten und einen gut ausgebauten offentlichen Nahverkehr.Doch seit einiger
+Zeit beobachten Forscher eine gegenlaufige Bewegung: lmmer mehr Menschen kehren den Metropolen den
+RUcken und lassen sich im Umland nieder - wegen der Ruhe und der gUnstigeren Preise.Die Stadte, die
+--� immer teurer werden, die Freiraume, die der landliche Raum bietet, sowie die neuen Formen des digitalen
+Arbeitens begUnstigen die oder Grafikdesigner, anderseits aber zum Beispiel auch Lehrer, Arzte und
+Handwerker, heiBt es in der Studie.Die Wissenschaftler sprechen schon von einer Trendwende, die sich vor
+allem in den Ballungszentren Berlin, Hamburg, MUnchen, Frankfurt und Stuttgart abzeichnet. 
+`
+  , bg: "#FFF8F2", fontSize: "18px", dogru:"e", width: "600px", minHeight: "50px", padding: "15px 15px" },
+
+  //3. METİN 
+  { text: `Satellitenbilder der Erde bei Nacht zeigen ein strahlendes Lichtermeer, das sich fast durchgehend
+über den Globus erstreckt. Seit der Erfindung der Glühbirne steht Licht für Wohlstand und
+Fortschritt. Die Städte sind nachts hell erleuchtet - nicht immer jedoch zum Wohle von Mensch
+und Umwelt: Denn zu viel Licht hat Folgen für Menschen und Tiere. An Straßenlaternen verenden
+jede Nacht Milliarden von Insekten, Zugvögel verlieren die Orientierung, und selbst der Mensch
+wird durch das Kunstlicht um einen gesunden Schlaf gebracht Wissenschaftler sprechen bereits
+von einer massiven Lichtverschmutzung Weltweit gehen Forscher jetzt der Frage nach, wie sich
+die Lichtflut auf ein gesundes Maß reduzieren lässt. Dabei arbeiten Physiker, Bioiogen, Medizner
+und Ingenieure an der Beleuchtung der Zukunft - an einem Licht, das weder Energie verschwendet
+noch unnötig den Nachthimmel erhellt, keine Insekten verenden und durch besondere
+Farbspektren auch den Menschen unbeheligt schlafen lässt.Denn es geht nicht darum, die Städte
+völlig dunkel zu machen. Es geht darum, sie nachhaltiger und intelligenter zu beleuchten
+`
+  , bg: "#F2FFF8", fontSize: "18px", dogru:"b",  width: "600px", minHeight: "300px", padding: "15px 15px" },
+
+  //4. METİN 
+  { text: `Vor zehn Jahren lebten Dirk und Antje Sebens noch in Mannheim, mitten in der Stadt.Dann
+kauften sie sich ein altes Forsthaus im Wald. Sie hatten es zufällig entdeckt, denn eigentlich
+hatten sie nur einen ruhigen Ort gesucht, um am Wochenende dem Stadtleben entfliehen zu
+können.Doch sie waren sofort von dem Haus begeistert - dass es dort weder Strom noch
+fließendes Wasser gab, schreckte sie nicht ab. Heute versuchen die beiden, so autark wie
+möglich zu leben. Die Solaranlage auf dem Dach liefert Strom, eigenes Holz die Wärme, der
+Brunnen vor dem Haus das Wasser.Im Sommer bauen Dirk und Antje Sebens Gemüse an, das sie
+für den Winter einwecken.Das nächste Dorf ist mehrere Kilometer entfernt und außer Besuchern
+verirrt sich höchstens mal ein Wanderer zu ihnen.,„Die absolute Dunkelheit draußen in der Nacht
+war am Anfang sehr ungewohnt", erzählt Antje Sebens. Denn elektrische Straßenlaternen wie in
+der Stadt gibt es im Wald natürlich nicht. Bereut haben die beiden ihre Entscheidung nie. Noch
+immer empfinden sie es als großes Abenteuer, mitten in der Natur zu sein und auf viele
+Annehmichkeiten zu verzichten.
+
+
+`
+  , bg: "#FFFDEB", fontSize: "18px", dogru:"a", width: "600px", minHeight: "300px", padding: "15px 15px" },
+
+  //5. METİN 
+  { text: `Wer verbringt nicht gerne sein Wochenende fernab der Stadt?
+Im Grünen, wo es noch Wiesen und Schmetterlinge gibt - und weder Staus noch Lärm.Viele zieht es
+gleich ganz aufs Land. Doch dort braucht man meist ein Auto.Wer nicht im Home-Office arbeiten
+kann, wird zum Pendler.Hinzu kommt, dass es in vielen Dörfern kaum noch Einkaufsmöglichkeiten
+oder Schulen gibt und der öffentliche Nahverkehr in Ländischen Grundschule bewohner nicht ohne
+PKW auskommen können.Forscher haben errechnet, dass wir bis zu 87 Prozent der Emissionen aus
+unserer Alltagsmobilität einsparen können, wenn wir in verkehrstechnisch günstiger Lage wohnen,
+also am besten in der Stadt mit Einkaufsmöglichkeiten und einen Carsharing-Standort vor der Tür.
+Auch das Argument, das Wohnen auf dem Land sei günstiger, überzeugt immer weniger. Zwar waren
+dort früher Mieten und Baugrund auf dem Land vergleichsweise erschwinglich, wird heute das
+Preisgefälle zwischen Stadt und Land immer flacher.Das Ergebnis könnte ernüchternd sein. Und das
+Leben in der Stadt attraktiver machen.
+`
+  , bg: "#F7F7F9", fontSize: "18px", dogru:"f", width: "600px", minHeight: "20", padding: "15px 15px" }
+];
+
+let secimler = Array(metinler.length).fill("");
+let modalAktif = null;
+let fontZoom = Array(metinler.length).fill(1);
+let modalFontZoom = 1;
+
+function guncelleBasliklar() {
+  let html = "";
+  basliklarArr.forEach((b, idx) => {
+    let atananlar = [];
+    secimler.forEach((s, mIdx) => { if(s === b.k && metinler[mIdx].dogru === b.k) atananlar.push((mIdx+1).toString()); });
+    let selected = atananlar.length>0 ? "selected" : "";
+    html += `<div class="title-row ${selected}" id="baslik-${b.k}">
+      ${atananlar.length>0?'<span class="title-num">'+atananlar.join(" ")+'</span>':''}${b.k}) ${b.t}
+    </div>`;
+  });
+  document.getElementById("basliklar").innerHTML = html;
+}
+
+function guncelleSorular() {
+  // Ana metin (1. kutu)
+  let m = metinler[0];
+  let idx = 0;
+  let selectClass = "";
+  if(secimler[idx]) {
+    if(secimler[idx]===m.dogru) selectClass="dogruSelected";
+    else selectClass="yanlisSelected";
+  }
+  let dogruKullanim = {};
+  secimler.forEach((secim,i)=>{ if(secim === metinler[i].dogru) dogruKullanim[secim]=true; });
+
+  let anaHtml = `<div class="question-box"
+    style="background:${m.bg};
+           font-size:calc(${m.fontSize}*${fontZoom[idx]});
+           width:${m.width||'auto'};
+           min-height:${m.minHeight||'120px'};
+           padding:${m.padding||'20px 24px 19px 24px'};"
+    onclick="acModal(${idx})">
+      <div class="q-header">
+        <span class="q-number">${idx+1}</span>
+        <span class="zoom-btns" onclick="event.stopPropagation();">
+          <button class="zoom-btn" onclick="zoomKutu(event,${idx},-1)">➖</button>
+          <button class="zoom-btn" onclick="zoomKutu(event,${idx},1)">➕</button>
+        </span>
+      </div>
+<select
+  class="select-full ${selectClass}" id="q${idx}" style="width:100%;min-width:0;"
+  onchange="kontrolEt(${idx});event.stopPropagation();"
+  onclick="event.stopPropagation();"
+  onmousedown="event.stopPropagation();">
+  <option value="">Başlık seçiniz...</option>
+  ${basliklarArr.map(b=>{
+    let optionClass = "";
+    if(secimler[idx]===b.k && secimler[idx]===m.dogru) optionClass="dogruOpt";
+    else if(secimler[idx]===b.k && secimler[idx]!==m.dogru && secimler[idx]!=="") optionClass="yanlisOpt";
+    else if(dogruKullanim[b.k] && secimler[idx]!==b.k) optionClass="alreadyCorrect";
+    return `<option value="${b.k}" ${secimler[idx]===b.k?'selected':''} class="${optionClass}">${b.k}) ${b.t}</option>`;
+  }).join("")}
+</select>
+      <div class="kutu-metin-gizli-ana" style="margin-top:8px;">${m.text}</div>
+      <div id="sonuc${idx}">
+        ${
+          !secimler[idx] ? "" :
+          (secimler[idx]===m.dogru ? "<span class='dogru'>Doğru!</span>" : "<span class='yanlis'>Yanlış</span>")
+        }
+      </div>
+    </div>`;
+  document.getElementById("anaMetin").innerHTML = anaHtml;
+
+  // Alt grid (2–5. kutular)
+  let altHtml = "";
+  for(let i=1; i<metinler.length; i++) {
+    let m = metinler[i];
+    let selectClass = "";
+    if(secimler[i]) {
+      if(secimler[i]===m.dogru) selectClass="dogruSelected";
+      else selectClass="yanlisSelected";
+    }
+    altHtml += `<div class="question-box"
+      style="background:${m.bg};
+             font-size:calc(${m.fontSize}*${fontZoom[i]});
+             width:${m.width||'auto'};
+             min-height:${m.minHeight||'120px'};
+             padding:${m.padding||'20px 24px 19px 24px'};"
+      onclick="acModal(${i})">
+        <div class="q-header">
+          <span class="q-number">${i+1}</span>
+          <span class="zoom-btns" onclick="event.stopPropagation();">
+            <button class="zoom-btn" onclick="zoomKutu(event,${i},-1)">➖</button>
+            <button class="zoom-btn" onclick="zoomKutu(event,${i},1)">➕</button>
+          </span>
+        </div>
+<select
+  class="select-full ${selectClass}" id="q${i}" style="width:100%;min-width:0;"
+  onchange="kontrolEt(${i});event.stopPropagation();"
+  onclick="event.stopPropagation();"
+  onmousedown="event.stopPropagation();">
+  <option value="">Başlık seçiniz...</option>
+  ${basliklarArr.map(b=>{
+    let optionClass = "";
+    if(secimler[i]===b.k && secimler[i]===m.dogru) optionClass="dogruOpt";
+    else if(secimler[i]===b.k && secimler[i]!==m.dogru && secimler[i]!=="") optionClass="yanlisOpt";
+    else if(dogruKullanim[b.k] && secimler[i]!==b.k) optionClass="alreadyCorrect";
+    return `<option value="${b.k}" ${secimler[i]===b.k?'selected':''} class="${optionClass}">${b.k}) ${b.t}</option>`;
+  }).join("")}
+</select>
+        <div class="kutu-metin-gizli" style="margin-top:8px;">${m.text}</div>
+        <div id="sonuc${i}">
+          ${
+            !secimler[i] ? "" :
+            (secimler[i]===m.dogru ? "<span class='dogru'>Doğru!</span>" : "<span class='yanlis'>Yanlış</span>")
+          }
+        </div>
+      </div>`;
+  }
+  document.getElementById("altGrid").innerHTML = altHtml;
+
+  // İstatistikleri güncelle
+  let dogruSay=0, yanlisSay=0;
+  secimler.forEach((secim,idx)=>{
+    if(secim === metinler[idx].dogru) dogruSay++;
+    else if(secim!=="") yanlisSay++;
+  });
+  document.getElementById("dogruSay").innerText = dogruSay;
+  document.getElementById("yanlisSay").innerText = yanlisSay;
+}
+guncelleBasliklar();
+guncelleSorular();
+
+function kontrolEt(idx) {
+  const secilen = document.getElementById('q'+idx).value;
+  secimler[idx] = secilen;
+  guncelleBasliklar();
+  guncelleSorular();
+}
+function zoomKutu(event,idx,degis) {
+  event.stopPropagation();
+  fontZoom[idx] += degis*0.23;
+  if(fontZoom[idx]<0.75) fontZoom[idx]=0.75;
+  if(fontZoom[idx]>2.7) fontZoom[idx]=2.7;
+  guncelleSorular();
+}
+
+// --- Modal ---
+function acModal(idx) {
+  modalAktif = idx;
+  modalFontZoom = fontZoom[idx] || 1;
+  document.getElementById('modalNum').innerHTML = (idx+1) + ". Metin";
+  let dogruKullanim = {};
+  secimler.forEach((secim,i)=>{
+    if(secim === metinler[i].dogru) dogruKullanim[secim]=true;
+  });
+  let secHtml = `<option value="">Başlık seçiniz...</option>`;
+  basliklarArr.forEach((b, bidx) => {
+    let optionClass = "";
+    if(secimler[idx]===b.k && secimler[idx]===metinler[idx].dogru) optionClass="dogruOpt";
+    else if(secimler[idx]===b.k && secimler[idx]!==metinler[idx].dogru && secimler[idx]!=="") optionClass="yanlisOpt";
+    else if(dogruKullanim[b.k] && secimler[idx]!==b.k) optionClass="alreadyCorrect";
+    secHtml += `<option value="${b.k}" ${secimler[idx]===b.k?'selected':''} class="${optionClass}">${b.k}) ${b.t}</option>`;
+  });
+  let selectClass = "";
+  if(secimler[idx]) {
+    if(secimler[idx]===metinler[idx].dogru) selectClass="dogruSelected";
+    else selectClass="yanlisSelected";
+  }
+  document.getElementById('modalSelect').className = "select-full " + selectClass;
+  document.getElementById('modalSelect').innerHTML = secHtml;
+  document.getElementById('modalMetin').innerHTML = metinler[idx].text;
+  let secilen = secimler[idx];
+  let sonuc = "";
+  if(!secilen) sonuc = "";
+  else if(secilen===metinler[idx].dogru) sonuc = "<span class='dogru'>Doğru!</span>";
+  else sonuc = "<span class='yanlis'>Yanlış</span>";
+  document.getElementById('modalSonuc').innerHTML = sonuc;
+  document.getElementById('modalBG').classList.add('active');
+  document.querySelector('.modal-content').style.fontSize = modalFontZoom + "em";
+}
+function kapatModal(e){
+  document.getElementById('modalBG').classList.remove('active');
+  modalAktif = null;
+}
+function modalSecim(e){
+  if(modalAktif===null) return;
+  let val = e.target.value;
+  secimler[modalAktif] = val;
+  guncelleBasliklar();
+  guncelleSorular();
+  document.getElementById('q'+modalAktif).value = val;
+  let dogruKullanim = {};
+  secimler.forEach((secim,i)=>{
+    if(secim === metinler[i].dogru) dogruKullanim[secim]=true;
+  });
+  let selectClass = "";
+  if(val) {
+    if(val===metinler[modalAktif].dogru) selectClass="dogruSelected";
+    else selectClass="yanlisSelected";
+  }
+  let secHtml = `<option value="">Başlık seçiniz...</option>`;
+  basliklarArr.forEach((b, bidx) => {
+    let optionClass = "";
+    if(val===b.k && val===metinler[modalAktif].dogru) optionClass="dogruOpt";
+    else if(val===b.k && val!==metinler[modalAktif].dogru && val!=="") optionClass="yanlisOpt";
+    else if(dogruKullanim[b.k] && val!==b.k) optionClass="alreadyCorrect";
+    secHtml += `<option value="${b.k}" ${val===b.k?'selected':''} class="${optionClass}">${b.k}) ${b.t}</option>`;
+  });
+  document.getElementById('modalSelect').className = "select-full " + selectClass;
+  document.getElementById('modalSelect').innerHTML = secHtml;
+  let sonuc = "";
+  if(!val) sonuc = "";
+  else if(val===metinler[modalAktif].dogru) sonuc = "<span class='dogru'>Doğru!</span>";
+  else sonuc = "<span class='yanlis'>Yanlış</span>";
+  document.getElementById('modalSonuc').innerHTML = sonuc;
+}
+function zoomModal(degis) {
+  if(modalAktif===null) return;
+  modalFontZoom += degis*0.23;
+  if(modalFontZoom<0.75) modalFontZoom=0.75;
+  if(modalFontZoom>2.7) modalFontZoom=2.7;
+  document.querySelector('.modal-content').style.fontSize = modalFontZoom + "em";
+}
+
+function ileriGit() {
+  window.scrollTo({top: 0, behavior: 'smooth'});
+  window.location.href = "les31.html"; // bir sonraki sayfanın dosya adı
+  // İstersen burada yeni bir sayfaya, başka bir bölüme yönlendirme ekleyebilirsin.
+  // Örneğin: window.location.href = 'sayfa2.html';
+}
+function geriGit() {
+  window.scrollTo({top: 0, behavior: 'smooth'});
+  window.location.href = "les29.html"; // bir önceki sayfanın dosya adı
+  // Aynı şekilde önceki sayfa/bölüm için burada işlem yapabilirsin.
+}
+function anaSayfa() {
+  window.location.href = "index.html"; // Veya ana sayfanın ismi neyse onu yaz.
+}
+
+</script>
+</body>
+</html>
