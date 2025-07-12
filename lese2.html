@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Eğitsel Mod – Final</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #FFFBEA;
+      color: #333;
+      height: 100%;
+    }
+    .container {
+      max-width: 960px;
+      margin: auto;
+      padding: 20px;
+      position: relative;
+    }
+    .title {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .text-box {
+      background: #e9e7e749;
+      font-size: 18px;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      border: 3px solid #b1b1b1;
+    }
+    .text-highlight {
+      background: lightgreen;
+      font-weight: bold;
+      border-radius: 5px;
+      padding: 2px 4px;
+      cursor: pointer;
+    }
+    .question {
+      margin-bottom: 35px;
+    }
+    .question-number {
+      font-weight: bold;
+      font-size: 1.4rem;
+      margin-bottom: 5px;
+    }
+    .option {
+      font-size: 20px;
+      padding: 10px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      margin: 6px 0;
+      cursor: pointer;
+    }
+    .option.correct {
+      background-color: #eaffea;
+      border-color: green;
+      color: green;
+      font-weight: bold;
+    }
+    .option.incorrect {
+      background-color: #ffeaea;
+      border-color: red;
+      color: red;
+      font-weight: bold;
+    }
+    .stats {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px 15px;
+      font-size: 0.9rem;
+      z-index: 100;
+      width: 160px;
+    }
+    #resetBtn {
+      display: none;
+      margin-top: 6px;
+      padding: 8px;
+      font-size: 0.9rem;
+      background-color: #f55;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+    }
+    .page-number {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: #f3ca7b;
+      color: #7a5e1a;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 50%;
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 6px #0002;
+      border: 2px solid #e6bb5c;
+      z-index: 100;
+    }
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 40px;
+      align-items: center;
+    }
+    .nav-btn {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+      background-color: #f0f0f0;
+      cursor: pointer;
+    }
+    .nav-btn.center {
+      margin: auto;
+    }
+    .nav-btn:hover {
+      background-color: #e0e0e0;
+    }
+
+    .subtitle-info {
+  position: absolute;
+  top: 40px;      /* İstatistik kutusunun biraz altında */
+  left: 210px;    /* Sol kenara yakın; kutuya göre ayarla */
+  font-size: 1.05rem;
+  color: #6e5a17;
+  letter-spacing: 0.3px;
+  background: transparent;
+  font-weight: normal;
+  z-index: 10;
+}
+
+.twocols {
+  column-count: 2;
+  column-gap: 32px;
+}
+@media (max-width: 600px) {
+  .twocols { column-count: 1; }
+}
+
+  </style>
+</head>
+<body>
+  
+<div class="stats">
+  ✔️ Doğru: <span id="correctCount">0</span><br>
+  ❌ Yanlış: <span id="wrongCount">0</span><br>
+  📊 Toplam: <span id="totalCount">0</span>
+  <button id="resetBtn" onclick="resetTest()">🔁 Testi Sıfırla</button>
+</div>
+<div class="page-number" id="pageNumber">1</div>
+<div class="container">
+  <div class="title" id="mainTitle"></div>
+  <div class="text-box" id="textBox"></div>
+  <div id="questionsBox"></div>
+  <div class="nav-buttons">
+    <button class="nav-btn" id="prevBtn">⬅️ Geri</button>
+    <button class="nav-btn center" onclick="alert('Ana sayfa tanımlanmadı')">🏠 Ana Sayfa</button>
+    <button class="nav-btn" id="nextBtn">➡️ İleri</button>
+  </div>
+</div>
+
+<!-- ... HTML gövden aynı kalsın ... -->
+
+<script>
+const pages = [
+  {
+
+    title: "Wer parkt, muss zahlen Parkuhren in Deutschland?",
+    metin: `Es geschah am 1. Januar 1954. In Duisburg, einer Großstadt am Rhein zwischen Köln und der
+niederländischen Grenze am Rande des Ruhrgebiets, gab es für die Autofahrer, die in der Straße
+“Am Buchenbaum” ihre Autos parken wollten, eine Überraschung. 20 etwa 1,5 Meter hohe
+Metallstangen mit uhrenförmigen Aufsätzen standen am Straßenrand mit der
+unmissverständlichen Aufschrift: “Einwurf 10 Pfennig für eine Stunde”. Die ersten Parkuhren in
+Deutschland waren aufgestellt.</b></p>
+Nur Basel in der Schweiz und Stockholm in Schweden hatten vor Duisburg Parkuhren installiert,
+um Dauerparker aus den Stadtzentren zu vertreiben. Das eingenommene Geld wurde in Duisburg
+anfangs für gemeinnützige Zwecke ausgegeben: für Alte, Kranke Kriegsversehrte, für elternlose
+Kinder. Und die Stadtverwaltung war sich sicher, dass die Autofahrer Verständnis für die
+Parkuhren aufbringen würden, dienten sie doch einem guten Zweck.
+Doch bei den Autofahrenn war man nicht so erfreut über diese neuen Apparate. “Groschengrab”
+wurden sie dann auch bald überall genannt: ein Apparat, in den man Groschen - wie die
+10-Pfennig-Stücke damals genannt wurden - hineinwarf. Dieser schluckte zwar gnadenlos
+Zehner, gab aber zum Verdruss vieler trotzdem oft keine Parkzeit frei. Tat er dies, dann aber in
+der Regel nur für höchstens 60 Minuten. Viele Autofahrer waren außerdem verärgert, weil sie
+immer passendes Kleingeld dabei haben mussten. Die ersten Parkuhren konnten nämlich nicht
+wechseln.</b></p>
+Wer parkte, ohne zu zahlen, riskierte damals wie heute einen Strafbescheid, liebevoll “Knöllchen”
+genannt. In allen anderen deutschen Städten erschienen nach und nach auch Parkuhren. Bald
+gehörten sie zu den Innenstädten wie das Rad zum Auto. Und das blieb so bis zum Ende der
+1980er Jahre.</b></p>
+Dann geschah so etwas wie eine Parkuhren-Revolution. Die guten, alten Parkuhren, die ein im
+Vergleich zu heute immer noch billiges Parken erlaubten, weil sie nicht beliebig oft auf neue
+Beträge umgestellt werden konnten, wurden mehr und mehr ersetzt durch die gerade neu
+entwickelten Parkscheinautomaten. Mit Solarenergie angetrieben, computergesteuert und
+beliebig programmierbar machten sie es nun möglich, ohne technische Beschränkungen die
+Preise und Zeiten für das Parken flexibel zu gestalten. Von Vorteil ist auch ihre
+Kundenfreundlichkeit: Die Zeiten, in denen nur Münzen als Zahlungsmittel akzeptiert wurden,
+sind passé; jetzt schlucken sie auch problemlos Papier- und Plastikgeld - und Wechselgeld wird
+ausgespuckt.</b></p>
+Das Parken wurde immer teurer. Und längst dienten die eingenommenen Beträge nicht mehr
+gemeinnützigen Zwecken. Sie wurden vielmehr als Einnahmequelle entdeckt für die leeren
+Stadtkassen, die nach immer mehr Geld verlangten. Gut 2 Millionen Euro verdient zum Beispiel
+Duisburg in einem Jahr an den Parkgebühren. In Köln kommen etwa 10 Millionen Euro im Jahr
+zusammen. Noch einmal so viel Geld verdienen die Städte an den “Knöllchen” für falsches
+Parken.</b></p>
+Aus 10 Pfennig für eine Stunde im Jahr 1954 - das wären heute etwa 5 Cents - sind inzwischen
+weit höhere Beträge geworden. Spitzenreiter in Deutschland sind Düsseldorf und Berlin mit
+mehreren Euro pro Stunde. Tendenz steigend. Doch aus dem Kölner Rathaus heißt es an alle sich
+beschwerenden Autofahrer gerichtet, das Geld werde selbstverständlich zweckgebunden
+verwendet: für den Bau neuer Straßen. An denen neue Parkscheinautomaten stehen?
+`,
+    sorular: [
+{
+    num: 6,
+    baslik: "Die ersten Parkuhren Europas standen",
+    secenekler: [
+      { text: "A) in der Schweiz und in Deutschland.", correct: false },
+      { text: "B) in der Schweiz und in Schweden.", correct: true, infoId: "info6" },
+      { text: "C) in Deutschland und in Schweden.", correct: false }
+    ]
+  },
+  {
+    num: 7,
+    baslik: "Früher wurden in Duisburg die Parkgebühren verwendet, um",
+    secenekler: [
+      { text: "A) Bedürftige zu unterstützen.", correct: true, infoId: "info7" },
+      { text: "B) Dauerparker aus den Stadtzentren zu vertreiben.", correct: false },
+      { text: "C) Löcher im städtischen Haushalt zu stopfen.", correct: false }
+    ]
+  },
+  {
+    num: 8,
+    baslik: "Die ersten Parkuhren",
+    secenekler: [
+      { text: "A) funktionierten problemlos.", correct: false },
+      { text: "B) gaben nur Groschen zurück.", correct: false },
+      { text: "C) konnten nur Münzen annehmen.", correct: true, infoId: "info8" }
+    ]
+  },
+  {
+    num: 9,
+    baslik: "Die neuen Parkscheinautomaten",
+    secenekler: [
+      { text: "A) funktionieren nur bargeldlos.", correct: false },
+      { text: "B) geben kein Wechselgeld zurück.", correct: false },
+      { text: "C) sind flexibel im Hinblick auf die Art der Bezahlung.", correct: true, infoId: "info9" }
+    ]
+  },
+  {
+    num: 10,
+    baslik: "In Berlin und in Düsseldorf",
+    secenekler: [
+      { text: "A) fließen die Parkgebühren nur in den Straßenbau.", correct: false },
+      { text: "B) nimmt die Zahl der Parkscheinautomaten zu.", correct: false },
+      { text: "C) werden die höchsten Parkgebühren verlangt.", correct: true, infoId: "info10" }
+    ]
+      },
+      // diğer sorular...
+    ]
+  },
+
+  // 2. SORU
+
+  {
+    title: "Wer parkt, muss zahlen Parkuhren in Deutschland?",
+    metin: `Es geschah am 1. Januar 1954. In Duisburg, einer Großstadt am Rhein zwischen Köln und der
+niederländischen Grenze am Rande des Ruhrgebiets, gab es für die Autofahrer, die in der Straße
+“Am Buchenbaum” ihre Autos parken wollten, eine Überraschung. 20 etwa 1,5 Meter hohe
+Metallstangen mit uhrenförmigen Aufsätzen standen am Straßenrand mit der
+unmissverständlichen Aufschrift: “Einwurf 10 Pfennig für eine Stunde”. Die ersten Parkuhren in
+Deutschland waren aufgestellt.</b></p>
+Nur Basel in der Schweiz und Stockholm in Schweden hatten vor Duisburg Parkuhren installiert,
+um Dauerparker aus den Stadtzentren zu vertreiben. Das eingenommene Geld wurde in Duisburg
+anfangs für gemeinnützige Zwecke ausgegeben: für Alte, Kranke Kriegsversehrte, für elternlose
+Kinder. Und die Stadtverwaltung war sich sicher, dass die Autofahrer Verständnis für die
+Parkuhren aufbringen würden, dienten sie doch einem guten Zweck.
+Doch bei den Autofahrenn war man nicht so erfreut über diese neuen Apparate. “Groschengrab”
+wurden sie dann auch bald überall genannt: ein Apparat, in den man Groschen - wie die
+10-Pfennig-Stücke damals genannt wurden - hineinwarf. Dieser schluckte zwar gnadenlos
+Zehner, gab aber zum Verdruss vieler trotzdem oft keine Parkzeit frei. Tat er dies, dann aber in
+der Regel nur für höchstens 60 Minuten. Viele Autofahrer waren außerdem verärgert, weil sie
+immer passendes Kleingeld dabei haben mussten. Die ersten Parkuhren konnten nämlich nicht
+wechseln.</b></p>
+Wer parkte, ohne zu zahlen, riskierte damals wie heute einen Strafbescheid, liebevoll “Knöllchen”
+genannt. In allen anderen deutschen Städten erschienen nach und nach auch Parkuhren. Bald
+gehörten sie zu den Innenstädten wie das Rad zum Auto. Und das blieb so bis zum Ende der
+1980er Jahre.</b></p>
+Dann geschah so etwas wie eine Parkuhren-Revolution. Die guten, alten Parkuhren, die ein im
+Vergleich zu heute immer noch billiges Parken erlaubten, weil sie nicht beliebig oft auf neue
+Beträge umgestellt werden konnten, wurden mehr und mehr ersetzt durch die gerade neu
+entwickelten Parkscheinautomaten. Mit Solarenergie angetrieben, computergesteuert und
+beliebig programmierbar machten sie es nun möglich, ohne technische Beschränkungen die
+Preise und Zeiten für das Parken flexibel zu gestalten. Von Vorteil ist auch ihre
+Kundenfreundlichkeit: Die Zeiten, in denen nur Münzen als Zahlungsmittel akzeptiert wurden,
+sind passé; jetzt schlucken sie auch problemlos Papier- und Plastikgeld - und Wechselgeld wird
+ausgespuckt.</b></p>
+Das Parken wurde immer teurer. Und längst dienten die eingenommenen Beträge nicht mehr
+gemeinnützigen Zwecken. Sie wurden vielmehr als Einnahmequelle entdeckt für die leeren
+Stadtkassen, die nach immer mehr Geld verlangten. Gut 2 Millionen Euro verdient zum Beispiel
+Duisburg in einem Jahr an den Parkgebühren. In Köln kommen etwa 10 Millionen Euro im Jahr
+zusammen. Noch einmal so viel Geld verdienen die Städte an den “Knöllchen” für falsches
+Parken.</b></p>
+Aus 10 Pfennig für eine Stunde im Jahr 1954 - das wären heute etwa 5 Cents - sind inzwischen
+weit höhere Beträge geworden. Spitzenreiter in Deutschland sind Düsseldorf und Berlin mit
+mehreren Euro pro Stunde. Tendenz steigend. Doch aus dem Kölner Rathaus heißt es an alle sich
+beschwerenden Autofahrer gerichtet, das Geld werde selbstverständlich zweckgebunden
+verwendet: für den Bau neuer Straßen. An denen neue Parkscheinautomaten stehen? `,
+    sorular: [
+  {
+    num: 6,
+    baslik: "Die ersten Parkuhren Europas standen",
+    secenekler: [
+      { text: "A) in Basel und in Duisburg.", correct: false },
+      { text: "B) in der Schweiz und in Schweden.", correct: true, infoId: "info6" },
+      { text: "C) in Deutschland und in Schweden.", correct: false }
+    ]
+  },
+  {
+    num: 7,
+    baslik: "Früher wurden in Duisburg die Parkgebühren verwendet, um",
+    secenekler: [
+      { text: "A) Bedürftige zu unterstützen.", correct: true, infoId: "info7" },
+      { text: "B) Dauerparker aus den Stadtzentren zu vertreiben.", correct: false },
+      { text: "C) Löcher im städtischen Haushalt zu stopfen.", correct: false }
+    ]
+  },
+  {
+    num: 8,
+    baslik: "Die ersten Parkuhren",
+    secenekler: [
+      { text: "A) bezeichnete man als \"Knöllchen\".", correct: false },
+      { text: "B) funktionierten nur mit Münzen.", correct: true, infoId: "info8" },
+      { text: "C) gaben oft falsche Beträge zurück.", correct: false }
+    ]
+  },
+  {
+    num: 9,
+    baslik: "Die neuen Parkscheinautomaten",
+    secenekler: [
+      { text: "A) akzeptieren nur Karten als Zahlungsmittel.", correct: false },
+      { text: "B) müssen mit hohem Aufwand gewartet werden.", correct: false },
+      { text: "C) versorgen sich selbst mit Strom.", correct: true, infoId: "info9" }
+    ]
+  },
+  {
+    num: 10,
+    baslik: "In Berlin und in Düsseldorf",
+    secenekler: [
+      { text: "A) fließen die Parkgebühren nur in den Straßenbau.", correct: false },
+      { text: "B) nimmt die Zahl der Parkscheinautomaten zu.", correct: false },
+      { text: "C) werden die höchsten Parkgebühren verlangt.", correct: true, infoId: "info10" }
+    ]
+      },
+      // diğer sorular...
+    ]
+  },
+
+// 3. SORU
+
+  {
+    title: "Traumfrau und Traummann gesucht",
+    metin: `Den Partner für das Leben finden - für immer mehr Menschen wird dies offenbar immer schwieriger. Rund
+31 Millionen Männer und Frauen in Deutschland, also mehr als ein Drittel der gesamten Bevölkerung, sind
+alleinstehend. Nicht dass Mann oder Frau wählerischer als in früheren Zeiten geworden wäre, es gibt
+scheinbar ganz einfach immer weniger Gelegenheiten, das Ziel einer Partnerschaft oder Ehe zu erreichen.</b></p>
+Die Menschen haben einfach immer weniger Zeit, sich um ihre ganz natürlichen Wünsche zu kümmern.
+Viele arbeiten weit entfernt von ihrem Wohnort, wechseln die Arbeitsstätte in relativ kurzen Abständen,
+haben für das Privatleben ungünstige Arbeitszeiten mit wenig Freizeit - abgesehen vom alljährlichen
+Urlaub. Dazu kommt, dass eine beträchtliche Minderheit der Deutschen nicht bereit ist, sich längerfristig
+oder gar "lebenslänglich" an einen bestimmten Partner zu binden. Immer mehr Menschen leben lieber mit
+ihren Lebensabschnittgefährten zusammen oder sie bevorzugen saisonale Kurzbeziehungen nach dem
+Muster "öfter mal 'ne(n) Neue(n)".</b></p>
+Und immer mehr von denen, die eine Partnerschaft anstreben, versuchen ihren Liebsten oder ihre Liebste
+nicht auf Partys, Kirmesfesten oder in Cafés und Kneipen zu finden, wie das bei ihren Großeltern noch
+üblich war, sondern sie schauen ins Internet oder in Zeitungen, um über Partnerschafts- oder
+Heiratsannoncen fündig zu werden. In Deutschland gibt es viele Radioprogramme, in denen täglich
+Dutzende ihre Heiratsabsichten kundtun. An Wochenenden gibt es sogar Fernsehsendungen, in denen
+Partnersuchende mit anderen Partnersuchenden quasi verkuppelt werden.</b></p>
+Doch wie muss solch eine Kontaktanzeige aussehen, damit sie auch von Erfolg gekrönt ist? Denn nicht
+wenige Anzeigen bringen gar keinen oder nicht den erwünschten Erfolg. Dieser Frage hat sich nun der
+Kommunikationsexperte Jörg Stimpfling an der Universität Stuttgart gewidmet und seit mehr als zehn
+Jahren Kontaktanzeigen in den verschiedensten Medien gesammelt und analysiert.</b></p>
+Das Ergebnis der umfangreichen Forschung: Viele Anzeigen sind zu oberflächlich formuliert oder bedienen
+sich althergebrachter Stereotypen. So beschreiben sich Frauen mit Synonymen für Schönheit oder
+Attraktivität, Männer bieten Sicherheit oder Status an, überholt geglaubte Klischees finden sich in den
+meisten Fällen. Ebenso fällt die Neigung auf, sich schöner, besser zu präsentieren, als man wirklich ist, so
+als biete man ein Produkt in der Konsumwerbung an. Man könnte fast meinen, viele suchen sich selbst wie
+ihr eigenes Zwillingsbild.</b></p>
+Jörg Stimpfling und seine Kollegen empfehlen Partner suchenden Singles daher, sich erst einmal selbst
+kennen zu lernen, bevor sie sich an zukünftige Partnerinnen oder Partner wenden. Nur wer über sich selbst
+Bescheid weiß, kann den Partner finden, der zu ihm passt. Und das Zwillingsbild im Spiegel ist leider kaum
+als idealer Partner geeignet.
+`,
+    sorular: [
+  {
+    num: 6,
+    baslik: "Viele Menschen in Deutschland sind unverheiratet, weil",
+    secenekler: [
+      { text: "A) die Ansprüche bei der Partnerwahl immer weiter steigen.", correct: false },
+      { text: "B) die Lebensumstände es erschweren, den Partner oder die Partnerin fürs Leben zu finden.", correct: true, infoId: "info6" },
+      { text: "C) eine Mehrheit ohnehin lieber in zeitlich begrenzten Beziehungen lebt.", correct: false }
+    ]
+  },
+  {
+    num: 7,
+    baslik: "Viele Singles suchen sich heute ihre Partner oder Partnerinnen",
+    secenekler: [
+      { text: "A) am Arbeitsplatz.", correct: false },
+      { text: "B) auf Festen.", correct: false },
+      { text: "C) in den Medien.", correct: true, infoId: "info7" }
+    ]
+  },
+  {
+    num: 8,
+    baslik: "Im Radio werden",
+    secenekler: [
+      { text: "A) an Samstagen und Sonntagen Partner vermittelt.", correct: false },
+      { text: "B) jeden Tag Heiratswünsche gesendet.", correct: true, infoId: "info8" },
+      { text: "C) täglich Hochzeitsglückwünsche gesendet.", correct: false }
+    ]
+  },
+  {
+    num: 9,
+    baslik: "In Kontaktanzeigen",
+    secenekler: [
+      { text: "A) beschreiben sich Partnersuchende oft im Rahmen konventioneller Rollenerwartungen.", correct: true, infoId: "info9" },
+      { text: "B) suchen die meisten Männer moderne, attraktive Frauen.", correct: false },
+      { text: "C) werden recht häufig die passenden Partner fürs Leben gefunden.", correct: false }
+    ]
+  },
+  {
+    num: 10,
+    baslik: "Wer eine Kontaktanzeige aufgibt, sollte",
+    secenekler: [
+      { text: "A) jemanden suchen mit möglichst ähnlichen Eigenschaften.", correct: false },
+      { text: "B) sich werbewirksam präsentieren können.", correct: false },
+      { text: "C) zunächst eine Selbstanalyse vornehmen.", correct: true, infoId: "info10" }
+    ]
+      },
+      // diğer sorular...
+    ]
+  },
+ //4. SORU
+   {
+    title: "Traumfrau und Traummann gesucht",
+    metin: `Den Partner für das Leben finden - für immer mehr Menschen wird dies offenbar immer schwieriger. Rund
+31 Millionen Männer und Frauen in Deutschland, also mehr als ein Drittel der gesamten Bevölkerung, sind
+alleinstehend. Nicht dass Mann oder Frau wählerischer als in früheren Zeiten geworden wäre, es gibt
+scheinbar ganz einfach immer weniger Gelegenheiten, das Ziel einer Partnerschaft oder Ehe zu erreichen.</b></p>
+Die Menschen haben einfach immer weniger Zeit, sich um ihre ganz natürlichen Wünsche zu kümmern.
+Viele arbeiten weit entfernt von ihrem Wohnort, wechseln die Arbeitsstätte in relativ kurzen Abständen,
+haben für das Privatleben ungünstige Arbeitszeiten mit wenig Freizeit - abgesehen vom alljährlichen
+Urlaub. Dazu kommt, dass eine beträchtliche Minderheit der Deutschen nicht bereit ist, sich längerfristig
+oder gar "lebenslänglich" an einen bestimmten Partner zu binden. Immer mehr Menschen leben lieber mit
+ihren Lebensabschnittgefährten zusammen oder sie bevorzugen saisonale Kurzbeziehungen nach dem
+Muster "öfter mal 'ne(n) Neue(n)".</b></p>
+Und immer mehr von denen, die eine Partnerschaft anstreben, versuchen ihren Liebsten oder ihre Liebste
+nicht auf Partys, Kirmesfesten oder in Cafés und Kneipen zu finden, wie das bei ihren Großeltern noch
+üblich war, sondern sie schauen ins Internet oder in Zeitungen, um über Partnerschafts- oder
+Heiratsannoncen fündig zu werden. In Deutschland gibt es viele Radioprogramme, in denen täglich
+Dutzende ihre Heiratsabsichten kundtun. An Wochenenden gibt es sogar Fernsehsendungen, in denen
+Partnersuchende mit anderen Partnersuchenden quasi verkuppelt werden.</b></p>
+Doch wie muss solch eine Kontaktanzeige aussehen, damit sie auch von Erfolg gekrönt ist? Denn nicht
+wenige Anzeigen bringen gar keinen oder nicht den erwünschten Erfolg. Dieser Frage hat sich nun der
+Kommunikationsexperte Jörg Stimpfling an der Universität Stuttgart gewidmet und seit mehr als zehn
+Jahren Kontaktanzeigen in den verschiedensten Medien gesammelt und analysiert.</b></p>
+Das Ergebnis der umfangreichen Forschung: Viele Anzeigen sind zu oberflächlich formuliert oder bedienen
+sich althergebrachter Stereotypen. So beschreiben sich Frauen mit Synonymen für Schönheit oder
+Attraktivität, Männer bieten Sicherheit oder Status an, überholt geglaubte Klischees finden sich in den
+meisten Fällen. Ebenso fällt die Neigung auf, sich schöner, besser zu präsentieren, als man wirklich ist, so
+als biete man ein Produkt in der Konsumwerbung an. Man könnte fast meinen, viele suchen sich selbst wie
+ihr eigenes Zwillingsbild.</b></p>
+Jörg Stimpfling und seine Kollegen empfehlen Partner suchenden Singles daher, sich erst einmal selbst
+kennen zu lernen, bevor sie sich an zukünftige Partnerinnen oder Partner wenden. Nur wer über sich selbst
+Bescheid weiß, kann den Partner finden, der zu ihm passt. Und das Zwillingsbild im Spiegel ist leider kaum
+als idealer Partner geeignet.
+`,
+    sorular: [
+  {
+    num: 6,
+    baslik: "Viele Menschen in Deutschland sind unverheiratet, weil",
+    secenekler: [
+      { text: "A) die Ansprüche bei der Partnerwahl immer weiter steigen.", correct: false },
+      { text: "B) die Lebensumstände es erschweren, eine Partnerin oder einen Partner zu finden.", correct: true, infoId: "info6" },
+      { text: "C) die meisten ohnehin lieber in zeitlich begrenzten Beziehungen leben.", correct: false }
+    ]
+  },
+  {
+    num: 7,
+    baslik: "Viele Singles suchen sich heute ihre Partner oder Partnerinnen",
+    secenekler: [
+      { text: "A) am Arbeitsplatz.", correct: false },
+      { text: "B) auf Festen.", correct: false },
+      { text: "C) in den Medien.", correct: true, infoId: "info7" }
+    ]
+  },
+  {
+    num: 8,
+    baslik: "Im Radio werden",
+    secenekler: [
+      { text: "A) an Samstagen und Sonntagen Partner vermittelt.", correct: false },
+      { text: "B) jeden Tag Heiratswünsche gesendet.", correct: true, infoId: "info8" },
+      { text: "C) täglich Hochzeitsglückwünsche gesendet.", correct: false }
+    ]
+  },
+  {
+    num: 9,
+    baslik: "Ein Forscher hat herausgefunden, dass",
+    secenekler: [
+      { text: "A) klassische Rollenbilder bei der Selbstdarstellung in Kontaktanzeigen weiterhin stark verbreitet sind.", correct: true, infoId: "info9" },
+      { text: "B) sich überraschenderweise immer mehr Menschen ehrlich in ihren Kontaktanzeigen beschreiben.", correct: false },
+      { text: "C) viele Kontaktanzeigen eine hohe Erfolgsquote aufweisen.", correct: false }
+    ]
+  },
+  {
+    num: 10,
+    baslik: "Wer eine Kontaktanzeige aufgibt, sollte",
+    secenekler: [
+      { text: "A) jemanden suchen, der ihm möglichst ähnlich ist.", correct: false },
+      { text: "B) sich werbewirksam präsentieren können.", correct: false },
+      { text: "C) zunächst eine Selbstanalyse vornehmen.", correct: true, infoId: "info10" }
+    ]
+      },
+      // diğer sorular...
+    ]
+  },
+
+  // 5. SORU
+
+   {
+    title: "Der Fluch der Informationszeitalters oder Alles schon vergessen?  oder Der Kampf mit der Informationsflut",
+    metin: `<div class="twocols"> 
+<p>Melanie Hoffmann ist Gedächtnistrainerin. Seit fast
+zehn Jahren bietet sie nun schon Seminare an
+Volkshochschulen, in Altenheimen, in Banken und
+Industriebetrieben an, in denen die
+Seminarteilnehmer lernen sollen, wie sie
+informationen besser im Gedächtnis behalten.Suma
+Hartmann ist 30 Jahre alt, Bürokauffrau und einevon
+Melanie Hoffmann Seminarteilnehmerinnen "An
+meinem Arbeitsplatz bekomme ich ständig Massen
+von neuen Informationen: Texte, die zu lesen sind,
+Termine, Anrufe, Anfragen von Kunden, Kurzinfos
+von Kollegen: Diese Informationsflut zu bewältigen
+und möglichst nichts zu vergessen, ist fast
+ausgeschlossen", so Hartmann. Wie ihr geht es vielen
+Menschen in unserer Informationsgesellschaft –
+und das quer durch alle Altersstufen: vom Schüler
+bis zum Renter. Sie fühlen sich den Anforderungen
+an ihr Gedächtnis nicht mehr gewachsen, und unter
+daher besuchen sie Trainingskurse wie die von
+Melanie Hoffmann.</b></p>
+Während jeder Sekunde, die Suma Hartmann im
+Trainingsseminar, am Arbeitsplatz oder zu Hause
+verbringt, nimmt sie über ihre "Eingangskanäle" –
+die Augen, die Ohren, die Nase, den Mund, die Haut
+– um die zwei Millionen kleinste Informationen
+unbewusst auf. Jede kleinste Schwankung in der
+Licht- oder Farbintensität, Formen und Farben, Licht
+und Schatten, alle nur erdenklichen Geräusche von
+der Stimme der Seminarleiterin oder Kollegin bis
+zum draußen vorbeifahrenden Motorrad,
+verschiedeniste Gerüche vom Schweiß bis zum
+teuren Parfüm, das Kratzen des Pullovers auf der
+Haut: All dies nimmt sie unbewusst wahr. Würde sie
+sich all diese Informationen bewusst merken
+wollen, wäre – wenn man die Sprache der
+Compeuterwelt zu Hilfe nimmt – innerhalb
+kürzester Zeit vor Speicher voll"</p>
+<p>Damit dies nicht passiert, vergisst man fast alle
+Informationseinheiten innerhalb der nöchsteen 20
+Sekunden wieder – und schafft damit Platz für
+neue</b></p>
+Informationen. Ernst nach etwa 20 Menuten
+behalten wir etwas auf lange Zeit. Dann haben die
+Nervenzellen im Gehirn eine neue Verbindung
+hergestellt, eine Synapse gebildet – und wir
+behalten etwas, statt es gleich wieder zu
+vergessen.</b></p>
+Die Trainerin Melanie Hoffmann sagt: "Starke
+Sinneseindrücke, die mit Emotionen behaftet sind,
+behält man ebenso wie das, was interessant ist
+oder</b></p>
+lebensnotwendig. Ein kind, das einmal eine heiße
+Herdplatte angefasst hat,vergisst nie mehr, was
+"heiß" bedeutet. Ein Hobbyastronom, dem seine
+Freizeitbeschäftigung großen Spaß bereitet, kennt
+im Nu alle möglichen Namen von Sternen. Und ich
+habe noch keinen Seminarteilnehmer gehabt, der
+sich nicht mehr daran erinnern könnte, was am
+11.</b></p>
+September 2001 in Neu York passiert ist".
+In unserer heutigen Informationsgesellschaft ist es
+wichtig, die auf uns einströmende Informationsflut
+zu bündeln. Daten und Begriffe zu gruppieren
+oder
+an Bildern oder Gegenständen festzumachen und
+sich so "Eselsbrücken" zu bauen, die dabei helfen,
+mehr im Gesächtnis zu behalten.
+Suma Hartmann "sortiert" jetzt im Geiste alle
+wichtigen</b></p>
+Informationen in bestimmte Schubladen ihres
+Aktenschrankes in ihrem Büro: " Ich habe mir
+Zahlensymbole ausgedacht, mit denen ich die
+neuen Informationen bildlich verknüpfe: Die Eins
+wird zur Kerze, die Zwei zum Schwan usw. Wenn
+ich
+nun nicht vergessen möchte, um zwei Uhr eine
+bestimmte Konferenz vorzubereiten, denke ich mir
+meine Konferenzmappe im Schnabel des
+Schwans.
+Und es funktioniert: Ich vergesse viel weniger"2</p>
+</div> 
+</div>
+`,
+    sorular: [
+   {
+    num: 6,
+    baslik: "Melanie Hoffmanns Seminare besuchen",
+    secenekler: [
+      { text: "A) ausschließlich Frauen, die im Büro arbeiten", correct: false },
+      { text: "B) junge und alte Menschen gleichermaßen", correct: true, infoId: "info6" },
+      { text: "C) überwiegend alte Menschen", correct: false }
+    ]
+  },
+  {
+    num: 7,
+    baslik: "Die Teilnehmer besuchen Frau Hoffmanns Seminar, weil sie",
+    secenekler: [
+      { text: "A) das Gefühl haben, dass ihr Gedächtnis schlechter wird", correct: false },
+      { text: "B) immer mehr vergessen", correct: false },
+      { text: "C) sich von den vielen Informationen überfordert fühlen", correct: true, infoId: "info7" }
+    ]
+  },
+  {
+    num: 8,
+    baslik: "Jeder Mensch",
+    secenekler: [
+      { text: "A) kann sich alle erdenklichen Geräusche und Gerüche merken", correct: false },
+      { text: "B) kann über einen Zeitraum von 20 Minuten alles behalten.", correct: false },
+      { text: "C) vergisst die meisten Informationen innerhalb kürzester Zeit", correct: true, infoId: "info8" }
+    ]
+  },
+  {
+    num: 9,
+    baslik: "Besonders gut kann man sich",
+    secenekler: [
+      { text: "A) als Kind etwas merken", correct: false },
+      { text: "B) an Daten und Begriffe erinnern", correct: false },
+      { text: "C) emotional aufgeladene Situationen merken", correct: true, infoId: "info9" }
+    ]
+  },
+  {
+    num: 10,
+    baslik: "Suma Hartmann",
+    secenekler: [
+      { text: "A) lehrt andere, wie man sich \"Eselsbrücken\" ausdenkt.", correct: false },
+      { text: "B) verbindet Informationen mit Bildern.", correct: true, infoId: "info10" },
+      { text: "C) verwendet für ihre Aktenablage nur Tiersymbole", correct: false }
+    ]
+      },
+      // diğer sorular...
+    ]
+  },
+
+
+  // 6. SORU
+
+
+  {
+    title: "Der Fluch der Informationszeitalters oder Alles schon vergessen?  oder Der Kampf mit der Informationsflut",
+    metin: `<div class="twocols"> 
+<p>Melanie Hoffmann ist Gedächtnistrainerin. Seit fast
+zehn Jahren bietet sie nun schon Seminare an
+Volkshochschulen, in Altenheimen, in Banken und
+Industriebetrieben an, in denen die
+Seminarteilnehmer lernen sollen, wie sie
+informationen besser im Gedächtnis behalten.Suma
+Hartmann ist 30 Jahre alt, Bürokauffrau und einevon
+Melanie Hoffmann Seminarteilnehmerinnen "An
+meinem Arbeitsplatz bekomme ich ständig Massen
+von neuen Informationen: Texte, die zu lesen sind,
+Termine, Anrufe, Anfragen von Kunden, Kurzinfos
+von Kollegen: Diese Informationsflut zu bewältigen
+und möglichst nichts zu vergessen, ist fast
+ausgeschlossen", so Hartmann. Wie ihr geht es vielen
+Menschen in unserer Informationsgesellschaft –
+und das quer durch alle Altersstufen: vom Schüler
+bis zum Renter. Sie fühlen sich den Anforderungen
+an ihr Gedächtnis nicht mehr gewachsen, und unter
+daher besuchen sie Trainingskurse wie die von
+Melanie Hoffmann.</b></p>
+Während jeder Sekunde, die Suma Hartmann im
+Trainingsseminar, am Arbeitsplatz oder zu Hause
+verbringt, nimmt sie über ihre "Eingangskanäle" –
+die Augen, die Ohren, die Nase, den Mund, die Haut
+– um die zwei Millionen kleinste Informationen
+unbewusst auf. Jede kleinste Schwankung in der
+Licht- oder Farbintensität, Formen und Farben, Licht
+und Schatten, alle nur erdenklichen Geräusche von
+der Stimme der Seminarleiterin oder Kollegin bis
+zum draußen vorbeifahrenden Motorrad,
+verschiedeniste Gerüche vom Schweiß bis zum
+teuren Parfüm, das Kratzen des Pullovers auf der
+Haut: All dies nimmt sie unbewusst wahr. Würde sie
+sich all diese Informationen bewusst merken
+wollen, wäre – wenn man die Sprache der
+Compeuterwelt zu Hilfe nimmt – innerhalb
+kürzester Zeit vor Speicher voll"</p>
+<p>Damit dies nicht passiert, vergisst man fast alle
+Informationseinheiten innerhalb der nöchsteen 20
+Sekunden wieder – und schafft damit Platz für
+neue</b></p>
+Informationen. Ernst nach etwa 20 Menuten
+behalten wir etwas auf lange Zeit. Dann haben die
+Nervenzellen im Gehirn eine neue Verbindung
+hergestellt, eine Synapse gebildet – und wir
+behalten etwas, statt es gleich wieder zu
+vergessen.</b></p>
+Die Trainerin Melanie Hoffmann sagt: "Starke
+Sinneseindrücke, die mit Emotionen behaftet sind,
+behält man ebenso wie das, was interessant ist
+oder</b></p>
+lebensnotwendig. Ein kind, das einmal eine heiße
+Herdplatte angefasst hat,vergisst nie mehr, was
+"heiß" bedeutet. Ein Hobbyastronom, dem seine
+Freizeitbeschäftigung großen Spaß bereitet, kennt
+im Nu alle möglichen Namen von Sternen. Und ich
+habe noch keinen Seminarteilnehmer gehabt, der
+sich nicht mehr daran erinnern könnte, was am
+11.</b></p>
+September 2001 in Neu York passiert ist".
+In unserer heutigen Informationsgesellschaft ist es
+wichtig, die auf uns einströmende Informationsflut
+zu bündeln. Daten und Begriffe zu gruppieren
+oder
+an Bildern oder Gegenständen festzumachen und
+sich so "Eselsbrücken" zu bauen, die dabei helfen,
+mehr im Gesächtnis zu behalten.
+Suma Hartmann "sortiert" jetzt im Geiste alle
+wichtigen</b></p>
+Informationen in bestimmte Schubladen ihres
+Aktenschrankes in ihrem Büro: " Ich habe mir
+Zahlensymbole ausgedacht, mit denen ich die
+neuen Informationen bildlich verknüpfe: Die Eins
+wird zur Kerze, die Zwei zum Schwan usw. Wenn
+ich
+nun nicht vergessen möchte, um zwei Uhr eine
+bestimmte Konferenz vorzubereiten, denke ich mir
+meine Konferenzmappe im Schnabel des
+Schwans.
+Und es funktioniert: Ich vergesse viel weniger"2</p>
+</div> 
+</div>
+`,
+    sorular: [
+   {
+    num: 6,
+    baslik: "Die Zielgruppen von Frau Winklers Seminaren besteht",
+    secenekler: [
+      { text: "A) überwiegend aus Senioren.", correct: false },
+      { text: "B) sowohl aus jungen als auf alten Menschen.", correct: true, infoId: "info6" },
+      { text: "C) hauptsächlich aus berufstätigen Frauen.", correct: false }
+    ]
+  },
+  {
+    num: 7,
+    baslik: "Die Teilnehmer besuchen Frau Winklers Seminar, weil sie",
+    secenekler: [
+      { text: "A) sich von den vielen Informationen überfordert fühlen", correct: true, infoId: "info7" },
+      { text: "B) sich alles bewusst merken wollen.", correct: false },
+      { text: "C) das Gefühl haben, dass ihr Gedächtnis nachlässt.", correct: false }
+    ]
+  },
+  {
+    num: 8,
+    baslik: "Jeder Mensch",
+    secenekler: [
+      { text: "A) vergisst die meisten Informationen innerhalb kürzester Zeit", correct: true, infoId: "info8" },
+      { text: "B) kann über einen Zeitraum von 20 Minuten alles behalten.", correct: false },
+      { text: "C) kann sich alle erdenklichen Geräusche und Gerüche merken.", correct: false }
+    ]
+  },
+  {
+    num: 9,
+    baslik: "Besonders gut kann man sich",
+    secenekler: [
+      { text: "A) intensive Gefühle merken.", correct: true, infoId: "info9" },
+      { text: "B) an Daten und Begriffe erinnern", correct: false },
+      { text: "C) als Kind etwas merken.", correct: false }
+    ]
+  },
+  {
+    num: 10,
+    baslik: "Jenny Helfer",
+    secenekler: [
+      { text: "A) verwendet für ihre Aktenablage nur Tiersymbole", correct: false },
+      { text: "B) verbindet Informationen mit Bildern.", correct: true, infoId: "info10" },
+      { text: "C) lehrt andere, wie man sich \"Eselsbrücken\" ausdenkt.", correct: false }
+    ]
+      },
+      // diğer sorular...
+    ]
+  },
+
+
+  //7. SORU 
+
+    {
+    title: "Der Fluch der Informationszeitalters oder Alles schon vergessen?  oder Der Kampf mit der Informationsflut",
+    metin: `<div class="twocols"> 
+<p>Melanie Hoffmann ist Gedächtnistrainerin. Seit fast
+zehn Jahren bietet sie nun schon Seminare an
+Volkshochschulen, in Altenheimen, in Banken und
+Industriebetrieben an, in denen die
+Seminarteilnehmer lernen sollen, wie sie
+informationen besser im Gedächtnis behalten.Suma
+Hartmann ist 30 Jahre alt, Bürokauffrau und einevon
+Melanie Hoffmann Seminarteilnehmerinnen "An
+meinem Arbeitsplatz bekomme ich ständig Massen
+von neuen Informationen: Texte, die zu lesen sind,
+Termine, Anrufe, Anfragen von Kunden, Kurzinfos
+von Kollegen: Diese Informationsflut zu bewältigen
+und möglichst nichts zu vergessen, ist fast
+ausgeschlossen", so Hartmann. Wie ihr geht es vielen
+Menschen in unserer Informationsgesellschaft –
+und das quer durch alle Altersstufen: vom Schüler
+bis zum Renter. Sie fühlen sich den Anforderungen
+an ihr Gedächtnis nicht mehr gewachsen, und unter
+daher besuchen sie Trainingskurse wie die von
+Melanie Hoffmann.</b></p>
+Während jeder Sekunde, die Suma Hartmann im
+Trainingsseminar, am Arbeitsplatz oder zu Hause
+verbringt, nimmt sie über ihre "Eingangskanäle" –
+die Augen, die Ohren, die Nase, den Mund, die Haut
+– um die zwei Millionen kleinste Informationen
+unbewusst auf. Jede kleinste Schwankung in der
+Licht- oder Farbintensität, Formen und Farben, Licht
+und Schatten, alle nur erdenklichen Geräusche von
+der Stimme der Seminarleiterin oder Kollegin bis
+zum draußen vorbeifahrenden Motorrad,
+verschiedeniste Gerüche vom Schweiß bis zum
+teuren Parfüm, das Kratzen des Pullovers auf der
+Haut: All dies nimmt sie unbewusst wahr. Würde sie
+sich all diese Informationen bewusst merken
+wollen, wäre – wenn man die Sprache der
+Compeuterwelt zu Hilfe nimmt – innerhalb
+kürzester Zeit vor Speicher voll"</p>
+<p>Damit dies nicht passiert, vergisst man fast alle
+Informationseinheiten innerhalb der nöchsteen 20
+Sekunden wieder – und schafft damit Platz für
+neue</b></p>
+Informationen. Ernst nach etwa 20 Menuten
+behalten wir etwas auf lange Zeit. Dann haben die
+Nervenzellen im Gehirn eine neue Verbindung
+hergestellt, eine Synapse gebildet – und wir
+behalten etwas, statt es gleich wieder zu
+vergessen.</b></p>
+Die Trainerin Melanie Hoffmann sagt: "Starke
+Sinneseindrücke, die mit Emotionen behaftet sind,
+behält man ebenso wie das, was interessant ist
+oder</b></p>
+lebensnotwendig. Ein kind, das einmal eine heiße
+Herdplatte angefasst hat,vergisst nie mehr, was
+"heiß" bedeutet. Ein Hobbyastronom, dem seine
+Freizeitbeschäftigung großen Spaß bereitet, kennt
+im Nu alle möglichen Namen von Sternen. Und ich
+habe noch keinen Seminarteilnehmer gehabt, der
+sich nicht mehr daran erinnern könnte, was am
+11.</b></p>
+September 2001 in Neu York passiert ist".
+In unserer heutigen Informationsgesellschaft ist es
+wichtig, die auf uns einströmende Informationsflut
+zu bündeln. Daten und Begriffe zu gruppieren
+oder
+an Bildern oder Gegenständen festzumachen und
+sich so "Eselsbrücken" zu bauen, die dabei helfen,
+mehr im Gesächtnis zu behalten.
+Suma Hartmann "sortiert" jetzt im Geiste alle
+wichtigen</b></p>
+Informationen in bestimmte Schubladen ihres
+Aktenschrankes in ihrem Büro: " Ich habe mir
+Zahlensymbole ausgedacht, mit denen ich die
+neuen Informationen bildlich verknüpfe: Die Eins
+wird zur Kerze, die Zwei zum Schwan usw. Wenn
+ich
+nun nicht vergessen möchte, um zwei Uhr eine
+bestimmte Konferenz vorzubereiten, denke ich mir
+meine Konferenzmappe im Schnabel des
+Schwans.
+Und es funktioniert: Ich vergesse viel weniger"2</p>
+</div> 
+</div>
+`,
+    sorular: [
+   {
+    num: 6,
+    baslik: "Die Zielgruppen von Frau Winklers Seminaren besteht",
+    secenekler: [
+      { text: "A) hauptsächlich aus berufstätigen Frauen.", correct: false },
+      { text: "B) sowohl aus jungen als auf alten Menschen.", correct: true, infoId: "info6" },
+      { text: "C) überwiegend aus Senioren.", correct: false }
+    ]
+  },
+  {
+    num: 7,
+    baslik: "Die Teilnehmer besuchen Frau Winklers Seminar, weil sie",
+    secenekler: [
+      { text: "A) das Gefühl haben, dass ihr Gedächtnis nachlässt.", correct: false },
+      { text: "B) sich alles bewusst merken wollen.", correct: false },
+      { text: "C) sich von den vielen Informationen überfordert fühlen", correct: true, infoId: "info7" }
+    ]
+  },
+  {
+    num: 8,
+    baslik: "Jeder Mensch",
+    secenekler: [
+      { text: "A) kann sich alle erdenklichen Geräusche und Gerüche merken.", correct: false },
+      { text: "B) kann über einen Zeitraum von 20 Minuten alles behalten.", correct: false },
+      { text: "C) vergisst die meisten Informationen innerhalb kürzester Zeit", correct: true, infoId: "info8" }
+    ]
+  },
+  {
+    num: 9,
+    baslik: "Besonders gut kann man sich",
+    secenekler: [
+      { text: "A) als Kind etwas merken.", correct: false },
+      { text: "B) an Daten und Begriffe erinnern", correct: false },
+      { text: "C) intensive Gefühle merken.", correct: true, infoId: "info9" }
+    ]
+  },
+  {
+    num: 10,
+    baslik: "Jenny Helfer",
+    secenekler: [
+      { text: "A) lehrt andere, wie man sich \"Eselsbrücken\" ausdenkt.", correct: false },
+      { text: "B) verbindet Informationen mit Bildern.", correct: true, infoId: "info10" },
+      { text: "C) verwendet für ihre Aktenablage nur Tiersymbole", correct: false }
+    ]
+      },
+      // diğer sorular...
+    ]
+  },
+
+
+  // İstediğin kadar yeni sayfa ekle!
+];
+
+let currentPage = 0, correct = 0, wrong = 0, total = 0;
+
+// ----- EN KRİTİK YENİLİK: window.onload'da localStorage'dan sayfa kontrolü -----
+window.onload = function() {
+  // En son kalınan sayfa kaydı varsa onu yükle (ama testin sonuysa sıfırdan başla)
+  let saved = localStorage.getItem('lastPage');
+  if (saved !== null && !isNaN(saved)) {
+    currentPage = parseInt(saved);
+    if (currentPage >= pages.length - 1) {
+      currentPage = 0;
+      localStorage.removeItem('lastPage');
+      correct = wrong = total = 0;
+      updateStats();
+    }
+  }
+  renderPage();
+  updateStats();
+};
+
+// Sayfa değişince localStorage'a kaydet
+function renderPage() {
+  document.getElementById("mainTitle").textContent = pages[currentPage].title;
+  document.getElementById("textBox").innerHTML = pages[currentPage].metin;
+  let qHTML = '';
+  pages[currentPage].sorular.forEach(q => {
+    qHTML += `<div class="question" id="q${q.num}"><div class="question-number">${q.num} — ${q.baslik}</div>`;
+    q.secenekler.forEach(opt => {
+      const info = opt.infoId ? `,'${opt.infoId}'` : '';
+      qHTML += `<div class="option" onclick="checkAnswer(this,${opt.correct}${info})">${opt.text}</div>`;
+    });
+    qHTML += `</div>`;
+  });
+  document.getElementById("questionsBox").innerHTML = qHTML;
+  document.getElementById("pageNumber").textContent = (currentPage + 1);
+  // ---- YENİ: Kaldığın sayfayı kaydet! ----
+  localStorage.setItem('lastPage', currentPage);
+}
+
+function updateStats() {
+  document.getElementById("correctCount").textContent = correct;
+  document.getElementById("wrongCount").textContent = wrong;
+  document.getElementById("totalCount").textContent = total;
+}
+
+function checkAnswer(el, isCorrect, infoId = null) {
+  if (el.classList.contains('correct') || el.classList.contains('incorrect')) return;
+  total++;
+  if (isCorrect) {
+    correct++;
+    el.classList.add("correct");
+    new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg").play();
+    if (infoId) {
+      const target = document.getElementById(infoId);
+      if (target) {
+        target.classList.add("text-highlight");
+        target.onclick = () => {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          target.classList.remove("text-highlight");
+          target.onclick = null;
+        };
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  } else {
+    wrong++;
+    el.classList.add("incorrect");
+    new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg").play();
+  }
+  updateStats();
+  if (total >= 5) document.getElementById("resetBtn").style.display = "block";
+}
+
+function resetTest() {
+  // ---- YENİ: Test sıfırlanınca kaldığın yer kaydını da sil! ----
+  localStorage.removeItem('lastPage');
+  correct = wrong = total = 0;
+  updateStats();
+  window.scrollTo(0, 0);
+  renderPage();
+}
+
+document.getElementById("prevBtn").onclick = () => {
+  if (currentPage > 0) {
+    currentPage--;
+    renderPage();
+    window.scrollTo(0,0);
+  }
+};
+
+document.getElementById("nextBtn").onclick = () => {
+  if (currentPage < pages.length - 1) {
+    currentPage++;
+    renderPage();
+    window.scrollTo(0,0);
+  } else {
+    // ---- YENİ: Son sayfada başa dön ve kaydı sil! ----
+    currentPage = 0;
+    localStorage.removeItem('lastPage');
+    correct = wrong = total = 0;
+    updateStats();
+    renderPage();
+    window.scrollTo(0,0);
+  }
+};
+
+document.getElementById("resetBtn").onclick = resetTest;
+</script></body>
+</html>
