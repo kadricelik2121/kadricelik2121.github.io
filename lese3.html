@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Başlıktan Metin Seçmeli Test</title>
+  <style>
+    body {
+      margin:0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f7;
+    }
+    .container { display: flex; min-height: 100vh; align-items: flex-start; }
+    .sticky-titles {
+      position: sticky; top: 45px; align-self: flex-start;
+      margin-right: 32px; margin-left: 12px;
+      background: #fffffff3; border-radius: 10px;
+      box-shadow: 0 0 12px #bbb6;
+      padding: 15px 10px 15px 13px; min-width: 260px; z-index: 5;
+      height: fit-content; max-height: 80vh;
+    }
+    .title-row { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; font-size: 16px;
+      padding: 4px 3px 4px 0; border-radius: 4px; font-weight: 600; 
+      transition: background 0.13s, color 0.13s; min-height: 39px;}
+    .title-row.correct { background: #caffc7 !important; color: #167e10;}
+    .title-row.incorrect { background: #ffd6d6 !important; color: #c20000;}
+    .title-num { min-width: 23px; text-align: right; font-size: 18px; margin-right: 2px;
+      color: #997a1b;}
+    .select-metin { font-size: 13.5px; border-radius: 6px; padding: 2px 7px;
+      margin-right: 3px; min-width: 34px; border: 1.1px solid #ccc; font-weight: bold; outline: none;
+      transition: border 0.15s; background: #fafafa; height: 24px;}
+    .select-metin.correct { border: 1.5px solid #1daa11 !important; color: #1daa11;
+      background: #ebfaeb !important;}
+    .select-metin.incorrect { border: 1.5px solid #cc2020 !important; color: #cc2020;
+      background: #ffeaea !important;}
+    .select-metin option.correct { background: #caffc7 !important; color: #167e10 !important; font-weight: bold;}
+    .select-metin option.incorrect { background: #ffd6d6 !important; color: #c20000 !important; font-weight: bold;}
+    .select-metin option.correct-used { background: #e4ffc7 !important; color: #36a500 !important; font-weight: bold;}
+    .metinler-alan { flex: 1; display: flex; flex-direction: column; gap: 11px; align-items: flex-end; margin-right: 14px; position: relative;}
+    .metin-kutu {
+      width: 95%; min-width: 250px;
+      background: #fff;
+      border-radius: 7px;
+      box-shadow: 0 0 6px #ccc6;
+      padding: 10px 15px 10px 13px;
+      font-size: 15px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      border: 2px dashed #a29565;
+      margin-bottom: 8px;
+      position: relative;
+      cursor: pointer;
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .metin-kutu:hover { box-shadow: 0 0 16px #887b !important; border-color: #b1ad84 !important;}
+    .harf-kutu {
+      position: absolute; top: -13px; left: -13px; width: 28px; height: 28px; font-size: 18px;
+      background: #f3ca7b; color: #7a5e1a; font-weight: bold; border-radius: 50%;
+      box-shadow: 0 1px 2px #0001; border: 2px solid #e6bb5c;
+      display: flex; align-items: center; justify-content: center; z-index: 10;
+      pointer-events: none;
+    }
+    .metin-baslik { font-size: 12px; font-weight: 600; margin-bottom: 2px; color: #444; line-height: 1.15;}
+    .stats-bar {
+      width: 100%; background: #fff; padding: 8px 0 8px 19px; box-shadow: 0 2px 7px #bbb4; font-size: 1em; font-weight: bold;
+      display: flex; align-items: center; position: sticky; top: 0; z-index: 100; gap: 28px; margin-bottom: 8px; letter-spacing: 0.03em;
+    }
+    .dogruStat { color: #18ad16;}
+    .yanlisStat { color: #cc2020;}
+    .sayfa-bilgi { margin-left: auto; margin-right: 18px; font-size: 1em; color: #6b5b23;}
+    .navi-btns { width: 100%; display: flex; justify-content: center; gap: 13px; margin: 28px 0 16px 0;}
+    .navi-btn { font-size: 1em; padding: 7px 20px; border-radius: 7px; background: #f5f5f7; border: 1.2px solid #aaa;
+      cursor: pointer; font-weight: bold; box-shadow: 0 2px 6px #bbb4; transition: background 0.13s, color 0.13s;}
+    .navi-btn.orta {margin-left: 40px; margin-right: 40px;}
+    .navi-btn:hover { background: #ddeedc; color: #129d1d; border-color: #129d1d;}
+    /* MODAL için: */
+ .modal-bg {
+  position: fixed; top:0; left:0; right:0; bottom:0;
+  background: rgba(30, 30, 50, 0.77);
+  z-index: 10000;
+  display: none;
+}
+.modal-bg.active { display: block;}
+.modal-metin-kutu {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  margin: 0;
+  /* Aşağıdakiler zaten vardı, bırakabilirsin: */
+  padding: 33px 42px 33px 36px;
+  background: #fffde9;
+  border: 3px solid #f3ca7b;
+  border-radius: 16px;
+  min-width: 380px; max-width: 820px;
+  box-shadow: 0 8px 38px #0008;
+  font-size: 1.35em;
+  z-index: 20000;
+  animation: modalin 0.18s;
+  transition: all 0.2s;
+}
+
+
+    @keyframes modalin {
+      from { transform: scale(0.88);}
+      to { transform: scale(1);}
+    }
+    .modal-metin-harf {
+      position: absolute; top: -23px; left: -23px;
+      background: #f3ca7b; color: #7a5e1a; font-size: 1.3em; font-weight: bold;
+      border-radius: 50%; width: 38px; height: 38px;
+      border: 3px solid #e6bb5c;
+      box-shadow: 0 2px 7px #e6bb5c66;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 2;
+      font-family: Arial Black, Arial, sans-serif;
+    }
+    .modal-x-btn {
+      position: absolute;
+      top: 14px; right: 18px;
+      font-size: 1.7em;
+      color: #c7762d;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      z-index: 3;
+      transition: color 0.14s;
+    }
+    .modal-x-btn:hover { color: #a11e00;}
+    .modal-metin-baslik {
+      font-size: 1.03em; font-weight: bold; margin-bottom: 13px; color: #755810; letter-spacing: 0.03em;
+    }
+    .modal-metin-icerik {
+      color: #222;
+      line-height: 1.37;
+    }
+    @media (max-width: 1000px){
+      .container {flex-direction: column;}
+      .sticky-titles {position: relative; max-height: unset; margin-bottom: 12px;}
+      .metinler-alan {align-items: stretch;}
+      .metin-kutu {width: 99%;}
+    }
+    @media (max-width: 600px){
+      .modal-metin-kutu { min-width: 90vw; padding: 17px 7vw 17px 7vw;}
+    }
+  </style>
+</head>
+<body>
+  <div class="stats-bar">
+    <span class="dogruStat">✔️ Doğru: <span id="dogruSay">0</span></span>
+    <span class="yanlisStat">❌ Yanlış: <span id="yanlisSay">0</span></span>
+    <span class="sayfa-bilgi">Sayfa <span id="sayfaNo">1</span> / <span id="sayfaToplam">2</span></span>
+  </div>
+  <div class="container">
+    <div class="sticky-titles" id="basliklarAlani"></div>
+    <div class="metinler-alan" id="metinlerAlani"></div>
+  </div>
+  <div class="navi-btns">
+    <button class="navi-btn" onclick="sayfaDegistir(-1)">⬅️ Geri</button>
+    <button class="navi-btn orta" onclick="anaSayfa()">Ana Sayfa</button>
+    <button class="navi-btn" onclick="sayfaDegistir(1)">İleri ➡️</button>
+  </div>
+  <!-- MODAL BÜYÜTÜLMÜŞ METİN -->
+  <div class="modal-bg" id="modalBG" onclick="modalKapat(event)">
+    <div class="modal-metin-kutu" id="modalMetinKutu" onclick="event.stopPropagation();">
+      <div class="modal-metin-harf" id="modalHarf"></div>
+      <button class="modal-x-btn" onclick="modalKapat(event)">&times;</button>
+      <div class="modal-metin-baslik" id="modalBaslik"></div>
+      <div class="modal-metin-icerik" id="modalIcerik"></div>
+    </div>
+  </div>
+<script>
+const sayfaVeri = [
+  {
+    basliklar: [
+      { no: 11, text: " Ein Bekannter möchte einen Film sehen, der nach dem Werk eines Schriftstellers gedreht wurde.", dogru: "L" },
+      { no: 12, text: "Bekannte interessieren sich für Wintersportveranstaltungen.", dogru: "I" },
+      { no: 13, text: "Sie suchen eine Musiksendung. Sie mögen besonders Klaviermusik.", dogru: "B" },
+      { no: 14, text: " Sie mögen Filme mit viel Action und viel Spaß. Ihre Lieblingshelden können auch mal zuschlagen.", dogru: "H" },
+      { no: 15, text: " Ein Bekannter interessiert sich für korsische Geschichte.", dogru: "X" },
+      { no: 16, text: "Sie mögen Familienkomödien, besonders mit frechen Kindern.", dogru: "E" },
+      { no: 17, text: "Eine Bekannte interessiert sich für die Geschichte des bis 1989 geteilten Berlins.", dogru: "A" },
+      { no: 18, text: "Sie sehen gern spannende, aber auch spaßige Agentenfilme.", dogru: "D" },
+      { no: 19, text: " Sie würden gern etwas über Großstadtjugendliche erfahren, die am Rand der Gesellschaft leben.", dogru: "F" },
+      { no: 20, text: "Sie möchten im nächsten Urlaub bergsteigen und sich über die Risiken informieren.", dogru: "X" }
+    ],
+    metinler: [
+          {
+
+     harf: "A", baslik: "23.15 3SAT Es geschah im August",text: `
+Ullrich Kasten und Hans-Hermann Hertle schildern in ihrer hervorragenden Dokumentation
+anhand von Archivmaterial minutiõs sāmtliche Stationen des Mauerbaus. Sie erzählen die
+Vorgeschichte der Berlin-Krise und beleuchten die Hintergründe der Teilung Deutschlands.
+Ferner haben sie Zeitzeugen nach ihren Reaktionen auf das einschneidende Ereignis befragt. Zu
+Wort kommen in dem Film nicht nur namhafte Vertreter der internationalen Politik, sondern
+auch Grenzsoldaten, Flüchtlinge und Angehörige von Maueropfern.`
+
+},
+      { harf: "B", baslik: "21.00 NDR Joja Wendt", text: `Ob Klassik, Rock'n'Roll oder Jazz, Joja Wendt, Hamburger Pianist mit enormen
+Entertainer-Qualitäten, variiert bekannte Songs und stellt seine Fingerfertigkeit auch in eigenen  Kompositionen unter Beweis.Stargast in dem heutigen Fernseh-Special ist die
+Schlagersångerin Michelle mit dem Titel "Ich schicke dir jetzt einen Engel".` },
+
+      { harf: "C", baslik: "20.15 SATI Einfach unwiderstehlich", text: `Gut kochen kann Amanda nicht. Folglich steht ihr kleines, von der Mutter geerbtes Restaurant
+in Manhattan kurz vor dem Aus. Da entflieht plôtzlich ein Krebs aus ihrem Einkaufskorb und
+sorgt mit seinen Zauberkünsten für lukullische Sensationen. Tom, Manager eines
+Gourmet-Restaurants an der Fifth Avenue, kommt als einer der ersten in deren Genuss.
+Amanda hat sich in ihn verliebt, als der schon bekannte Krebs unter Toms Hosenbein flüchtet.
+Seine Zauber-kräfte werden dringend gebraucht, denn Tom gehört zu den Männern, die
+ziemlich viel Angst vor Liebesbeziehungen haben.` },
+
+      { harf: "D", baslik: "22.00 HR New York Express", text: `Aus Sorge um die nationale Sicherheit versteckt der amerikanische Geheimdienst den genialen,
+aber vermeintlich psychisch kranken Physiker Arthur Vincenti. Der völlig verrückte New Yorker
+Psychiater Dr. Snow erhält den Auftrag, ihn zu heilen. Immer nachts wird er mit verbundenen
+Augen zu dem Versteck gebracht. Aber auch einige Gangster sind nicht untätig. Sie haben es auf
+das Wissen des Geheimnistrågers Vincenti abgesehen, das sie fremden Spionen verkaufen
+möchten.
+` },
+      { harf: "E", baslik: " 20.15 PRO 7 Kein Vater von gestern", 
+      text: `Er schreit wie am Spieß, wenn er lange Hosen tragen soll, und lacht sich kaputt, wenn er die
+Katze in eine Mülltüte gesteckt hat. Alles ist einfacher, als sich um den 5-jährigen Calvin zu
+kümmern. Doch sein liebevoller Vater Russell, der den Jungen allein erzieht, meistert såmtliche
+Katastrophen mit Bravour und Geduld.Weil sich Kind und Karriere nicht unter einen Hut bringen
+ließen, verlor der Jurist einen tollen Job in einer renommierten Chicagoer Anwaltskanzlei. Jetzt
+sitzt er mit seinem Sohn in einem Dorf in Kansas und arbeitet in der Kanzlei eines Freundes. Die
+Bekanntschaft mit der attraktiven Beth bringt neuen Schwung in sein Leben. Doch da taucht
+Russells Ex-Ehefrau wieder auf.` },
+
+      { harf: "F", baslik: " 22.45 SATI Nur nich' nach Hause",
+       text: `"Hier in Berlin bei meinen Freunden habe ich mein Zuhause hinter mir gelassen. Hier geht's mir
+gut. Ich bin endlich frei", sagt Sascha. Der 16-Jährige ist einer der Jugendlichen, die hierzulande
+auf der Straße leben. Sie schlafen in Notunterkünften, Treppenhäusern und U-Bahn-Stationen.
+betteln tagsüber Passanten um Kleingeld an. Peter Schmidt hat Sascha mehrere Wochen lang
+begleitet und ihn nach seinen Wünschen und Hoffnungen gefragt. Zudem beleuchtet der
+Filmautor die individuelle Geschichte des Jugendlichen.` },
+
+      { harf: "G", baslik: " 21.15 ARD Großer Kick auf schmalem Grat",
+      text: `Mit Sandalen und T-Shirt hången sie in den Felswänden, ihr Handy halten sie für eine
+Lebensversicherung, die Alpen für einen Freizeitpark, Vierzig Menschen verunglücken jedes
+Jahr tödlich am Montblanc, bis zu eintausend Einsätze fliegt die Bergwacht Chamonix pro
+Saison. Filmer Oliver Baumgart begleitet die Retter zwei Wochen lang.` },
+
+      { harf: "H", baslik: "20.15 RTL Zwei Engel mit vier Fäusten: Schwere Jungs",
+      text: `"Schwere Jungs" bildet den Auftakt zu einer sechsteiligen Reihe mit Actionkomödien:
+Hau-drauf-Filme, wie sie schon unzāhlige Male mit dem Schläger-Duo Terence Hill und Bud
+Spencer über den Bildschirm flimmerten. Die Beiden Gauner Joe und Bob fliehen aus dem
+Gefängnis und finden als Mönche getarnt Unterschlupf in einer Missionsstation.
+` },
+      { harf: "I", baslik: "17.30 ZDF Olympia-Highlights",
+      text: `Nach den Weltcup-Siegen in Willingen und Sapporo stehen die Chancen für das österreichische
+Team gut, beim Skispringen ganz weit vorn zu landen. Überflieger Gregor Schlierenzauer und
+sein Mannschaftskollege Thomas Morgenstern sind jedenfalls in blendender Verfassung. Die
+deutschen Springer Martin Schmitt und Jörg Ritzerfeld werden sich anstrengen můssen.
+Übertragung von der 120-Meter-Skisprungschanze im Utah Olympic Park.
+` },
+      { harf: "J", baslik: "14.15 DRS Basler Fasnacht",
+      text: `Man darf gespannt sein, wie viel Spott die für ihre spitzen Zungen bekannten Basler Fasnächtler
+für das vergangene Jahr übrig haben. DRS übertrågt die Straßenfasnacht, den Umzug der
+Pfeifen- und Trommlergruppen, die ihre Themen pråsentieren, live. Die fachkundigen
+Kommentare zum Karneval am Oberrhein liefern Robert Pichler und der Basler
+Fastnachtsjournalist Roger Thiriet.
+` },
+      { harf: "K", baslik: "0.05 BR Rockpalast",
+      text: `Dreizehn Alben hat die vielkõpfige korsische Gruppe "I Muvrini" um die Brüder Jean-Francois
+und Alain Bernardini bereits veröffentlicht. Hierzulande galten die "wilden Schafe" noch bis vor
+Kurzem als Geheimtipp. Inzwischen sind die Musiker mit ihrer Mischung aus korsischer
+Folklore, afrikanischen und keltischen Elementen, aber auch aus Jazz, Pop und Cajun bei uns
+bekannt.
+` },
+
+      { harf: "L", baslik: "20.15 PHOENIX Mephisto",
+       text: `Man sollte meinen, Schauspieler Hendrik Höfgen wåre gegen unmoralische Angebote gefeit.
+Schließlich feierte er zur Zeit derWeimarer Republik große Erfolge in der Rolle des Mephisto. Der
+Mann müsste also wissen, wie schnell es gehen kann, dass man seine Seele verkauft. Als die  Nazis die Macht ergreifen,stellt Höfgen seine Kunst ganz in den Dienst der neuen Herrscher.
+Und bald wird er zum Intendanten des Staatstheaters ernannt. Das Drama um Kunst und
+Politik entstand nach dem gleichnamigen Roman von Klaus Mann.` },
+    ]
+  },
+  // 2. sayfa örneği
+  {
+    basliklar: [
+      { no: 11, text: "İkinci Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "İkinci Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "İkinci Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "İkinci Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "İkinci Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "İkinci Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "İkinci Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "İkinci Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "İkinci Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "İkinci Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text: "2. Sayfa: Metin A içeriği..." },
+      { harf: "B", baslik: "Metin B başlığı", text: "2. Sayfa: Metin B içeriği..." },
+      { harf: "C", baslik: "Metin C başlığı", text: "2. Sayfa: Metin C içeriği..." },
+      { harf: "D", baslik: "Metin D başlığı", text: "2. Sayfa: Metin D içeriği..." },
+      { harf: "E", baslik: "Metin E başlığı", text: "2. Sayfa: Metin E içeriği..." },
+      { harf: "F", baslik: "Metin F başlığı", text: "2. Sayfa: Metin F içeriği..." },
+      { harf: "G", baslik: "Metin G başlığı", text: "2. Sayfa: Metin G içeriği..." },
+      { harf: "H", baslik: "Metin H başlığı", text: "2. Sayfa: Metin H içeriği..." },
+      { harf: "I", baslik: "Metin I başlığı", text: "2. Sayfa: Metin I içeriği..." },
+      { harf: "J", baslik: "Metin J başlığı", text: "2. Sayfa: Metin J içeriği..." },
+      { harf: "K", baslik: "Metin K başlığı", text: "2. Sayfa: Metin K içeriği..." },
+      { harf: "L", baslik: "Metin L başlığı", text: "2. Sayfa: Metin L içeriği..." }
+    ]
+  }
+];
+
+let sayfaNo = 0;
+let secimler = Array(sayfaVeri.length).fill().map(() => Array(10).fill(""));
+
+function render() {
+  const data = sayfaVeri[sayfaNo];
+  document.getElementById("sayfaNo").textContent = sayfaNo+1;
+  document.getElementById("sayfaToplam").textContent = sayfaVeri.length;
+
+  // 1. Doğru seçili harfler:
+  let dogruSeciliHarfler = [];
+  data.basliklar.forEach((b, i) => {
+    if(secimler[sayfaNo][i] && secimler[sayfaNo][i] === b.dogru) {
+      dogruSeciliHarfler.push(secimler[sayfaNo][i]);
+    }
+  });
+
+  // 2. Başlıklar ve select menü
+  let basliklarHTML = '';
+  data.basliklar.forEach((b, i) => {
+    const sel = secimler[sayfaNo][i];
+    let rowClass = "";
+    let selectClass = "";
+    let dogru = b.dogru === sel;
+    if(sel) {
+      if(dogru) rowClass = "correct", selectClass = "correct";
+      else if(sel !== "X") rowClass = "incorrect", selectClass = "incorrect";
+      else if(b.dogru==="X" && sel==="X") rowClass = "correct", selectClass = "correct";
+      else if(b.dogru!=="X" && sel==="X") rowClass = "incorrect", selectClass = "incorrect";
+    }
+    basliklarHTML += `<div class="title-row ${rowClass}">
+      <span class="title-num">${b.no}</span>
+      <select class="select-metin ${selectClass}" id="select${i}" onchange="selectDegisti(${i})">
+        <option value="">Seçiniz</option>
+        ${data.metinler.map(m => {
+          let dogru = sel===m.harf && b.dogru===m.harf;
+          let yanlis = sel===m.harf && b.dogru!==m.harf;
+          let correctUsed = dogruSeciliHarfler.includes(m.harf);
+          return `<option value="${m.harf}" ${sel===m.harf?"selected":""} ` +
+                 `${dogru ? "class='correct'" : yanlis ? "class='incorrect'" : correctUsed ? "class='correct-used'" : ""}>` +
+                 `${m.harf}</option>`;
+        }).join("")}
+        <option value="X" ${sel==="X"?"selected":""} ${(sel==="X"&&b.dogru==="X")?"class='correct'":(sel==="X"&&b.dogru!=="X")?"class='incorrect'":dogruSeciliHarfler.includes("X")?"class='correct-used'":""}>X</option>
+      </select>
+      <span>${b.text}</span>
+    </div>`;
+  });
+  document.getElementById("basliklarAlani").innerHTML = basliklarHTML;
+
+  // 3. Metin kutuları
+  let metinlerHTML = '';
+  data.metinler.forEach((m, idx) => {
+    metinlerHTML += `<div class="metin-kutu" onclick="metinBuyut(${idx})">
+      <div class="harf-kutu">${m.harf}</div>
+      <div>
+        <div class="metin-baslik">${m.baslik || ''}</div>
+        <div>${m.text}</div>
+      </div>
+    </div>`;
+  });
+  document.getElementById("metinlerAlani").innerHTML = metinlerHTML;
+
+  // 4. İstatistik
+  let dogruSay = 0, yanlisSay = 0;
+  data.basliklar.forEach((b, i) => {
+    if(secimler[sayfaNo][i]) {
+      if(b.dogru === secimler[sayfaNo][i]) dogruSay++;
+      else yanlisSay++;
+    }
+  });
+  document.getElementById("dogruSay").textContent = dogruSay;
+  document.getElementById("yanlisSay").textContent = yanlisSay;
+}
+
+// Select değişince tekrar render
+function selectDegisti(i) {
+  const select = document.getElementById("select"+i);
+  secimler[sayfaNo][i] = select.value;
+  render();
+}
+
+// Sayfa geçişi
+function sayfaDegistir(d) {
+  sayfaNo += d;
+  if(sayfaNo < 0) sayfaNo = 0;
+  if(sayfaNo >= sayfaVeri.length) sayfaNo = sayfaVeri.length-1;
+  render();
+}
+
+// Ana sayfa butonu
+function anaSayfa() {
+  alert("Ana Sayfa yönlendirmesi burada yapılabilir!");
+}
+
+// Metin büyütme modalı
+function metinBuyut(idx) {
+  const data = sayfaVeri[sayfaNo].metinler[idx];
+  document.getElementById("modalHarf").textContent = data.harf;
+  document.getElementById("modalBaslik").textContent = data.baslik || "";
+  document.getElementById("modalIcerik").textContent = data.text;
+  document.getElementById("modalBG").classList.add("active");
+  document.body.style.overflow = "hidden";
+}
+
+// Modal kapama
+function modalKapat(e) {
+  document.getElementById("modalBG").classList.remove("active");
+  document.body.style.overflow = "";
+}
+
+render();
+</script>
+</body>
+</html>
