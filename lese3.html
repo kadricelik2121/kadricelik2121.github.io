@@ -17,10 +17,12 @@
       box-shadow: 0 0 12px #bbb6;
       padding: 15px 10px 15px 13px; min-width: 260px; z-index: 5;
       height: fit-content; max-height: 80vh;
+      padding-bottom: 40px;
+      min-height: 550px;
     }
-    .title-row { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; font-size: 16px;
+    .title-row { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; font-size: 17px;
       padding: 4px 3px 4px 0; border-radius: 4px; font-weight: 600; 
-      transition: background 0.13s, color 0.13s; min-height: 39px;}
+      transition: background 0.13s, color 0.13s; min-height: 42px;}
     .title-row.correct { background: #caffc7 !important; color: #167e10;}
     .title-row.incorrect { background: #ffd6d6 !important; color: #c20000;}
     .title-num { min-width: 23px; text-align: right; font-size: 18px; margin-right: 2px;
@@ -32,9 +34,9 @@
       background: #ebfaeb !important;}
     .select-metin.incorrect { border: 1.5px solid #cc2020 !important; color: #cc2020;
       background: #ffeaea !important;}
-    .select-metin option.correct { background: #caffc7 !important; color: #167e10 !important; font-weight: bold;}
+    .select-metin option.correct { background: #c7ffd3 !important; color: #167e10 !important; font-weight: bold;}
     .select-metin option.incorrect { background: #ffd6d6 !important; color: #c20000 !important; font-weight: bold;}
-    .select-metin option.correct-used { background: #e4ffc7 !important; color: #36a500 !important; font-weight: bold;}
+    .select-metin option.correct-used { background: #80f185 !important; color: #36a500 !important; font-weight: bold;}
     .metinler-alan { flex: 1; display: flex; flex-direction: column; gap: 11px; align-items: flex-end; margin-right: 14px; position: relative;}
     .metin-kutu {
       width: 95%; min-width: 250px;
@@ -143,12 +145,52 @@
     @media (max-width: 600px){
       .modal-metin-kutu { min-width: 90vw; padding: 17px 7vw 17px 7vw;}
     }
+
+    .stats-bar {
+  display: flex;
+  align-items: center;
+  position: sticky; top: 0; z-index: 100;
+  gap: 28px;
+  margin-bottom: 8px;
+  letter-spacing: 0.03em;
+}
+
+.stats-title {
+  flex: 1 1 0;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.5em;     /* Burayı istediğin kadar büyütebilirsin */
+  color: #3e2c10;
+  letter-spacing: 0.03em;
+   margin-left: -60px;
+}
+
+.metin-kutu.dogru-metin {
+  background: rgba(45, 240, 68, 0.18);
+  position: relative;
+  transition: background 0.6s, box-shadow 0.5s;
+}
+.metin-kutu .dogru-numara {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 4.5em;
+  color: rgba(225,0,0,0.22);
+  font-weight: bold;
+  pointer-events: none;
+  z-index: 9;
+  user-select: none;
+  text-shadow: 0 2px 12px #a00a;
+  letter-spacing: 0.02em;
+}
+
   </style>
 </head>
 <body>
   <div class="stats-bar">
     <span class="dogruStat">✔️ Doğru: <span id="dogruSay">0</span></span>
     <span class="yanlisStat">❌ Yanlış: <span id="yanlisSay">0</span></span>
+    <span class="stats-title">Leseverstehen Teil 3</span>
     <span class="sayfa-bilgi">Sayfa <span id="sayfaNo">1</span> / <span id="sayfaToplam">2</span></span>
   </div>
   <div class="container">
@@ -290,23 +332,1065 @@ Politik entstand nach dem gleichnamigen Roman von Klaus Mann.` },
       { no: 20, text: "İkinci Sayfa Başlık 10", dogru: "L" }
     ],
     metinler: [
-      { harf: "A", baslik: "Metin A başlığı", text: "2. Sayfa: Metin A içeriği..." },
-      { harf: "B", baslik: "Metin B başlığı", text: "2. Sayfa: Metin B içeriği..." },
-      { harf: "C", baslik: "Metin C başlığı", text: "2. Sayfa: Metin C içeriği..." },
-      { harf: "D", baslik: "Metin D başlığı", text: "2. Sayfa: Metin D içeriği..." },
-      { harf: "E", baslik: "Metin E başlığı", text: "2. Sayfa: Metin E içeriği..." },
-      { harf: "F", baslik: "Metin F başlığı", text: "2. Sayfa: Metin F içeriği..." },
-      { harf: "G", baslik: "Metin G başlığı", text: "2. Sayfa: Metin G içeriği..." },
-      { harf: "H", baslik: "Metin H başlığı", text: "2. Sayfa: Metin H içeriği..." },
-      { harf: "I", baslik: "Metin I başlığı", text: "2. Sayfa: Metin I içeriği..." },
-      { harf: "J", baslik: "Metin J başlığı", text: "2. Sayfa: Metin J içeriği..." },
-      { harf: "K", baslik: "Metin K başlığı", text: "2. Sayfa: Metin K içeriği..." },
-      { harf: "L", baslik: "Metin L başlığı", text: "2. Sayfa: Metin L içeriği..." }
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
     ]
-  }
+  },
+  //3. sayfa
+  {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+//4. sayfa
+  {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+  //5. sayfa
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+  //6. sayaf
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+
+  //7. sayaf
+
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+  //8.sayfa
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+  // 9. sayfa
+
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+  //10. sayaf
+
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+
+  //11.sayaf
+
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+  //12. sayaf
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+  // 13. sayaf
+
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+  //. sayfa
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+  //15. sayafa
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+
+  //16. sayafa
+
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+  //17. sayafa
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+
+  //18. sayfa
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+
+  //19. sayaf
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+
+  //20. sayfa
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+  
+  //21. sayfa
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+
+  //21. sayfa
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+
+  //22. sayfa
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+
+  //23. sayfa
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+
+  //24. sayfa
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+
+  //25. sayfa
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+
+  //26. sayfa
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+
+  //27. sayfa
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+
+  //28. sayfa
+
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+  //29. sayfa
+
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+  //30. sayfa
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+
+  //31. sayfa
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+  //32. sayfa
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+
+  //33. sayfa
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+  
+//34. sayfa
+  {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+
+  //35. sayfa
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
+  //36. sayfa
+    {
+    basliklar: [
+      { no: 11, text: "üçüncü  Sayfa Başlık 1", dogru: "X" },
+      { no: 12, text: "üçüncü  Sayfa Başlık 2", dogru: "C" },
+      { no: 13, text: "üçüncü  Sayfa Başlık 3", dogru: "D" },
+      { no: 14, text: "üçüncü  Sayfa Başlık 4", dogru: "E" },
+      { no: 15, text: "üçüncü  Sayfa Başlık 5", dogru: "H" },
+      { no: 16, text: "üçüncü  Sayfa Başlık 6", dogru: "B" },
+      { no: 17, text: "üçüncü  Sayfa Başlık 7", dogru: "F" },
+      { no: 18, text: "üçüncü  Sayfa Başlık 8", dogru: "G" },
+      { no: 19, text: "üçüncü  Sayfa Başlık 9", dogru: "K" },
+      { no: 20, text: "üçüncü  Sayfa Başlık 10", dogru: "L" }
+    ],
+    metinler: [
+      { harf: "A", baslik: "Metin A başlığı", text:  ` metin gir `},
+      { harf: "B", baslik: "Metin B başlığı", text:  ` metin gir `},
+      { harf: "C", baslik: "Metin C başlığı", text:  ` metin gir `},
+      { harf: "D", baslik: "Metin D başlığı", text:  ` metin gir `},
+      { harf: "E", baslik: "Metin E başlığı", text:  ` metin gir `},
+      { harf: "F", baslik: "Metin F başlığı", text:  ` metin gir `},
+      { harf: "G", baslik: "Metin G başlığı", text:  ` metin gir `},
+      { harf: "H", baslik: "Metin H başlığı", text:  ` metin gir `},
+      { harf: "I", baslik: "Metin I başlığı", text:  ` metin gir `},
+      { harf: "J", baslik: "Metin J başlığı", text:  ` metin gir `},,
+      { harf: "K", baslik: "Metin K başlığı", text:  ` metin gir `},
+      { harf: "L", baslik: "Metin L başlığı", text:  ` metin gir `},
+    ]
+  },
 ];
 
-let sayfaNo = 0;
+let sayfaNo = Number(localStorage.getItem("sayfaNo") || 0);
 let secimler = Array(sayfaVeri.length).fill().map(() => Array(10).fill(""));
 
 function render() {
@@ -314,13 +1398,22 @@ function render() {
   document.getElementById("sayfaNo").textContent = sayfaNo+1;
   document.getElementById("sayfaToplam").textContent = sayfaVeri.length;
 
-  // 1. Doğru seçili harfler:
+  // 1. Doğru seçili harfler ve numara haritası:
   let dogruSeciliHarfler = [];
+  let dogruHarfNumaralari = {};  // harf : başlık numarası
   data.basliklar.forEach((b, i) => {
-    if(secimler[sayfaNo][i] && secimler[sayfaNo][i] === b.dogru) {
+    if (secimler[sayfaNo][i] && secimler[sayfaNo][i] === b.dogru) {
       dogruSeciliHarfler.push(secimler[sayfaNo][i]);
+      dogruHarfNumaralari[secimler[sayfaNo][i]] = b.no;
     }
   });
+
+  // --- X seçeneğinin mantığı için:
+  let xDogruIndeksler = [];
+  data.basliklar.forEach((b, i) => {
+    if(b.dogru === "X") xDogruIndeksler.push(i);
+  });
+  let xDogruSecildiMi = xDogruIndeksler.length > 0 && xDogruIndeksler.every(i => secimler[sayfaNo][i] === "X");
 
   // 2. Başlıklar ve select menü
   let basliklarHTML = '';
@@ -347,17 +1440,27 @@ function render() {
                  `${dogru ? "class='correct'" : yanlis ? "class='incorrect'" : correctUsed ? "class='correct-used'" : ""}>` +
                  `${m.harf}</option>`;
         }).join("")}
-        <option value="X" ${sel==="X"?"selected":""} ${(sel==="X"&&b.dogru==="X")?"class='correct'":(sel==="X"&&b.dogru!=="X")?"class='incorrect'":dogruSeciliHarfler.includes("X")?"class='correct-used'":""}>X</option>
+        <option value="X" ${sel==="X"?"selected":""} ${
+          (sel==="X" && b.dogru==="X") ? "class='correct'" :
+          (sel==="X" && b.dogru!=="X") ? "class='incorrect'" :
+          (xDogruSecildiMi) ? "class='correct-used'" : ""
+        }>X</option>
       </select>
       <span>${b.text}</span>
     </div>`;
   });
   document.getElementById("basliklarAlani").innerHTML = basliklarHTML;
 
-  // 3. Metin kutuları
+  // 3. Metin kutuları (GÜNCELLENMİŞ HALİ)
   let metinlerHTML = '';
   data.metinler.forEach((m, idx) => {
-    metinlerHTML += `<div class="metin-kutu" onclick="metinBuyut(${idx})">
+    let dogruClass = dogruSeciliHarfler.includes(m.harf) ? ' dogru-metin' : '';
+    let numaraHTML = '';
+    if (dogruHarfNumaralari[m.harf]) {
+      numaraHTML = `<span class="dogru-numara">${dogruHarfNumaralari[m.harf]}</span>`;
+    }
+    metinlerHTML += `<div class="metin-kutu${dogruClass}" onclick="metinBuyut(${idx})" style="position:relative;">
+      ${numaraHTML}
       <div class="harf-kutu">${m.harf}</div>
       <div>
         <div class="metin-baslik">${m.baslik || ''}</div>
@@ -391,12 +1494,14 @@ function sayfaDegistir(d) {
   sayfaNo += d;
   if(sayfaNo < 0) sayfaNo = 0;
   if(sayfaNo >= sayfaVeri.length) sayfaNo = sayfaVeri.length-1;
+  localStorage.setItem("sayfaNo", sayfaNo); // ← EKLENDİ
   render();
 }
 
 // Ana sayfa butonu
 function anaSayfa() {
-  alert("Ana Sayfa yönlendirmesi burada yapılabilir!");
+  window.location.href = "index.html";
+  render();
 }
 
 // Metin büyütme modalı
