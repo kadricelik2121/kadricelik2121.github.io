@@ -118,7 +118,9 @@ const sayfaVeri = [
 ];
 
 let sayfaNo = Number(localStorage.getItem("sayfaNo") || 0);
-let secimler = Array(sayfaVeri.length).fill().map(() => Array(10).fill(""));
+if (sayfaNo >= sayfaVeri.length) {
+  sayfaNo = 0; // Hatalıysa 0. sayfaya dön
+}
 
 let suruklenenBaslikIdx = null;
 
