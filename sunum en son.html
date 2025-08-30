@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <title>Polly MP3 + Eşzamanlı Metin (Sabit MP3)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root { --bg:#0b1020; --card:#12172a; --muted:#aab1c8; --text:#eaf0ff; --active:#1e2b55; }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:16px system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+    header{padding:16px 20px;background:linear-gradient(180deg,#101735,#0b1020)}
+    h1{margin:0;font-size:18px}
+    .container{max-width:980px;margin:18px auto;padding:0 16px 40px}
+    .panel{background:var(--card);border:1px solid #22305a;border-radius:16px;padding:14px}
+    audio{width:100%;margin:8px 0 2px}
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;color:var(--muted);font-size:14px}
+    .row input[type="number"]{width:90px;background:#0f1530;border:1px solid #293763;border-radius:8px;color:#cfe2ff;padding:6px}
+    h2{margin:0 0 10px;font-size:16px;color:#cfe2ff}
+    ol#transcript{list-style:decimal;margin:0;padding:10px 0 10px 24px;max-height:72vh;overflow:auto;scroll-behavior:smooth}
+    ol#transcript li{padding:12px 14px;margin:6px 0;border-radius:14px;line-height:1.55;font-size:18px;border:1px solid transparent;cursor:pointer}
+    ol#transcript li:hover{background:#161d39}
+    ol#transcript li.active{background:var(--active);border-color:#2c447f;box-shadow:inset 0 0 0 1px #2f4c97}
+    .btn{background:#141b34;color:var(--text);border:1px solid #22305a;border-radius:12px;padding:9px 12px;cursor:pointer}
+    .btn:hover{background:#182043}
+  </style>
+</head>
+<body>
+  <header><h1>Amazon Polly MP3 + Eşzamanlı Metin</h1></header>
+
+  <div class="container">
+    <div class="panel">
+      <!-- MP3 SABİT BAĞLANTI -->
+      <audio id="audio" controls preload="auto">
+        <source src="speech_20250830201007409.mp3" type="audio/mpeg" />
+        Tarayıcınız audio etiketini desteklemiyor.
+      </audio>
+
+      <!-- Basit ayar (istersen ince ayar yap) -->
+      <div class="row" style="margin-top:8px">
+        <span>Okuma hızı (kelime/sn):</span>
+        <input id="wps" type="number" step="0.1" min="0.8" value="1.9">
+        <span>Her cümleye ek durak (sn):</span>
+        <input id="pad" type="number" step="0.1" min="0" value="0.6">
+        <button id="recalc" class="btn">⛏️ Zamanları Yenile</button>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:14px">
+      <h2>Metin</h2>
+      <ol id="transcript"></ol>
+    </div>
+  </div>
+
+  <script>
+  // Metin (son Almanca hali)
+  const sentences = [
+    "Heute möchte ich Ihnen eine persönliche Geschichte erzählen.",
+    "Letztes Jahr sind wir als Familie in die Schweiz gefahren, um meinen Onkel zu besuchen.",
+    "Auf den ersten Blick wirkte es wie ein normaler Familienbesuch, aber innerlich hatte ich große Angst.",
+    "Denn immer wenn mein Onkel bei mir etwas Neues bemerkte – sei es ein Auto oder ein wertvoller Gegenstand –, ging dieser Gegenstand kurze Zeit später kaputt.",
+    "In unserer Kultur nennt man das den „bösen Blick“.",
+    "Auch wenn ich nicht wirklich daran glaubte, haben mich diese Erfahrungen trotzdem sehr geprägt.",
+    "Dieses Mal hatten wir ein neues Auto dabei, das mein Onkel noch nie gesehen hatte.",
+    "Während meine Frau und ich vor der Reise über unsere Sorgen sprachen, hielten wir diese geheim, damit unsere Kinder nichts merkten.",
+    "Am Tag vor der Reise schlug meine Frau vor, ein Nazar-Amulett ins Auto zu hängen.",
+    "Ich glaubte zwar nicht daran, aber weil sie sich dadurch besser fühlte, stimmte ich zu.",
+    "In Gießen fanden wir ein Nazar-Amulett und hängten es an den Rückspiegel.",
+    "Immer wenn ich den Anhänger im Rückspiegel ansah, dachte ich innerlich: Falls es den bösen Blick wirklich gibt, wird die Scheibe genau hier zerbrechen.",
+    "Schließlich kamen wir bei meinem Onkel an.",
+    "Er empfing uns freundlich, betrachtete das Auto genau, aber es passierte nichts – und ich war erleichtert.",
+    "Am nächsten Morgen machten wir noch einen kurzen Ausflug, bevor wir uns verabschiedeten und meinen Onkel ein letztes Mal besuchten.",
+    "Als wir uns jedoch auf dem Rückweg befanden, standen wir plötzlich auf einem Bahnübergang, und die Schranke senkte sich direkt vor uns.",
+    "Obwohl wir eigentlich genug Zeit gehabt hätten, wegzufahren, blieb ich wie gelähmt sitzen und konnte mich nicht bewegen.",
+    "Die Schranke schlug gegen die Frontscheibe, sodass sowohl die Scheibe als auch der vordere Teil des Autos beschädigt wurden.",
+    "Und das Merkwürdigste war: Die Scheibe zerbrach genau an der Stelle, von der ich zuvor gedacht hatte: Wenn es den bösen Blick gibt, dann wird sie hier zerbrechen.",
+    "Zum Schluss möchte ich sagen: Egal ob man an etwas Gutes oder Schlechtes glaubt – sobald man stark genug daran glaubt, übernimmt dieser Glaube irgendwann die Kontrolle, denn unser Gehirn verwandelt das, was wir denken, in Realität.",
+    "Mein Vortrag endet hier, vielen Dank für Ihre Aufmerksamkeit."
+  ];
+
+  // DOM
+  const audio = document.getElementById('audio');
+  const transcriptEl = document.getElementById('transcript');
+  const wpsInput = document.getElementById('wps');
+  const padInput = document.getElementById('pad');
+  const recalcBtn = document.getElementById('recalc');
+
+  // Çiz
+  sentences.forEach((s, i) => {
+    const li = document.createElement('li');
+    li.textContent = s;
+    li.dataset.index = i;
+    li.addEventListener('click', ()=>{ audio.currentTime = timings[i] || 0; audio.play();});
+    transcriptEl.appendChild(li);
+  });
+
+  // Otomatik zaman tahmini
+  function wordsOf(s){ return (s.match(/[^\s–—-]+/g) || []).length; }
+  function buildAutoTimings(wps=1.9, pad=0.6){
+    const t=[]; let acc=0;
+    for(const s of sentences){ t.push(+acc.toFixed(2)); acc += wordsOf(s)/wps + pad; }
+    return t;
+  }
+  let timings = buildAutoTimings();
+
+  // Highlight
+  let lastActive=-1;
+  function setActive(i){
+    if(i===lastActive) return;
+    transcriptEl.querySelector('.active')?.classList.remove('active');
+    const li = transcriptEl.querySelector(`li[data-index="${i}"]`);
+    if(li){ li.classList.add('active'); li.scrollIntoView({block:'center', behavior:'smooth'}); lastActive=i; }
+  }
+  function indexForTime(t){
+    for(let i=timings.length-1;i>=0;i--) if(t >= (timings[i] ?? 0)) return i;
+    return 0;
+  }
+  audio.addEventListener('timeupdate', ()=> setActive(indexForTime(audio.currentTime)));
+
+  // Ayarları değiştir
+  function recalc(){
+    const wps = parseFloat(wpsInput.value) || 1.9;
+    const pad = parseFloat(padInput.value) || 0.6;
+    timings = buildAutoTimings(wps, pad);
+  }
+  recalcBtn.addEventListener('click', recalc);
+  </script>
+</body>
+</html>
