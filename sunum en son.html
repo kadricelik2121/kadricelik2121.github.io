@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
   <meta charset="utf-8" />
-  <title>Polly MP3 + Eşzamanlı Metin (Sabit MP3)</title>
+  <title>Polly MP3 + Eşzamanlı Metin (Senkron İyileştirilmiş)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root { --bg:#0b1020; --card:#12172a; --muted:#aab1c8; --text:#eaf0ff; --active:#1e2b55; }
@@ -15,33 +15,40 @@
     audio{width:100%;margin:8px 0 2px}
     .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;color:var(--muted);font-size:14px}
     .row input[type="number"]{width:90px;background:#0f1530;border:1px solid #293763;border-radius:8px;color:#cfe2ff;padding:6px}
+    .btn{background:#141b34;color:var(--text);border:1px solid #22305a;border-radius:12px;padding:9px 12px;cursor:pointer}
+    .btn:hover{background:#182043}
     h2{margin:0 0 10px;font-size:16px;color:#cfe2ff}
     ol#transcript{list-style:decimal;margin:0;padding:10px 0 10px 24px;max-height:72vh;overflow:auto;scroll-behavior:smooth}
     ol#transcript li{padding:12px 14px;margin:6px 0;border-radius:14px;line-height:1.55;font-size:18px;border:1px solid transparent;cursor:pointer}
     ol#transcript li:hover{background:#161d39}
     ol#transcript li.active{background:var(--active);border-color:#2c447f;box-shadow:inset 0 0 0 1px #2f4c97}
-    .btn{background:#141b34;color:var(--text);border:1px solid #22305a;border-radius:12px;padding:9px 12px;cursor:pointer}
-    .btn:hover{background:#182043}
+    .fake{display:none}
+    .kbd{font-family:ui-monospace,Consolas,monospace;background:#0d1226;border:1px solid #26335e;border-radius:6px;padding:2px 6px;color:#cde}
+ 
+
   </style>
 </head>
 <body>
-  <header><h1>Amazon Polly MP3 + Eşzamanlı Metin</h1></header>
+  <header><h1>Amazon Polly MP3 + Eşzamanlı Metin (Senkron İyileştirilmiş)</h1></header>
 
   <div class="container">
     <div class="panel">
-      <!-- MP3 SABİT BAĞLANTI -->
+      <!-- MP3 sabit (dosyayı aynı klasöre koy) -->
       <audio id="audio" controls preload="auto">
-        <source src="speech_20250830201007409.mp3" type="audio/mpeg" />
-        Tarayıcınız audio etiketini desteklemiyor.
+        <source src="speech_20250830233033430.mp3" type="audio/mpeg" />
       </audio>
 
-      <!-- Basit ayar (istersen ince ayar yap) -->
       <div class="row" style="margin-top:8px">
         <span>Okuma hızı (kelime/sn):</span>
         <input id="wps" type="number" step="0.1" min="0.8" value="1.9">
         <span>Her cümleye ek durak (sn):</span>
         <input id="pad" type="number" step="0.1" min="0" value="0.6">
-        <button id="recalc" class="btn">⛏️ Zamanları Yenile</button>
+        <span>Senkron ofseti (sn):</span>
+        <input id="offset" type="number" step="0.05" value="0">
+        <button id="recalc" class="btn">🔁 Otomatik Zamanları Yenile</button>
+        <button id="toggleMark" class="btn">⏱️ Zaman İşaretleme: Kapalı</button>
+        <button id="markNow" class="btn" title="Ctrl+Space">📍 Şu Anı İşaretle</button>
+        <span class="row" style="gap:4px;color:#aab1c8">Kısayol: <span class="kbd">Ctrl</span> + <span class="kbd">Space</span></span>
       </div>
     </div>
 
@@ -52,48 +59,64 @@
   </div>
 
   <script>
-  // Metin (son Almanca hali)
+  // --- Metin (son Almanca hali) ---
   const sentences = [
-    "Heute möchte ich Ihnen eine persönliche Geschichte erzählen.",
+    "Heute möchte ich Ihnen eine persönliche Geschichte erzählen, <span class='fake'>............, .........., ........., ........, ........., ........,  ...</span>",
     "Letztes Jahr sind wir als Familie in die Schweiz gefahren, um meinen Onkel zu besuchen.",
-    "Auf den ersten Blick wirkte es wie ein normaler Familienbesuch, aber innerlich hatte ich große Angst.",
-    "Denn immer wenn mein Onkel bei mir etwas Neues bemerkte – sei es ein Auto oder ein wertvoller Gegenstand –, ging dieser Gegenstand kurze Zeit später kaputt.",
-    "In unserer Kultur nennt man das den „bösen Blick“.",
-    "Auch wenn ich nicht wirklich daran glaubte, haben mich diese Erfahrungen trotzdem sehr geprägt.",
-    "Dieses Mal hatten wir ein neues Auto dabei, das mein Onkel noch nie gesehen hatte.",
-    "Während meine Frau und ich vor der Reise über unsere Sorgen sprachen, hielten wir diese geheim, damit unsere Kinder nichts merkten.",
+    "Auf den ersten Blick wirkte es wie ein normaler Familienbesuch, aber innerlich hatte ich große Angst.<span class='fake'>............, .........., ........., ........, ........., ........,  ...</span>",
+    "Denn immer wenn mein Onkel bei mir etwas Neues bemerkte", 
+    "sei es ein Auto oder ein wertvoller Gegenstand.<span class='fake'> .........., ........., ........, ........., ........,  ...</span>",
+    "ging dieser Gegenstand kurze Zeit später kaputt.<span class='fake'>............, .........., ........., ........, ........., ........,  ...</span>",
+    "In unserer Kultur nennt man das den „bösen Blick.<span class='fake'>........, ........., ........,  ...</span>",
+    "Auch wenn ich nicht wirklich daran glaubte,",
+    "haben mich diese Erfahrungen trotzdem sehr geprägt.<span class='fake'>............, .........., ........., ........, ........., ........,  ...</span>",
+    "Dieses Mal hatten wir ein neues Auto dabei, das mein Onkel noch nie gesehen hatte.<span class='fake'> ........., ........, ........., ........,  ...</span>",
+    "Während meine Frau und ich vor der Reise über unsere Sorgen sprachen,",
+     "hielten wir diese geheim, damit unsere Kinder nichts merkten.",
     "Am Tag vor der Reise schlug meine Frau vor, ein Nazar-Amulett ins Auto zu hängen.",
-    "Ich glaubte zwar nicht daran, aber weil sie sich dadurch besser fühlte, stimmte ich zu.",
-    "In Gießen fanden wir ein Nazar-Amulett und hängten es an den Rückspiegel.",
-    "Immer wenn ich den Anhänger im Rückspiegel ansah, dachte ich innerlich: Falls es den bösen Blick wirklich gibt, wird die Scheibe genau hier zerbrechen.",
+    "Ich glaubte zwar nicht daran, aber weil sie sich dadurch besser fühlte, stimmte ich zu.<span class='fake'>............, .........., ........., ........, ........., ........,  ...</span>",
+    "In Gießen fanden wir ein Nazar-Amulett und hängten es an den Rückspiegel.<span class='fake'>............, .........., ........., ........, ........., ........,  ...</span>",
+    "Immer wenn ich den Anhänger im Rückspiegel ansah, dachte ich innerlich:", 
+    "Falls es den bösen Blick wirklich gibt, wird die Scheibe genau hier zerbrechen,<span class='fake'>............, .........., ........., ........, ........., ........,  ...</span>",
     "Schließlich kamen wir bei meinem Onkel an.",
-    "Er empfing uns freundlich, betrachtete das Auto genau, aber es passierte nichts – und ich war erleichtert.",
-    "Am nächsten Morgen machten wir noch einen kurzen Ausflug, bevor wir uns verabschiedeten und meinen Onkel ein letztes Mal besuchten.",
-    "Als wir uns jedoch auf dem Rückweg befanden, standen wir plötzlich auf einem Bahnübergang, und die Schranke senkte sich direkt vor uns.",
-    "Obwohl wir eigentlich genug Zeit gehabt hätten, wegzufahren, blieb ich wie gelähmt sitzen und konnte mich nicht bewegen.",
-    "Die Schranke schlug gegen die Frontscheibe, sodass sowohl die Scheibe als auch der vordere Teil des Autos beschädigt wurden.",
-    "Und das Merkwürdigste war: Die Scheibe zerbrach genau an der Stelle, von der ich zuvor gedacht hatte: Wenn es den bösen Blick gibt, dann wird sie hier zerbrechen.",
-    "Zum Schluss möchte ich sagen: Egal ob man an etwas Gutes oder Schlechtes glaubt – sobald man stark genug daran glaubt, übernimmt dieser Glaube irgendwann die Kontrolle, denn unser Gehirn verwandelt das, was wir denken, in Realität.",
+    "Er empfing uns freundlich, betrachtete das Auto genau, aber es passierte nichts, <span class='fake'> ........., ........,  ...</span>",
+    "und ich war erleichtert.",
+    "Am nächsten Morgen machten wir noch einen kurzen Ausflug, <span class='fake'> ........, ........., ........,  ...</span>",
+    "bevor wir uns verabschiedeten und meinen Onkel ein letztes Mal besuchten,<span class='fake'>........, ........., ........,  ...</span>",
+    "Als wir uns jedoch auf dem Rückweg befanden", 
+    "standen wir plötzlich auf einem Bahnübergang, und die Schranke senkte sich direkt vor uns,<span class='fake'> ........, ........., ........,  ...</span>",
+    "Obwohl wir eigentlich genug Zeit gehabt hätten, wegzufahren, blieb ich wie gelähmt sitzen und konnte mich nicht bewegen.<span class='fake'>............, .........., .........., .........., .........., ........., ........, ........., ........,  ...</span>",
+    "Die Schranke schlug gegen die Frontscheibe, sodass sowohl die Scheibe als auch der vordere Teil des Autos beschädigt wurden,<span class='fake'>, .........., ........., ........, ........., ........,  ...</span>",
+    "Und das Merkwürdigste war: Die Scheibe zerbrach genau an der Stelle, von der ich zuvor gedacht hatte,",
+     "Wenn es den bösen Blick gibt, dann wird sie hier zerbrechen.",
+    "Zum Schluss möchte ich sagen:", 
+    "Egal ob man an etwas Gutes oder Schlechtes glaubt.",
+    "sobald man stark genug daran glaubt, übernimmt dieser Glaube irgendwann die Kontrolle, <span class='fake'>  ........, ........., ........,  ...</span>",
+    "denn unser Gehirn verwandelt das, was wir denken, in Realität.",
     "Mein Vortrag endet hier, vielen Dank für Ihre Aufmerksamkeit."
   ];
 
-  // DOM
+
+  // --- DOM ---
   const audio = document.getElementById('audio');
   const transcriptEl = document.getElementById('transcript');
   const wpsInput = document.getElementById('wps');
   const padInput = document.getElementById('pad');
+  const offsetInput = document.getElementById('offset');
   const recalcBtn = document.getElementById('recalc');
+  const toggleMarkBtn = document.getElementById('toggleMark');
+  const markNowBtn = document.getElementById('markNow');
 
-  // Çiz
+  // --- Metni çiz ---
   sentences.forEach((s, i) => {
     const li = document.createElement('li');
-    li.textContent = s;
+   li.innerHTML = s;
     li.dataset.index = i;
-    li.addEventListener('click', ()=>{ audio.currentTime = timings[i] || 0; audio.play();});
+    li.addEventListener('click', () => { audio.currentTime = (timings[i]||0); audio.play(); });
     transcriptEl.appendChild(li);
   });
 
-  // Otomatik zaman tahmini
+  // --- Otomatik tahmini zamanlar ---
   function wordsOf(s){ return (s.match(/[^\s–—-]+/g) || []).length; }
   function buildAutoTimings(wps=1.9, pad=0.6){
     const t=[]; let acc=0;
@@ -102,27 +125,68 @@
   }
   let timings = buildAutoTimings();
 
-  // Highlight
-  let lastActive=-1;
-  function setActive(i){
-    if(i===lastActive) return;
-    transcriptEl.querySelector('.active')?.classList.remove('active');
-    const li = transcriptEl.querySelector(`li[data-index="${i}"]`);
-    if(li){ li.classList.add('active'); li.scrollIntoView({block:'center', behavior:'smooth'}); lastActive=i; }
+  // --- Hassas senkron: rAF + histerezis ---
+  let lastActive=-1, rafId=null;
+  function midpoint(i){
+    const a = timings[i]??0, b = timings[i+1]??(a+4);
+    return a + (b-a)/2; // ortasını al
   }
-  function indexForTime(t){
-    for(let i=timings.length-1;i>=0;i--) if(t >= (timings[i] ?? 0)) return i;
-    return 0;
+  function chooseIndex(t){
+    // global offset uygula
+    t = t + parseFloat(offsetInput.value||0);
+    // en uygun index: t, i ve i+1 orta noktası kıyas
+    let i = 0;
+    // binary search (timings artan)
+    let lo=0, hi=timings.length-1;
+    while(lo<=hi){
+      const mid = (lo+hi)>>1;
+      if (timings[mid] <= t) { i = mid; lo = mid+1; } else { hi = mid-1; }
+    }
+    // histerezis: bir sonraki cümleye, orta noktayı geçince geç
+    if (i < timings.length-1 && t >= midpoint(i)) i++;
+    return i;
   }
-  audio.addEventListener('timeupdate', ()=> setActive(indexForTime(audio.currentTime)));
+  function loop(){
+    const t = audio.currentTime;
+    const i = chooseIndex(t);
+    if(i!==lastActive){
+      // highlight değişimi
+      transcriptEl.querySelector('.active')?.classList.remove('active');
+      const li = transcriptEl.querySelector(`li[data-index="${i}"]`);
+      if(li){ li.classList.add('active'); li.scrollIntoView({block:'center', behavior:'smooth'}); }
+      lastActive=i;
+    }
+    rafId = requestAnimationFrame(loop);
+  }
+  audio.addEventListener('play', ()=> { cancelAnimationFrame(rafId); rafId = requestAnimationFrame(loop); });
+  audio.addEventListener('pause', ()=> cancelAnimationFrame(rafId));
+  audio.addEventListener('ended', ()=> cancelAnimationFrame(rafId));
 
-  // Ayarları değiştir
+  // --- Ayarları değiştir ---
   function recalc(){
-    const wps = parseFloat(wpsInput.value) || 1.9;
-    const pad = parseFloat(padInput.value) || 0.6;
-    timings = buildAutoTimings(wps, pad);
+    const wps = parseFloat(wpsInput.value)||1.9;
+    const pad = parseFloat(padInput.value)||0.6;
+    timings = buildAutoTimings(wps,pad);
   }
   recalcBtn.addEventListener('click', recalc);
+
+  // --- İsteğe bağlı manuel işaretleme (sade, JSON yok) ---
+  let markMode=false, markPtr=0;
+  function setMarkMode(on){
+    markMode = on; markPtr = 0;
+    toggleMarkBtn.textContent = `⏱️ Zaman İşaretleme: ${on?'Açık':'Kapalı'}`;
+    if(on){ timings = new Array(sentences.length).fill(0); }
+  }
+  toggleMarkBtn.addEventListener('click', ()=> setMarkMode(!markMode));
+  function markNow(){
+    if(!markMode || markPtr>=sentences.length) return;
+    timings[markPtr] = +(audio.currentTime + parseFloat(offsetInput.value||0)).toFixed(2);
+    markPtr++;
+  }
+  markNowBtn.addEventListener('click', markNow);
+  window.addEventListener('keydown', (e)=>{
+    if(e.ctrlKey && e.code==='Space'){ e.preventDefault(); markNow(); }
+  });
   </script>
 </body>
 </html>
