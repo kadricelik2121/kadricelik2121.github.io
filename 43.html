@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Almanca Diyalog Dinle</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding-top: 80px;
+      background-color: #f2f2f2;
+    }
+    button {
+      font-size: 24px;
+      padding: 20px 40px;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover { background-color: #45a049; }
+    .mic { margin-right: 10px; }
+    #settings { margin-bottom: 30px; }
+    input { font-size: 18px; width: 60px; text-align: center; }
+    .home-button {
+      position: fixed; bottom: 20px; left: 50%;
+      transform: translateX(-50%);
+      background-color: #007BFF; color: white;
+      padding: 12px 24px; font-size: 18px; font-weight: bold;
+      border-radius: 30px; text-decoration: none;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+      z-index: 9999; transition: background-color 0.3s ease;
+    }
+    .home-button:hover { background-color: #0056b3; }
+    #toggleModeBtn {
+      position: fixed; top: 10px; right: 10px;
+      font-size: 14px; padding: 10px 18px;
+      font-weight: bold; background-color: #acaaaa;
+      cursor: pointer;
+    }
+    #statsBox {
+      position: fixed; top: 15px; left: 10px;
+      background-color: white; border: 2px solid #444;
+      border-radius: 10px; padding: 10px 15px;
+      font-size: 14px; z-index: 1000; line-height: 1.5;
+    }
+    #currentSentence {
+      font-size: 20px;
+      font-weight: normal;
+      margin-top: 20px;
+      text-align: left;
+      line-height: 1.5;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #startButton {
+  display: block;
+  margin: 20px auto;
+}
+    #currentSentence p { margin: 6px 0; }
+  </style>
+</head>
+<body>
+
+  <div id="settings">
+    <label for="delayInput">Bekleme çarpanı (saniye): </label>
+    <input type="number" id="delayInput" value="0.1" step="0.1" min="0">
+  </div>
+
+<button onclick="toggleSpeech()" id="startButton">
+    <span class="mic">🎤</span> Konuşmaya Başla
+</button>
+
+  <a href="lösung.html" class="home-button">🏠 Ana Sayfaya Dön</a>
+
+  <div id="currentSentence"></div>
+
+  <button id="toggleModeBtn" onclick="toggleReadingMode()">Mod: Sıralı</button>
+
+  <div id="statsBox">
+    📊 Öğrenilen: <span id="sentenceCount">0</span><br />
+    ⏱️ Süre: <span id="workTime">0</span> dk
+  </div>
+
+  <script>
+    let isSpeaking = false;
+    let synth = window.speechSynthesis;
+    let speakingLoop;
+    let isRandomMode = false;
+    let currentIndex = 0;
+
+    // ✅ Metinler satır satır dizi halinde
+ const sentences = [
+  "43- Eine Sportveranstaltung für Kinder",
+  "In Ihrer Stadt organisieren Sie eine Sportveranstaltung für Kinder.",
+  "Sie sollen bei der Planung helfen. Überlegen Sie, was Sie tun können.",
+  "Planen Sie gemeinsam, was Sie organisieren können.",
+  "",
+  "Anna: Hallo Nils, wie du weißt, sollen wir in unserer Stadt eine Sportveranstaltung für Kinder organisieren. Und wir sollen bei der Planung helfen. Hast du Vorschläge?",
+  "Nils: Hallo Anna, ich freue mich darauf. Lass uns überlegen, wann wir die Veranstaltung machen sollten. Ich schlage vor, dass wir sie am kommenden Samstag organisieren. Außerdem könnten wir mit den Kindern zum Spielplatz gehen. Dort gibt es nicht nur Rutschen, sondern auch Schaukeln. Die Kinder könnten viele Aktivitäten machen. Was meinst du dazu?",
+  "Anna: Ja, das ist ein guter Vorschlag. Ich finde auch, dass der Spielplatz eine gute Idee ist, da er groß ist und viele Sitzplätze, Tische und große Flächen zum Spielen hat. Aber welche Spiele können die Kinder spielen? Hast du Vorschläge?",
+  "Nils: Wir könnten Bälle mitbringen. Dann könnten die Kinder sowohl Fußball als auch Handball spielen. Was könnten wir noch machen? Hast du eine Idee?",
+  "Anna: Was denkst du davon, wenn wir Wettbewerbe zwischen den Kindern veranstalten? Wir könnten kleine Geschenke an die Gewinner verteilen.",
+  "Nils: Ich stimme dir zu, das ist eine wunderbare Idee. Weißt du, wie wir die Kinder zur Sportveranstaltung einladen könnten? Ich schlage vor, dass wir eine Werbung in der Zeitung veröffentlichen. Hast du noch eine andere Idee?",
+  "Anna: Ja, wir können auch Flyer mit Datum, Uhrzeit und Ort an Schüler, Schulen, unsere Freunde und Nachbarn verteilen.",
+  "Nils: Das ist gut. Wir könnten auch Süßigkeiten zu dieser Sportveranstaltung mitbringen. Ich könnte nicht nur Baklava, sondern auch Cupcakes mitbringen. Bist du damit einverstanden?",
+  "Anna: Ja, super Idee. Ich glaube, dass wir alle Punkte besprochen haben. Und ich hoffe auch, dass wir gut organisiert sind.",
+  "Nils: Ich denke das auch. Viel Spaß, dann machen wir es so. Bis dann.",
+  "Anna: Bis dann."
+];
+
+
+
+
+
+
+    function getTodayKey() {
+      const now = new Date();
+      return now.toISOString().slice(0, 10);
+    }
+
+    let sentenceCount = parseInt(localStorage.getItem("sentenceCount_" + getTodayKey())) || 0;
+    let workSeconds = parseInt(localStorage.getItem("workSeconds_" + getTodayKey())) || 0;
+
+    function updateStats() {
+      document.getElementById("sentenceCount").textContent = sentenceCount;
+      document.getElementById("workTime").textContent = Math.floor(workSeconds / 60);
+      localStorage.setItem("sentenceCount_" + getTodayKey(), sentenceCount);
+      localStorage.setItem("workSeconds_" + getTodayKey(), workSeconds);
+    }
+
+    function startStatsClock() {
+      setInterval(() => {
+        workSeconds++;
+        updateStats();
+      }, 1000);
+    }
+
+    function toggleReadingMode() {
+      isRandomMode = !isRandomMode;
+      const btn = document.getElementById("toggleModeBtn");
+      btn.textContent = isRandomMode ? "Mod: Rastgele" : "Mod: Sıralı";
+    }
+
+    window.onload = function () {
+      currentIndex = 0;
+      updateStats();
+      startStatsClock();
+      // İlk yüklemede tüm metni göster
+      document.getElementById("currentSentence").innerHTML =
+        sentences.map(line => "<p>" + line + "</p>").join("");
+    };
+
+    function speakRandomSentence() {
+      if (!isSpeaking) return;
+
+      synth.cancel();
+
+      let sentence;
+      if (isRandomMode) {
+        sentence = sentences[Math.floor(Math.random() * sentences.length)];
+      } else {
+        if (currentIndex >= sentences.length) currentIndex = 0;
+        sentence = sentences[currentIndex];
+        currentIndex++;
+      }
+
+      let utterance = new SpeechSynthesisUtterance(sentence);
+      utterance.lang = 'de-DE';
+      utterance.rate = 0.9;
+
+      synth.speak(utterance);
+
+      sentenceCount++;
+      updateStats();
+
+      utterance.onend = () => {
+        let multiplier = parseFloat(document.getElementById('delayInput').value) || 0.1;
+        let wordCount = sentence.trim().split(/\s+/).length;
+        let calculatedDelay = wordCount * multiplier;
+        speakingLoop = setTimeout(speakRandomSentence, calculatedDelay * 1000);
+      };
+    }
+
+    function toggleSpeech() {
+      const button = document.getElementById("startButton");
+
+      if (!isSpeaking) {
+        isSpeaking = true;
+        button.style.backgroundColor = "#4CAF50";
+        button.textContent = " 🎤 Konuşmayı Durdur";
+        speakRandomSentence();
+      } else {
+        isSpeaking = false;
+        button.style.backgroundColor = "#db343c";
+        button.innerHTML = '<span class="mic">🎤</span> Konuşmaya Başla';
+        synth.cancel();
+        clearTimeout(speakingLoop);
+      }
+    }
+  </script>
+</body>
+</html>

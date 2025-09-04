@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Almanca Diyalog Dinle</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding-top: 80px;
+      background-color: #f2f2f2;
+    }
+    button {
+      font-size: 24px;
+      padding: 20px 40px;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover { background-color: #45a049; }
+    .mic { margin-right: 10px; }
+    #settings { margin-bottom: 30px; }
+    input { font-size: 18px; width: 60px; text-align: center; }
+    .home-button {
+      position: fixed; bottom: 20px; left: 50%;
+      transform: translateX(-50%);
+      background-color: #007BFF; color: white;
+      padding: 12px 24px; font-size: 18px; font-weight: bold;
+      border-radius: 30px; text-decoration: none;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+      z-index: 9999; transition: background-color 0.3s ease;
+    }
+    .home-button:hover { background-color: #0056b3; }
+    #toggleModeBtn {
+      position: fixed; top: 10px; right: 10px;
+      font-size: 14px; padding: 10px 18px;
+      font-weight: bold; background-color: #acaaaa;
+      cursor: pointer;
+    }
+    #statsBox {
+      position: fixed; top: 15px; left: 10px;
+      background-color: white; border: 2px solid #444;
+      border-radius: 10px; padding: 10px 15px;
+      font-size: 14px; z-index: 1000; line-height: 1.5;
+    }
+    #currentSentence {
+      font-size: 20px;
+      font-weight: normal;
+      margin-top: 20px;
+      text-align: left;
+      line-height: 1.5;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #startButton {
+  display: block;
+  margin: 20px auto;
+}
+    #currentSentence p { margin: 6px 0; }
+  </style>
+</head>
+<body>
+
+  <div id="settings">
+    <label for="delayInput">Bekleme çarpanı (saniye): </label>
+    <input type="number" id="delayInput" value="0.1" step="0.1" min="0">
+  </div>
+
+<button onclick="toggleSpeech()" id="startButton">
+    <span class="mic">🎤</span> Konuşmaya Başla
+</button>
+
+  <a href="lösung.html" class="home-button">🏠 Ana Sayfaya Dön</a>
+
+  <div id="currentSentence"></div>
+
+  <button id="toggleModeBtn" onclick="toggleReadingMode()">Mod: Sıralı</button>
+
+  <div id="statsBox">
+    📊 Öğrenilen: <span id="sentenceCount">0</span><br />
+    ⏱️ Süre: <span id="workTime">0</span> dk
+  </div>
+
+  <script>
+    let isSpeaking = false;
+    let synth = window.speechSynthesis;
+    let speakingLoop;
+    let isRandomMode = false;
+    let currentIndex = 0;
+
+    // ✅ Metinler satır satır dizi halinde
+ const sentences = [
+  "45- Helfen Freund beim Ausland einleben",
+  "Ihr Freund hat ein Stellenangebot im Ausland erhalten und Sie haben dort schon eine Weile gelebt.",
+  "Sie möchten ihm helfen, sich auf das Leben dort einzustellen. Überlegen Sie gemeinsam, was Sie tun können. Welche Vorschläge können Sie ihm machen?",
+  "",
+  "Anna: Hallo Nils, weißt du, dass unser Freund Jan ein Stellenangebot in der Türkei hat? Wir sollten ihm helfen, da wir schon lange in der Türkei gelebt haben. Hast du einen Vorschlag?",
+  "Nils: Ja, das hat er mir gesagt, und ich freue mich für ihn. Da wir dort schon gelebt haben, können wir ihm helfen. Lass uns überlegen, wo er wohnen kann. Mein Bruder lebt in Istanbul und kann uns helfen, ein Haus für ihn zu finden. Was denkst du darüber?",
+  "Anna: Ich finde, dass es eine gute Idee ist. Ich schlage vor, dass wir einen Termin mit unserem Freund Jan vereinbaren, um ihm zu empfehlen, wo er in Istanbul wohnen könnte. Außerdem sollten wir mit ihm über eine gute Bank in Istanbul sprechen. Was meinst du dazu?",
+  "Nils: Das ist ein guter Vorschlag. Wir können ihm auch die wichtigsten Restaurants und schöne Plätze zeigen.",
+  "Anna: Ich stimme dir zu, das ist eine wunderbare Idee. Wir sollten ihm auch die Sehenswürdigkeiten in Istanbul zeigen. Mein Freund wohnt in Istanbul. Ich rufe ihn an, er könnte unserem Freund Jan helfen und ihm alles zeigen. Bist du damit einverstanden?",
+  "Nils: Ja, ich bin mit dir einverstanden. Was hältst du davon, wenn wir uns mit ihm treffen, um ihm Tipps zu geben? Hast du Zeit?",
+  "Anna: Wir könnten uns entweder am Samstag um 12:00 Uhr oder am Montag um 14:00 Uhr mit ihm treffen. Was denkst du darüber?",
+  "Nils: Ja, wir können uns am Samstag um 12:00 Uhr treffen. Ich rufe ihn an, um das zu vereinbaren.",
+  "Anna: Gut. Ich glaube, dass wir alle Punkte besprochen haben. Ich hoffe auch, dass wir unserem Freund gut helfen konnten. Dann machen wir es so. Bis dann.",
+  "Nils: Bis dann."
+];
+
+
+
+
+
+
+    function getTodayKey() {
+      const now = new Date();
+      return now.toISOString().slice(0, 10);
+    }
+
+    let sentenceCount = parseInt(localStorage.getItem("sentenceCount_" + getTodayKey())) || 0;
+    let workSeconds = parseInt(localStorage.getItem("workSeconds_" + getTodayKey())) || 0;
+
+    function updateStats() {
+      document.getElementById("sentenceCount").textContent = sentenceCount;
+      document.getElementById("workTime").textContent = Math.floor(workSeconds / 60);
+      localStorage.setItem("sentenceCount_" + getTodayKey(), sentenceCount);
+      localStorage.setItem("workSeconds_" + getTodayKey(), workSeconds);
+    }
+
+    function startStatsClock() {
+      setInterval(() => {
+        workSeconds++;
+        updateStats();
+      }, 1000);
+    }
+
+    function toggleReadingMode() {
+      isRandomMode = !isRandomMode;
+      const btn = document.getElementById("toggleModeBtn");
+      btn.textContent = isRandomMode ? "Mod: Rastgele" : "Mod: Sıralı";
+    }
+
+    window.onload = function () {
+      currentIndex = 0;
+      updateStats();
+      startStatsClock();
+      // İlk yüklemede tüm metni göster
+      document.getElementById("currentSentence").innerHTML =
+        sentences.map(line => "<p>" + line + "</p>").join("");
+    };
+
+    function speakRandomSentence() {
+      if (!isSpeaking) return;
+
+      synth.cancel();
+
+      let sentence;
+      if (isRandomMode) {
+        sentence = sentences[Math.floor(Math.random() * sentences.length)];
+      } else {
+        if (currentIndex >= sentences.length) currentIndex = 0;
+        sentence = sentences[currentIndex];
+        currentIndex++;
+      }
+
+      let utterance = new SpeechSynthesisUtterance(sentence);
+      utterance.lang = 'de-DE';
+      utterance.rate = 0.9;
+
+      synth.speak(utterance);
+
+      sentenceCount++;
+      updateStats();
+
+      utterance.onend = () => {
+        let multiplier = parseFloat(document.getElementById('delayInput').value) || 0.1;
+        let wordCount = sentence.trim().split(/\s+/).length;
+        let calculatedDelay = wordCount * multiplier;
+        speakingLoop = setTimeout(speakRandomSentence, calculatedDelay * 1000);
+      };
+    }
+
+    function toggleSpeech() {
+      const button = document.getElementById("startButton");
+
+      if (!isSpeaking) {
+        isSpeaking = true;
+        button.style.backgroundColor = "#4CAF50";
+        button.textContent = " 🎤 Konuşmayı Durdur";
+        speakRandomSentence();
+      } else {
+        isSpeaking = false;
+        button.style.backgroundColor = "#db343c";
+        button.innerHTML = '<span class="mic">🎤</span> Konuşmaya Başla';
+        synth.cancel();
+        clearTimeout(speakingLoop);
+      }
+    }
+  </script>
+</body>
+</html>
