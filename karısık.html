@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Almanca Diyalog Dinle - Kaldığı Yerden Devam</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding-top: 80px; /* Stats kutusu için yer aç */
+      background-color: #f2f2f2;
+      margin: 20px; /* Sayfaya biraz kenar boşluğu ekle */
+      display: flex; /* Dikey hizalama için */
+      flex-direction: column; /* Dikey hizalama için */
+      align-items: center; /* Yatay ortalama */
+    }
+    button {
+      font-size: 24px;
+      padding: 20px 40px;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background-color 0.3s ease; /* Renk geçişi için */
+    }
+    button:hover { background-color: #45a049; }
+    .mic { margin-right: 10px; }
+    #settings { margin-bottom: 30px; text-align: center; }
+    input[type=number] {
+      font-size: 18px;
+      width: 60px;
+      text-align: center;
+      padding: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    label {
+        font-size: 16px;
+        margin-right: 5px;
+    }
+    .home-button {
+      position: fixed; bottom: 20px; left: 50%;
+      transform: translateX(-50%);
+      background-color: #007BFF; color: white;
+      padding: 12px 24px; font-size: 18px; font-weight: bold;
+      border-radius: 30px; text-decoration: none;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+      z-index: 9999; transition: background-color 0.3s ease;
+    }
+    .home-button:hover { background-color: #0056b3; }
+    #toggleModeBtn {
+      position: fixed; top: 10px; right: 10px;
+      font-size: 14px; padding: 10px 18px;
+      font-weight: bold; background-color: #acaaaa;
+      color: white; /* Beyaz yazı */
+      border: none;
+      border-radius: 8px; /* Köşeleri yuvarla */
+      cursor: pointer;
+      z-index: 1001; /* Stats kutusunun üstünde */
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Hafif gölge */
+    }
+    #toggleModeBtn:hover { background-color: #8c8c8c; }
+    #statsBox {
+      position: fixed; top: 10px; left: 10px;
+      background-color: white; border: 2px solid #444;
+      border-radius: 10px; padding: 10px 15px;
+      font-size: 14px; z-index: 1000; line-height: 1.5;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Hafif gölge */
+    }
+    #currentSentence {
+      font-size: 20px;
+      font-weight: normal;
+      margin-top: 20px;
+      text-align: left;
+      line-height: 1.5;
+      max-width: 900px; /* Maksimum genişlik */
+      width: 90%; /* Genişliği ayarla */
+      margin-left: auto;
+      margin-right: auto;
+      background-color: #fff; /* İçerik için beyaz arka plan */
+      padding: 15px; /* İç boşluk */
+      border-radius: 8px; /* Köşeleri yuvarla */
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Hafif gölge */
+      min-height: 200px; /* Minimum yükseklik */
+    }
+    #startButton {
+      display: block;
+      margin: 20px auto;
+    }
+    #currentSentence p { margin: 6px 0; }
+  </style>
+</head>
+<body>
+
+  <div id="statsBox">
+    📊 Öğrenilen: <span id="sentenceCount">0</span><br />
+    ⏱️ Süre: <span id="workTime">0</span> dk
+  </div>
+
+  <button id="toggleModeBtn" onclick="toggleReadingMode()">Mod: Sıralı</button>
+
+  <div id="settings">
+    <label for="delayInput">Bekleme çarpanı (saniye): </label>
+    <input type="number" id="delayInput" value="0.1" step="0.1" min="0">
+  </div>
+
+  <button onclick="toggleSpeech()" id="startButton">
+    <span class="mic">🎤</span> Konuşmaya Başla
+  </button>
+
+  <div id="currentSentence">
+    </div>
+
+  <a href="lösung.html" class="home-button">🏠 Ana Sayfaya Dön</a>
+
+  <script>
+    let isSpeaking = false;
+    let synth = window.speechSynthesis;
+    let speakingLoop;
+    let isRandomMode = false;
+    let currentIndex = 0; // Başlangıç indeksi
+
+    const sentences = [
+      "1. Infotag",
+      "An einer Schule in Ihrer Stadt soll ein Infotag zum Arbeitsalltag in verschiedenen Berufen stattfinden.",
+      "Sie möchten sich daran beteiligen. Überlegen Sie gemeinsam, was Sie tun können. Denken Sie beispielsweise:",
+      "1- Welche Berufe Sie vorstellen können",
+      "2- Wie Sie den Arbeitsalltag präsentieren können (Vortrag, Videos, Beispiele vorspielen)",
+      "3- Welche Materialien Sie brauchen und/oder für die Schüler mitbringen können",
+      "", // Boş satırlar da okunabilir
+      "(1) Hallo X, wie du weißt, dass die Schule unserer Stadt einen Infotag ...",
+      "(2) Ja, ich bin dabei. Allerdings müssen wir dafür gemeinsam einen Plan erstellen.",
+      "(1) Ich habe schon einige Notizen gemacht. Wir sollen zunächst für einen Beruf entscheiden.",
+      "(2) Was hältst du davon, wenn ich meinen Beruf als Köchin vorstelle?",
+      "(1) Warum nicht, weil du Erfahrungen hast. Und ich würde meinen Beruf als Physiotherapeut vorstellen...",
+      "(2) Aber hast du überlegt, welche Materialien wir brauchen?",
+      "(1) Ich denke, dass wir einen Computer und einen Bildschirm brauchen...",
+      "(2) Ich stimme dir zu. Aber wir sollten nicht vergessen, eine passende Einleitung zu sprechen.",
+      "(1) Ich bin damit einverstanden. Es wäre schön, wenn wir ein kleines Geschenk schenken könnten...",
+      "(2) Ich finde, dass das eine gute Idee ist. Wie findest du es, wenn wir Bleistifte oder Blumen verschenken?",
+      "(1) Eine wunderbare Idee. Wir haben alle Punkte besprochen...",
+      "(2) Dieser Plan gefällt mir auch gut. Du hast recht...",
+      "(1) Ja, am Samstag habe ich nach 12:00 Uhr Zeit. Passt es dir?",
+      "(2) Dann machen wir das. Vielen Dank für deine Hilfe. Bis dann.",
+      "(1) Bitte sehr, bis Samstag!",
+
+      
+        "Infotag zum Thema Gesundheit",
+  "An einem Gesundheitszentrum in Ihrer Stadt soll ein Infotag zum Thema Gesundheit stattfinden.",
+  "Sie sollen bei der Planung helfen.",
+  "Überlegen Sie, was Sie tun können. Denken Sie beispielsweise an Aufklärungskampagnen, Vorträge, Ernährungspläne.",
+  "Planen Sie gemeinsam, was Sie organisieren können.",
+  "",
+  "Nils: Hallo Anna, mein Chef hat mir mitgeteilt, dass nächste Woche an einem Gesundheitszentrum in unserer Stadt ein Infotag zum Thema Gesundheit stattfinden soll. Und wir sollen bei der Planung helfen. Kannst du mir helfen?",
+  "Anna: Hallo Nils, ja, ich habe schon davon gehört. Ich helfe dir gern. Hast du einen Vorschlag?",
+  "Nils: Wir denken zunächst darüber nach, welche Themen wir wählen sollten, zum Beispiel über gesunde Ernährung, die Auswirkungen des Rauchens auf junge Menschen, die Wirkung von Alkohol oder Blutspenden. Was denkst du dazu?",
+  "Anna: Was hältst du davon, wenn wir über Blutspenden sprechen?",
+  "Nils: Ja, aber wäre es nicht besser, wenn wir über die Auswirkungen des Rauchens auf junge Menschen sprechen? Denn die meisten jungen Menschen rauchen früh und sie wissen nicht, welche Gefahren das Rauchen hat.",
+  "Anna: Du hast vollkommen recht, das ist ein großes Problem in unserem Leben. Ich kenne eine Freundin, die als Ärztin im Krankenhaus arbeitet. Ich rufe sie an und sie kommt gerne und hilft uns.",
+  "Nils: Super Idee! Aber wie können wir die Leute einladen?",
+  "Anna: Ich denke, dass wir eine Anzeige in der Zeitung schreiben könnten. Hast du einen anderen Vorschlag? Wie könnten wir die Leute einladen?",
+  "Nils: Ja, ich finde, es wäre besser, wenn wir Flyer mit Datum, Uhrzeit, Ort und Thema verteilen. Und was könnten wir noch tun?",
+  "Anna: Ich finde, das ist eine gute Idee. Außerdem schlage ich dir vor, dass wir unseren Gesundheitstag mithilfe von Fotos und Videos dokumentieren.",
+  "Nils: Das ist ein guter Vorschlag. Und was hältst du davon, wenn wir Bilder vom Rauchen zeigen? Ich finde, das wäre gut, um unseren Vortrag zu dokumentieren.",
+  "Anna: Ich stimme dir zu, weil Bilder vom Rauchen sehr sinnvoll sind, um den jungen Menschen die Auswirkungen auf die Gesundheit zu zeigen. Wie wäre es, wenn wir Tipps für die Jugendlichen geben, damit sie mit dem Rauchen aufhören?",
+  "Nils: Ich stimme dir zu, das ist eine gute Idee.",
+  "Anna: Ok, ich freue mich auf unseren Gesundheitstag.",
+  "Nils: Ich denke, wir haben alle Punkte besprochen. Aber wir sollen uns wieder treffen, um alles noch einmal zu besprechen.",
+  "Anna: Dieser Plan gefällt mir auch gut. Du hast recht. Wir sollten das besprechen. Dann müssen wir unsere Idee den anderen Freunden vorstellen. Wann sollen wir uns treffen? Hast du am Samstag Zeit?",
+  "Nils: Ja, am Samstag habe ich nach 12:00 Uhr Zeit. Passt es dir?",
+  "Anna: Dann machen wir das. Ja, das passt mir auch. Vielen Dank für deine Hilfe. Bis dann.",
+  "Nils: Bitte sehr, bis Samstag!",
+
+
+   "11- Hochzeit überrascht",
+  "Ihr gemeinsamer Freund heiratet. Sie wollen eine Hochzeitsüberraschung für ihn organisieren.",
+  "Überlegen Sie, welche Überraschungen und Ideen Sie anbieten können.",
+  "Machen Sie Ihrem Partner/Ihrer Partnerin Vorschläge.",
+  "",
+  "Nils: Hallo Anna, wie du weißt, unser Freund Ahmed heiratet. Wir würden gerne eine Hochzeitsüberraschung für ihn organisieren. Kannst du bitte helfen? Was sollen wir machen?",
+  "Anna: Hallo Nils, das ist eine schöne Nachricht. Ich möchte natürlich helfen. Allerdings müssen wir dafür gemeinsam einen Plan erstellen. Was denkst du, was sollten wir zuerst tun?",
+  "Nils: Ich habe schon einige Notizen gemacht. Lass uns zuerst überlegen, welches Geschenk wir kaufen sollten. Hast du einen Vorschlag?",
+  "Anna: Normalerweise wünschen sich Paare Geldgeschenke oder eine Reise. Was meinst du, welches Hochzeitsgeschenk angemessen wäre?",
+  "Nils: Ich finde, dass Geld besser ist. Vielleicht brauchen sie es wirklich. Was denkst du dazu?",
+  "Anna: Du hast recht. Wir könnten Geld von unseren Freunden sammeln. Jeder kann so viel geben, wie er möchte.",
+  "Nils: Ja, das können wir machen. Hast du noch andere Vorschläge?",
+  "Anna: Es wäre schön, wenn wir zum Beispiel eine Gravur machen lassen – mit den Namen des Brautpaares, dem Hochzeitsdatum, einem schönen Spruch oder einem kleinen Herz als Erinnerung.",
+  "Nils: Super, das ist eine gute Idee. Ich habe noch einen Vorschlag: Wir könnten einen Film machen. Wir sammeln unsere Bilder und Erinnerungen zusammen und zeigen den Film auf der Hochzeit. Stimmst du mir zu?",
+  "Nils: Außerdem habe ich noch eine andere Idee. Wie wäre es, wenn wir ein romantisches Dinner schenken?",
+  "Anna: Ja, ich finde, das ist sehr nett. Eine andere Idee könnte sein, einen Tanz zu organisieren. Was meinst du, wenn wir mit unseren Freunden einen Tanz einstudieren?",
+  "Nils: Ich hoffe, dass das Geschenk ihm gefallen wird. Wir haben alle Punkte besprochen. Aber wir sollen uns wieder treffen, um alles noch einmal zu besprechen.",
+  "Anna: Dieser Plan gefällt mir auch gut. Du hast recht. Wir sollten das besprechen. Dann müssen wir unsere Idee den anderen Freunden vorstellen. Wann sollen wir uns treffen? Hast du am Samstag Zeit?",
+  "Nils: Ja, am Samstag habe ich nach 12:00 Uhr Zeit. Passt es dir?",
+  "Anna: Dann machen wir das. Ja, das passt mir auch. Vielen Dank für deine Hilfe. Bis dann.",
+  "Nils: Bitte sehr, bis Samstag!",
+
+   "12- Helfen Freunden, die umziehen wollen",
+  "Ihr Freund möchte in eine andere Stadt umziehen und Sie wollen beim Umzug helfen.",
+  "Überlegen Sie, wie Sie helfen können, und machen Sie Ihrem Partner/Ihrer Partnerin Vorschläge.",
+  "",
+  "Mohamad: Hast du gehört, dass unser Freund Ali nach Köln umziehen möchte und er Hilfe braucht? Hast du Lust zu helfen?",
+  "Anna: Ja, natürlich, warum nicht. Ich freue mich darauf.",
+  "Mohamad: Hallo, wie du weißt, unser Freund Tariq will nächsten Monat nach Hamburg umziehen, da seine aktuelle Wohnung nicht nur klein ist, sondern er auch in Hamburg studiert. Ich möchte ihm gerne beim Umzug helfen. Was denkst du, was können wir tun?",
+  "Wafaa: Wirklich? Das ist eine gute Nachricht. Wir können ihm gerne gemeinsam helfen. Aber wann wird er in das neue Haus umziehen?",
+  "Mohamad: Er wird am Samstag, den 12. August umziehen. Hast du eine Idee, wie wir ihm helfen können?",
+  "Wafaa: Natürlich. Lass uns zunächst überlegen, wie wir das mit dem Umzug machen. Mein Bruder hat ein großes Auto und kann uns helfen. Aber hast du Umzugskartons?",
+  "Mohamad: Ja, ich habe zu Hause Umzugskartons, ich bringe sie mit. Dann ruf bitte deinen Bruder und mach einen Termin mit ihm. Wie wäre es, wenn wir ihm beim Aufbau der Schränke helfen? Ich schlage vor, dass wir ihm auch beim Einpacken der Sachen helfen. Was meinst du?",
+  "Wafaa: Ich stimme dir zu. Wir können die Sachen einpacken. Außerdem können wir auch unsere Freunde Hamza, Abo Jassmen, Ahmad und Jassar fragen, ob sie uns helfen. Was können wir noch machen?",
+  "Mohamad: Wie wäre es, wenn wir Essen mitnehmen? Ich packe Pizza und koche Nudeln mit Paprika und Tomaten. Findest du das eine gute Idee?",
+  "Nils: Ich habe den Vorschlag, dass ich nicht nur mein Auto bringe, sondern auch meine Werkzeuge mitnehme. Was meinst du dazu?",
+  "Wafaa: Ja, das ist eine gute Idee. Und was hältst du davon, wenn ich Getränke mitbringe? Ich denke, wir brauchen viele Getränke.",
+  "Mohamad: Du hast recht, da wir im Sommer sind. Und was meinst du, wenn wir ihm beim Abbau der Küche in der neuen Wohnung helfen?",
+  "Wafaa: Ehrlich gesagt habe ich keine Erfahrung in diesem Gebiet, aber mein Nachbar arbeitet in diesem Bereich. Ich kann ihn bitten, uns zu helfen.",
+  "Mohamad: Super. Aber wann können wir uns treffen?",
+  "Nils: Einerseits ist es positiv, wenn du seine Kinder zu dir nach Hause nimmst und deine Frau aufpasst. Aus meiner Erfahrung könnte ich die Küchenzeile abbauen.",
+  "Wafaa: Wir können früh um 7 Uhr morgens anfangen. Es wird besser sein, wenn wir früh beginnen, damit wir schneller fertig sind. Stimmst du mir zu?",
+  "Mohamad: Toll. Hast du einen Anhänger?",
+  "Nils: Ja, ich habe vor einem Monat einen gekauft.",
+  "Mohamad: Natürlich. Morgen ist besser. Kannst du mich bitte abholen?",
+  "Nils: Wir haben eine Hochzeitsparty gemacht, und du hast uns nicht eingeladen?!!!",
+  "Wafaa: Ja, natürlich. Ich hole dich gerne ab.",
+  "Mohamad: Danke. Bis Samstag.",
+  "",
+  "Anna: Ich finde, das ist sehr nett. Eine andere Idee könnte sein, einen Tanz zu organisieren. Was ist deine Meinung, wenn wir mit unseren Freunden einen Tanz einstudieren?",
+  "Nils: Ich hoffe, dass das Geschenk ihm gefallen wird. Wir haben alle Punkte besprochen. Aber wir sollen uns wieder treffen, um alles noch einmal zu besprechen.",
+  "Anna: Dieser Plan gefällt mir auch gut. Du hast recht. Wir sollten das besprechen. Dann müssen wir unsere Idee den anderen Freunden vorstellen. Wann sollen wir uns treffen? Hast du am Samstag Zeit?",
+  "Nils: Ja, am Samstag habe ich nach 12:00 Uhr Zeit. Passt es dir?",
+  "Anna: Dann machen wir das. Ja, das passt mir auch. Vielen Dank für deine Hilfe. Bis dann.",
+  "Nils: Bitte sehr, bis Samstag!",
+
+
+    "13- Zusammen ins Kino gehen",
+  "Nächsten Freitag ist der letzte Tag des Deutschkurses und Sie wollen zusammen ins Kino gehen.",
+  "Schmieden Sie mit Ihrem Partner/Ihrer Partnerin einen Plan.",
+  "Überlegen Sie, was Sie machen können, und machen Sie gemeinsam Vorschläge.",
+  "",
+  "Nils: Hallo Anna, du weißt doch, dass am nächsten Freitag der letzte Tag des Deutschkurses ist. Wir wollen zusammen ins Stadtkino gehen. Kannst du mir helfen, damit unsere Planung gut wird?",
+  "Anna: Hallo Nils, ja, ich weiß. Ich helfe dir gern. Lass uns überlegen, welchen Film wir im Kino sehen könnten. Es gibt verschiedene Filme.",
+  "Nils: Ich stimme dir zu. Es gibt viele verschiedene Arten von Filmen, wie Actionfilme, soziale Filme, romantische und lustige Filme. Was denkst du, wenn wir einen lustigen Film sehen? Ich denke, dass wir eine gute Zeit verbringen werden. Aber wie können wir die Tickets kaufen?",
+  "Anna: Ich finde, dass ein lustiger Film eine gute Idee ist. Wir könnten die Eintrittskarten im Internet buchen, weil das billiger und schneller ist. Wann könnten wir das machen? Vormittags oder nachmittags? Was hältst du davon?",
+  "Nils: Es wäre besser, wenn wir den Film vormittags sehen, damit wir nach dem Film noch Zeit haben, um gemeinsam zu essen und Kaffee zu trinken.",
+  "Anna: Ich finde, das ist eine gute Idee. Ich kenne auch eine Freundin, die ein Restaurant hat. Ich rufe sie an und wir könnten zu ihr gehen und leckeres Essen probieren.",
+  "Nils: Super, das ist eine tolle Idee. Aber wann müssen wir uns treffen? Und wo?",
+  "Anna: Wir könnten uns am Bahnhof um 11 Uhr treffen.",
+  "Nils: Ja, ich stimme dir zu. Diese Zeit passt sehr gut.",
+  "Anna: Ok, ich finde das auch.",
+  "Nils: Ich hoffe, dass wir viel Spaß haben und eine schöne Zeit verbringen.",
+  "Anna: Ich freue mich darauf. Bis dahin!",
+  "Nils: Bitte sehr, bis Samstag!",
+
+
+   "14- Software-Seminar",
+  "Sie organisieren ein Software-Seminar.",
+  "Überlegen Sie gemeinsam, was Sie tun können.",
+  "Teilen Sie Ihrem Partner/Ihrer Partnerin Ihre Ideen.",
+  "Entwickeln Sie dann gemeinsam Ihre Vorschläge für das Seminar.",
+  "",
+  "Nils: Hallo Anna, in unserer Schule soll ein Software-Seminar stattfinden. Ich würde es gerne organisieren. Hast du Lust teilzunehmen?",
+  "Anna: Natürlich möchte ich gerne mitmachen. Aber wann und wo wird das Seminar stattfinden?",
+  "Nils: Es soll am Mittwoch um 11 Uhr stattfinden, aber wo, weiß ich noch nicht. Wir müssen das organisieren. Ich schlage vor, dass wir das Seminar im Raum 112 machen, da der Raum groß ist und die Ausstattung hat, die wir brauchen. Was denkst du dazu?",
+  "Anna: Super, unsere Schule ist groß und hat alles – Tische, Stühle, Computer und Bildschirme. Aber über welches Programm werden wir diskutieren? Es gibt viele Programme wie Word, Excel, Bildbearbeitung. Hast du eine Idee?",
+  "Nils: Leider habe ich keine Erfahrungen in diesem Bereich, aber meine Schwester ist Programmiererin von Beruf. Sie kann uns helfen. Und was machen wir mit dem Essen? Wie wäre es, wenn wir ein Buffet organisieren?",
+  "Anna: Wirklich? Das wäre gut, wenn deine Schwester uns hilft. Und für das Essen finde ich, das ist eine gute Idee. Was hältst du davon, wenn wir ein paar Getränke kaufen und kleine Süßigkeiten zubereiten? Stimmst du mir zu?",
+  "Nils: Ich stimme dir zu. Dann kauf bitte die Getränke. Wie können wir die Menschen einladen? Ich glaube, es wäre gut, wenn wir eine Anzeige in der Zeitung machen. Was hältst du davon?",
+  "Anna: Ja, das ist eine gute Idee. Und es wäre besser, wenn wir Flyer machen und diese an Schüler und Freunde verteilen – mit Datum, Uhrzeit, Ort und Thema.",
+  "Nils: Toll. Ich hoffe, dass wir ein gutes Seminar organisieren können.",
+  "Anna: Ja, das hoffe ich auch. Wir haben alle Punkte besprochen. Aber wir sollen uns wieder treffen, um alles noch einmal durchzugehen.",
+  "Nils: Stimmt. Wann sollen wir uns treffen? Hast du am Samstag Zeit?",
+  "Anna: Ja, am Samstag habe ich nach 12:00 Uhr Zeit. Passt es dir?",
+  "Nils: Dann machen wir das. Vielen Dank für deine Hilfe. Bis dann!",
+  "Anna: Bitte sehr, bis Samstag!",
+
+   "15- Kinderkrankenhaus",
+  "Sie organisieren einen Besuch im Kinderkrankenhaus und sollen bei der Planung helfen.",
+  "Überlegen Sie, wie der Besuch im Kinderkrankenhaus ablaufen sollte.",
+  "Entwickeln Sie dann gemeinsam einen Plan, wie Sie für die Kinder Vergnügen bringen können.",
+  "",
+  "Nils: Hallo Anna, mein Chef hat mir mitgeteilt, dass ich einen Besuch im Kinderkrankenhaus organisieren soll. Kannst du mir dabei helfen?",
+  "Anna: Ich helfe dir gerne. Allerdings müssen wir dafür gemeinsam einen Plan erstellen. Was denkst du, was sollten wir zuerst tun?",
+  "Nils: Ich habe schon einige Notizen gemacht. Lass uns zuerst überlegen, an welchem Tag wir gehen sollen. Was hältst du davon, wenn wir am Montag gehen?",
+  "Anna: Freitag passt mir besser. Aber um welche Uhrzeit sollen wir gehen? Und wer wird mit uns gehen?",
+  "Nils: Es wäre besser, um 9 Uhr zu gehen, und wir könnten die Teilnehmer aus meinem Kurs fragen, ob sie mitkommen. Was denkst du?",
+  "Anna: Ich stimme dir zu. Es wäre gut, wenn unsere Freunde mit uns ins Krankenhaus gehen. Ich habe auch einen Vorschlag: Mein Nachbar arbeitet im Theater. Wir können ihn anrufen, er kann mit seinen Freunden kommen und als Clown auftreten und eine lustige Show für die Kinder machen. Was meinst du?",
+  "Nils: Ich finde die Idee mit dem Clown gut. Wir können auch Geschenke für die Kinder kaufen. Was hältst du davon?",
+  "Anna: Ich stimme dir zu. Wir können dafür Geld von unseren Freunden sammeln.",
+  "Nils: Ich hoffe, dass wir einen schönen Tag mit den Kindern haben. Wir haben alle Punkte besprochen. Aber wir sollen uns wieder treffen, um alles noch einmal zu besprechen.",
+  "Anna: Dieser Plan gefällt mir auch gut. Du hast recht. Wir sollten das noch einmal besprechen. Dann müssen wir unsere Idee den anderen Freunden vorstellen. Wann sollen wir uns treffen? Hast du am Samstag Zeit?",
+  "Nils: Ja, am Samstag habe ich nach 12:00 Uhr Zeit. Passt es dir?",
+  "Anna: Dann machen wir das. Ja, das passt mir auch. Vielen Dank für deine Hilfe. Bis dann.",
+  "Nils: Bitte sehr, bis Samstag!",
+
+
+   "16- Interkulturelles Sportfest organisieren",
+  "In Ihrer Stadt organisieren Sie ein interkulturelles Sportfest.",
+  "Sie sollen bei der Planung helfen.",
+  "Überlegen Sie, was Sie tun können.",
+  "Planen Sie gemeinsam, was Sie organisieren können.",
+  "",
+  "Nils: Hallo Anna, in unserer Stadt organisieren wir ein interkulturelles Sportfest. Und wir sollen bei der Planung helfen. Bist du dabei?",
+  "Anna: Hallo Nils, ich möchte natürlich helfen. Allerdings müssen wir dafür gemeinsam einen Plan erstellen. Was denkst du, was sollten wir zuerst tun?",
+  "Nils: Ich habe schon einige Notizen gemacht. Das interkulturelle Sportfest findet am ersten Mai statt. Ich schlage vor, dass wir das Fest in einer Schule mit einem großen Spielplatz und einem Schwimmbad stattfinden lassen. So können wir mehr Sportarten anbieten. Was denkst du, welche Sportarten sollen wir anbieten?",
+  "Anna: In der Schule, toll! Wir können zum Beispiel Tischtennis, Fußball, Volleyball, Handball und einen Marathon machen. Was hältst du davon? Hast du andere Vorschläge?",
+  "Nils: Ja, ich habe einen Vorschlag. Wir können auch Schwimmen anbieten. Aber wie können wir Werbung machen, damit die Leute mitmachen? Ich kann eine Anzeige in der Zeitung schreiben. Und was kannst du tun?",
+  "Anna: Schwimmen, ja, das ist eine gute Idee. Es wäre besser, wenn wir Flyer machen und sie mit Datum, Uhrzeit, Ort und Thema an Schüler und Freunde verteilen.",
+  "Nils: Das ist eine gute Idee. Aber was können wir den Gewinnern schenken? Hast du eine Idee?",
+  "Anna: Ich glaube, es wäre schön, wenn wir dem ersten Gewinner eine Goldmedaille, dem zweiten eine Silbermedaille und dem dritten eine Bronzemedaille schenken. Bist du einverstanden?",
+  "Nils: Ja, ich stimme dir zu. Ich hoffe, dass das Sportfest Spaß machen wird.",
+  "Anna: Ich finde auch, das ist sehr nett. Eine andere Idee könnte sein, einen Tanz zu organisieren. Was ist deine Meinung, wenn wir mit unseren Freunden einen Tanz einstudieren?",
+  "Nils: Es wäre toll. Ich vermute, wir haben alle Punkte besprochen. Aber wir sollen uns wieder treffen, um alles noch einmal zu besprechen.",
+  "Anna: Dieser Plan gefällt mir auch gut. Du hast recht. Wir sollten das besprechen. Dann müssen wir unsere Idee den anderen Freunden vorstellen. Wann sollen wir uns treffen? Hast du am Samstag Zeit?",
+  "Nils: Ja, am Samstag habe ich nach 12:00 Uhr Zeit. Passt es dir?",
+  "Anna: Dann machen wir das. Ja, das passt mir auch. Vielen Dank für deine Hilfe. Bis dann.",
+  "Nils: Bitte sehr, bis Samstag!",
+
+
+   "17- Blutspende-Veranstaltung",
+  "An einem Gesundheitszentrum in Ihrer Stadt organisieren Sie eine Blutspende-Veranstaltung.",
+  "Sie sollen bei der Planung helfen.",
+  "Überlegen Sie, was Sie tun können.",
+  "Denken Sie beispielsweise an Informationsmaterial oder Poster.",
+  "Planen Sie gemeinsam, was Sie organisieren können.",
+  "",
+  "Nils: Hallo Anna, an einem Gesundheitszentrum in unserer Stadt organisieren wir eine Blutspende-Veranstaltung und wir sollen bei der Planung helfen. Hast du Vorschläge?",
+  "Anna: Zuerst müssen wir mit dem Gesundheitszentrum vereinbaren, an welchem Tag und zu welcher Uhrzeit die Veranstaltung stattfinden wird. Weißt du, wann die Veranstaltung stattfindet?",
+  "Nils: Ja, ich weiß. Am Montag und Dienstag jeweils um 9 Uhr.",
+  "Anna: Toll. Lass uns überlegen: Wie können wir die Menschen einladen? Wie wäre es, wenn wir Poster über Blutspenden machen? Was meinst du dazu?",
+  "Nils: Das ist eine super Idee. Wir können erklären, wie wichtig Blutspenden für Spender und Empfänger sind. Wir können Poster mit Zeit, Ort und Thema an Studenten, Nachbarn und Freunde verteilen. Und ich habe noch eine Idee: Meine Nachbarin arbeitet als Krankenschwester. Ich kann sie einladen. Sie kann uns auch helfen, weil sie Erfahrung hat. Aber wie können wir noch Werbung machen?",
+  "Anna: Ich schlage vor, dass wir eine Anzeige in der Zeitung machen. Und wir können auch im Internet Werbung machen. Was ist mit Essen und Getränken? Was sollen wir vorbereiten?",
+  "Nils: Ich kann ein Dessert machen und Apfelsaft kaufen, weil Blutspender Zucker brauchen. Ist das sinnvoll?",
+  "Anna: Ja, das ist sehr nützlich. Und ich bringe Orangensaft und Obst wie Bananen und Trauben.",
+  "Nils: Ich glaube, so haben wir alles besprochen. Ich hoffe, dass wir nichts vergessen haben.",
+  "Anna: Ich denke auch. Aber wir sollen uns wieder treffen, um alles noch einmal zu besprechen.",
+
+
+  "18- Um die Noten zu verbessern",
+  "Das 13-jährige Kind eines Freundes hat schlechte Noten in der Schule.",
+  "Überlegen Sie, was Sie tun können, um ihm zu helfen, die Noten zu verbessern.",
+  "Entwickeln Sie dann gemeinsam einen Plan, wie das Kind in der Schule erfolgreicher werden kann.",
+  "",
+  "Nils: Hallo Anna, der Sohn unseres Freundes hat in der Schule schlechte Noten. Wir müssen ihm helfen, um die Noten zu verbessern. Hast du einen Vorschlag?",
+  "Anna: Hallo Nils, ich habe das schon gehört. Aber ich habe eine Frage: In welchen Unterrichtsfächern braucht er Hilfe?",
+  "Nils: Ich weiß es nicht. Aber wir können zur Schule gehen und mit dem Lehrer sprechen und ihn fragen, in welchen Fächern wir das Kind unterstützen können. So erfahren wir genau, wo seine Schwächen liegen. Stimmst du mir zu?",
+  "Anna: Ich stimme dir zu. Wir können zur Schule gehen, dort mit dem Lehrer sprechen und dann können wir ihm helfen.",
+  "Nils: Super. Außerdem kann ich Mathe unterrichten, wenn er Hilfe braucht, weil ich Mathematiklehrer bin.",
+  "Anna: Ich finde, das ist eine gute Idee. Und wenn er Probleme im Englischunterricht hat, kenne ich eine Freundin, die Englischlehrerin ist. Ich rufe sie an und sie hilft ihm gern.",
+  "Nils: Super. Aber was können wir tun, um ihn zum Lernen zu ermutigen?",
+  "Anna: Wir könnten ihm entweder ein lustiges Buch oder ein schönes Spielzeug schenken. Was hältst du davon?",
+  "Nils: Ja, das ist eine gute Idee. Wir können ihn auch dazu bringen, Lernvideos anzuschauen, damit er besser versteht. Was denkst du darüber?",
+  "Maryam: Wie wäre es, wenn wir mit ihm über die Wichtigkeit der Bildung sprechen? Er kann durch Bildung hohe Ziele erreichen.",
+  "Anna: Ich finde, das ist eine tolle Idee. Ich hoffe, dass wir dem Sohn unseres Freundes helfen können, damit er seine Schwierigkeiten überwindet.",
+  "Nils: Ja, ich hoffe auch, dass wir ihm helfen können, um seine Noten zu verbessern.",
+  "Maryam: Ich finde es toll, wenn wir Spiele kaufen, die die geistige Aktivität anregen. Wir können ihm versprechen, dass er ein Geschenk bekommt, von dem er träumt, wenn seine Noten besser werden.",
+  "Nils: Ja, das funktioniert auch.",
+
+
+   "19- Straßenfest",
+  "In vielen deutschen Städten gibt es im Sommer Straßenfeste.",
+  "Oft werden diese Feste von allen Nachbarn einer Straße organisiert, auch wenn sie sich nicht oder nur wenig kennen.",
+  "Bänke und Tische werden auf der Straße aufgestellt, bei selbst gemachtem Essen, Musik und Spielen für die Kinder.",
+  "Ein solches Straßenfest kann von morgens bis abends oder auch nur ein paar Stunden dauern.",
+  "Sie finden diese Idee sehr schön und möchten auch in Ihrer Straße ein Fest mit allen Nachbarn organisieren.",
+  "Sammeln Sie Ideen für das Fest und teilen Sie die Aufgaben unter sich auf.",
+  "",
+  "Nils: Hallo Anna, wie du weißt, nächste Woche soll in unserer Stadt ein Straßenfest stattfinden und wir wollen es mit unseren Nachbarn organisieren. Hast du auch Lust teilzunehmen?",
+  "Anna: Hallo Nils, ich freue mich, dass ich an diesem Fest teilnehmen werde. Was denkst du, was könnten wir dort machen?",
+  "Nils: Ich habe schon einige Notizen gemacht. Wir sollten zuerst überlegen, was wir anziehen sollen. Ich habe ein Kleid, das zu diesem Fest gut aussieht. Hast du auch Kleidung?",
+  "Anna: Leider habe ich keine Erfahrung, was ich tragen sollte. Ich muss meinen Nachbarn fragen, ob er mir ein Kleid ausleihen kann, weil er letztes Jahr an diesem Fest teilgenommen hat.",
+  "Nils: Gut. Was können wir noch machen? Hast du eine Idee?",
+  "Anna: Wir könnten ein Konzert organisieren, weil ich Freunde kenne, die eine Band gegründet haben. Ich könnte sie zum Fest einladen. Bist du damit einverstanden?",
+  "Nils: Ich bin damit einverstanden. Ich habe auch einen Vorschlag: Was hältst du davon, wenn wir sowohl türkische als auch deutsche Lieder singen?",
+  "Anna: Eine wunderbare Idee! Was könnten wir zu unserem Fest mitbringen? Hast du einen Vorschlag?",
+  "Nils: Ich schlage vor, dass ich Süßigkeiten mitbringe. Ich kann nicht nur Baklava, sondern auch Cupcakes backen. Wie findest du das?",
+  "Anna: Super! Wir dürfen nicht vergessen, dass wir nicht nur Stühle, sondern auch Tische brauchen. Was meinst du dazu?",
+  "Nils: Ja, du hast recht. Aber wir brauchen auch ein Auto.",
+  "Anna: Ich habe ein großes Auto, deswegen könnte ich gerne alle Dinge mitnehmen. Und ich könnte sowohl die Freunde als auch dich mitnehmen.",
+  "Nils: Ich finde, das ist eine gute Idee. Ich glaube, wir haben alle Punkte besprochen. Aber wir sollen uns wieder treffen, um alles noch einmal zu besprechen.",
+  "Anna: Dieser Plan gefällt mir auch gut. Du hast recht. Wir sollten das besprechen. Dann müssen wir unsere Idee den anderen Nachbarn vorstellen. Wann sollen wir uns treffen? Hast du am Samstag Zeit?",
+  "Nils: Ja, am Samstag habe ich nach 12:00 Uhr Zeit. Passt es dir?",
+  "Anna: Dann machen wir das. Ja, das passt mir auch. Vielen Dank für deine Hilfe. Bis dann.",
+  "Nils: Bitte sehr, bis Samstag!",
+
+
+   "Interview mit einem berühmten Sänger",
+  "Sie haben als Journalisten einer großen Zeitung die Chance, einen sehr bekannten Sänger zu interviewen.",
+  "Bereiten Sie gemeinsam einen Fragenkatalog vor:",
+  "1- Eignen Sie sich zunächst auf eine Person, die Sie interviewen wollen",
+  "2- Überlegen Sie dann, was Sie beruflich oder privat von dieser Person wissen wollen",
+  "",
+  "(1) Hallo X. Wie du weißt, wir haben die Chance, einen bekannten Sänger zu interviewen. Was hältst du davon?",
+  "(2) Ja, ich bin dabei. Allerdings müssen wir dafür gemeinsam einen Plan erstellen. Was denkst du, was sollten wir zuerst tun?",
+  "(1) Ich habe schon einige Notizen gemacht. Erste Frage: Mit wem wollen wir das Interview machen?",
+  "(2) Ich würde gerne mit Mark Forster interviewen. Was sagst du dazu?",
+  "(1) Ja, das ist ein guter Vorschlag. Ich mag ihn auch sehr. Ich habe viele Fragen.",
+  "(2) Zuerst sollen wir einen Termin mit ihm vereinbaren. Was denkst du? Wie können wir das machen?",
+  "(1) Das wäre toll, wenn ein Termin vereinbart wird. Ich habe einen Freund, der die Handynummer von Mark Forster hat. Ich könnte ihn fragen, damit er mir die Nummer gibt. Dann könnten wir mit ihm sprechen, um einen Termin auszumachen. Aber wir müssen eine Liste schreiben, damit wir vorbereitet sind. Was denkst du darüber?",
+  "(2) Ja, toll. Ich werde im Internet surfen, um private Sachen herauszufinden. Ich finde, dass wir nicht zu viele Fragen stellen sollten, damit er nicht gelangweilt wird. Wir sollten wissen, ob er verheiratet ist, was er in der Zukunft machen will, und was seine Ziele sind. Das finde ich genug. Was hältst du davon?",
+  "(1) Super! Und wo sollen wir das Interview machen? Ich schlage vor, dass wir es im Café oder im Restaurant machen könnten. Was meinst du?",
+  "(2) Zwar ist das ein guter Vorschlag, aber es scheint mir nicht ideal. Ich denke, dass ein Café oder Restaurant keine passende Situation ist, um sich konzentrieren zu können. Deswegen würde ich den Sänger lieber zu mir nach Hause einladen, damit wir nicht nur einen komfortablen Platz haben, sondern auch in entspannter Atmosphäre sind. Was denkst du?",
+  "(1) Ich bin damit einverstanden. Zu Hause ist besser als im Café.",
+  "(2) Ich hoffe, dass wir das Interview schaffen können.",
+  "(1) Dann gib mir bitte Bescheid, wenn du einen Termin mit ihm vereinbart hast. Viel Spaß!",
+
+
+   "20- Bücher-Spende",
+  "Sie organisieren eine Veranstaltung und sammeln dabei Bücher-Spenden für die lokale Bibliothek in Ihrer Straße.",
+  "Sammeln Sie Ideen für diese gemeinsame Aktion und teilen Sie die Aufgaben unter sich auf.",
+  "",
+  "Nils: Hallo Anna, wie du weißt, wir sollen eine Veranstaltung organisieren und dabei Bücher-Spenden für die lokale Bibliothek sammeln. Wir treffen uns, damit wir gemeinsam Ideen für diese Aktion sammeln können. Hast du Vorschläge?",
+  "Anna: Ja. Lass uns überlegen, was wir machen können. Zuerst müssen wir einen Tag festlegen, um die Bücher zu sammeln. Vielleicht wäre es besser, am Samstag ab 9 Uhr in der Bibliothek zu beginnen, damit die Leute Bücher bringen können. Was denkst du darüber?",
+  "Nils: Ich finde, Samstag ist gut, von 9 bis 16 Uhr. Aber wie können wir die Leute einladen? Ich schlage vor, dass wir eine Anzeige in der Zeitung machen. Was könnten wir noch machen?",
+  "Anna: Das ist eine gute Idee. Wir können auch Flyer machen. Wie wäre es, wenn wir erklären, wie wichtig es ist, alte Bücher zu spenden? Wir können die Flyer mit Zeit, Ort und Thema an Schüler, Studenten, Nachbarn und Freunde verteilen. Was hältst du davon?",
+  "Nils: Ich stimme dir zu. Und wie wäre es, wenn wir jedem Spender ein kleines Geschenk geben? Ich finde es schön, wenn wir zum Beispiel einen Bleistift oder Süßigkeiten schenken. Bist du einverstanden?",
+  "Anna: Ja, das ist eine gute Idee. Ich kann Süßigkeiten backen und mitbringen. Wir dürfen nicht vergessen, die Bücher zu sortieren und zu ordnen. Was denkst du?",
+  "Nils: Du hast recht. Ich komme mit meinem Mann, er kann uns helfen, die Bücher zu ordnen und zu sortieren.",
+  "Anna: Super, ich denke, dass wir über alle wichtigen Punkte gesprochen haben.",
+  "",
+  "Nils: Hallo Anna, wie du weißt, wir sollen eine Veranstaltung organisieren und dabei Bücher-Spenden für die lokale Bibliothek sammeln. Hast du Vorschläge?",
+  "Anna: Hallo Nils. Lass uns zuerst überlegen, wann und wo die Veranstaltung stattfinden soll. Hast du eine Idee?",
+  "Nils: Ich schlage vor, dass wir eine offizielle Genehmigung der zuständigen Behörden einholen, um Ort und Zeitpunkt festzulegen. Ich kann einen Nachbarn fragen, da er bei den Behörden arbeitet.",
+  "Anna: Ich glaube, wenn wir die Veranstaltung auf der Straße machen, brauchen wir viele Dinge.",
+  "Nils: Ja, natürlich. Wir brauchen nicht nur Stühle, sondern auch Tische. Ich kann meine Freunde um Hilfe bitten. Außerdem habe ich ein großes Auto und ein Zelt. Was hältst du davon?",
+  "Anna: Das ist eine gute Idee. Was hältst du davon, wenn wir die Veranstaltung am Samstag von 9 bis 14 Uhr machen?",
+  "Nils: Ich bin einverstanden. Samstag ist eine gute Idee, da die Leute frei haben. Wie könnten wir die Leute einladen?",
+  "Anna: Ich schlage vor, dass wir eine Anzeige in der Zeitung schreiben, um die Leute einzuladen. Was sagst du dazu?",
+  "Nils: Ich stimme dir zu. Es wäre schön, wenn wir den Leuten auch ein kleines Geschenk geben, zum Beispiel einen Bleistift oder einen Stadtplan. Bist du einverstanden?",
+  "Anna: Ich bin einverstanden. Was hältst du davon, wenn ich etwas backe, zum Beispiel Süßigkeiten, da ich Erfahrung darin habe?",
+  "Nils: Toll, ein wunderbarer Vorschlag. Wir sollten nicht vergessen, dass wir die Bücher auch sortieren.",
+  "Anna: Ja, ich stimme dir zu. Ich kann mit meiner Freundin die Bücher sortieren. Wie findest du das?",
+  "Nils: Vielen Dank für deine Hilfe. Ich hoffe, dass wir nicht nur Bücher sammeln, sondern auch Spaß haben.",
+  "Anna: Ich glaube, wir haben über alle Punkte gesprochen und alles gut organisiert. Bis dann.",
+  "Nils: Bis dann.",
+
+
+   "21- Überraschungsfest für Ihre Lehrerin",
+  "Ihre Kursteilnehmer möchten ein Überraschungsfest für Ihre Lehrerin organisieren.",
+  "Sie sollen bei der Planung helfen.",
+  "Überlegen Sie gemeinsam, was Sie tun können.",
+  "",
+  "Nils: Hallo Anna, weißt du noch, dass unsere Kursteilnehmer ein Überraschungsfest für unsere Lehrerin organisieren möchten? Hast du eine Idee, was wir machen könnten?",
+  "Anna: Hallo Nils, ich habe schon davon gehört. Ich freue mich darauf. Ich schlage vor, dass wir eine Party für unsere Lehrerin organisieren. Was meinst du dazu?",
+  "Nils: Ich denke, das ist eine sehr gute Idee. Wir können den Kursraum mit Luftballons dekorieren. Ich habe viele zu Hause und kann sie mitbringen. Und was hältst du davon, wenn wir ein Geschenk für sie kaufen?",
+  "Anna: Ich finde, dass es eine gute Idee ist. Wir können Geld von unseren Freunden sammeln, um ein Geschenk für unsere Lehrerin zu kaufen. Wir könnten ihr entweder einen Gutschein oder einen Blumenstrauß mit einer Grußkarte schenken. Was hältst du davon?",
+  "Nils: Ich finde, einen Gutschein zu kaufen ist besser als einen Blumenstrauß. Dazu können wir noch eine Grußkarte schreiben. Was denkst du?",
+  "Anna: Ich stimme dir zu. Was hältst du davon, wenn wir Essen und Getränke zu unserer Party mitbringen? Hast du einen Vorschlag?",
+  "Nils: Wir müssten uns im Kurs einigen, was wir zum Essen und Trinken machen. Ich könnte einen Kuchen backen und auch ein paar Süßigkeiten vorbereiten. Was sollen wir noch machen?",
+  "Anna: Wir sollten auch unseren Freunden mitteilen, dass sie ebenfalls etwas zum Essen mitbringen. Außerdem schlage ich vor, dass wir bei unserer Party Musik hören. Ich kenne eine Freundin, die sehr gut Gitarre spielen kann. Ich rufe sie an und sie kommt gern zu uns. Was denkst du?",
+  "Nils: Ja, super Idee. Ich denke, unsere Lehrerin wird mit unserer Überraschung sehr zufrieden sein.",
+  "Anna: Ja, das denke ich auch.",
+
+
+    "22- Eine Kochnachmittag-Party im Deutschkurs",
+  "Sie organisieren eine Kochnachmittag-Party in Ihrem Deutschkurs.",
+  "Planen Sie mit Ihrem Partner/Ihrer Partnerin ein Programm für die Party.",
+  "Überlegen Sie, welche Programmpunkte Sie anbieten können, und machen Sie gemeinsam Vorschläge.",
+  "",
+  "Nils: Hallo Anna, wie du weißt, wir sollen eine Kochnachmittag-Party in unserem Deutschkurs organisieren. Und wir müssen zusammen bei der Planung helfen. Hast du Vorschläge?",
+  "Anna: Hallo Nils, ich weiß das und freue mich darauf. Wie wäre es, wenn wir die Party am Montag um 15:00 Uhr organisieren? Was hältst du davon?",
+  "Nils: Ja, ich finde, dass die Uhrzeit super ist. Aber leider habe ich am Montag einen Termin und kann nicht teilnehmen. Vielleicht ist es am Dienstag besser. Was denkst du?",
+  "Anna: Ok, wir könnten unsere Party am Dienstag organisieren. Weißt du, wen wir zu unserer Party einladen sollten?",
+  "Nils: Ja, wir müssen unsere Lehrerinnen und Lehrer sowie den Chef einladen. Und natürlich auch unsere Freunde im Kurs. Was hältst du davon, wenn wir Einladungskarten kaufen und sie verteilen? Ich denke, das wird schöner.",
+  "Anna: Ja, ich finde, dass das eine gute Idee ist. Was könnten wir zu unserer Party mitbringen? Hast du eine Idee?",
+  "Nils: Lass uns überlegen, welche Gerichte wir zubereiten sollten. Was hältst du davon, wenn wir einen Snack und eine Hauptmahlzeit vorbereiten? Zum Beispiel könnten wir verschiedene Arten von Essen vorbereiten – vegetarisch, gesund und auch mit Fleisch.",
+  "Anna: Ich finde, das ist eine tolle Idee. Wir könnten auch Getränke, Kaffee und Tee mitbringen. Außerdem wäre es viel besser, wenn wir bei unserer Party Musik hören. Ich kenne eine Freundin, die sehr gut Gitarre spielen kann. Ich rufe sie an und sie kommt gerne zu uns.",
+  "Nils: Das ist eine schöne Idee. Aber wir dürfen die Plastikbecher und Teller nicht vergessen. Hast du einen Vorschlag?",
+  "Anna: Ja, mein Freund hat ein großes Geschäft. Wir könnten die Plastikbecher und Teller dort kaufen. Bist du einverstanden?",
+  "Nils: Ja, super. Ich denke, wir haben über alle Punkte gesprochen. Ich hoffe, dass wir gut organisiert sind und eine gute Zeit haben werden.",
+  "Anna: Ich denke das auch. Viel Spaß!",
+
+
+   "23- Infotag zum Thema Neue Medien",
+  "An einem Bildungsinstitut in Ihrer Stadt soll ein Infotag zum Thema Neue Medien (Internet, Handy, Smartphone und mehr) stattfinden.",
+  "Sie sollen bei der Planung helfen.",
+  "Überlegen Sie, was Sie tun können.",
+  "Denken Sie beispielsweise an Informationsmaterial, Poster, Vorträge, Präsentationen oder auch Werbung für den Infotag.",
+  "",
+  "Nils: Hallo Anna, an einem Bildungsinstitut in unserer Stadt soll ein Infotag zum Thema Neue Medien stattfinden. Wir sollen bei der Planung helfen. Was hältst du davon?",
+  "Anna: Ja, ich möchte gerne mithelfen. Lass uns überlegen, was wir machen können. Zuerst müssen wir einen Tag festlegen. Weißt du, wann der Infotag stattfinden soll?",
+  "Nils: Er soll am Samstag, den 12.09., von 9 bis 14 Uhr stattfinden. Es findet im Bildungsinstitut in unserer Stadt statt. Weißt du, was wir tun sollen?",
+  "Anna: Zuerst müssen wir Werbung machen. Was hältst du davon, wenn wir eine Anzeige in der Zeitung schreiben und auch im Internet veröffentlichen? Was können wir noch machen?",
+  "Nils: Das ist eine gute Idee. Wir können auch Flyer schreiben und sie mit Zeit, Ort und Thema an Schüler, Studenten, Nachbarn und Freunde verteilen. Was hältst du davon? Und welches Thema sollen wir behandeln?",
+  "Anna: Eigentlich habe ich keine Erfahrung, aber mein Bruder hat viele Erfahrungen, weil er bei Media Markt arbeitet. Ich kann ihn anrufen, und er wird gerne kommen, um uns zu helfen.",
+  "Nils: Toll, ich hoffe, dass dein Bruder uns die Nachteile und Vorteile der Medien erklären kann. Aber weißt du, welche Ausstattung wir brauchen? Ich denke, dass wir einen Beamer und einen Laptop brauchen.",
+  "Anna: Ja, wir brauchen einen Computer und einen Bildschirm. Ich denke, dass alles im Institut vorhanden ist.",
+  "Nils: Super. Und was ist mit dem Essen? Ich schlage vor, dass wir ein Buffet machen. Wir können Orangensaft und Kuchen anbieten. Was meinst du dazu?",
+  "Anna: Ich stimme dir zu. Ich kann auch Süßigkeiten und Apfelsaft mitbringen. Ich denke, dass wir über alle Punkte gesprochen haben und hoffe, dass wir gut organisiert sind und eine gute Zeit haben werden.",
+  "Nils: Viel Spaß. Bis Samstag.",
+  "Anna: Bis dann.",
+
+
+    "24- Ein Museum besuchen",
+  "Sie wollen ein Museum mit Ihren Kolleginnen und Kollegen aus dem Sprachkurs besuchen.",
+  "Überlegen Sie gemeinsam, was Sie tun können.",
+  "Teilen Sie Ihrem Partner/Ihrer Partnerin Ihre Ideen mit.",
+  "Entwickeln Sie dann gemeinsam Ihre Vorschläge für den Besuch.",
+  "",
+  "Nils: Hallo Anna, weißt du noch, dass wir ein Museum mit unseren Kolleginnen und Kollegen aus dem Sprachkurs besuchen wollen? Lass uns überlegen, was wir tun können. Hast du Vorschläge?",
+  "Anna: Hallo Nils, ja, ich weiß. Ich finde, dass das eine gute Idee ist. Ich freue mich darauf, da wir zum ersten Mal ein Museum miteinander besuchen. Wann sollten wir ins Museum gehen? Hast du eine Idee?",
+  "Nils: Ja, das ist auch mein erstes Mal. Wir müssen zuerst einen Tag festlegen. Wie wäre es, wenn wir am Samstag um 12 Uhr fahren? Wie findest du die Uhrzeit?",
+  "Anna: Ich finde es besser, wenn wir am Samstag um 13 Uhr ins Museum fahren. Was meinst du dazu? Wie könnten wir dorthin fahren? Hast du einen Vorschlag?",
+  "Nils: Wir können uns um 12 Uhr am Bahnhof treffen und zusammen mit dem Zug fahren. Oder wir treffen uns um 13 Uhr vor dem Museum. Aber ich kenne das Museum nicht genau, deswegen möchte ich meinen Bruder einladen, weil er oft dort war und das Museum kennt. Was denkst du darüber?",
+  "Anna: Mit dem Zug zu fahren ist eine gute Idee, weil der Zug bequemer und günstiger ist. Das ist auch eine tolle Idee, wenn dein Bruder mitkommt. Er hilft uns. Wie wäre es, wenn wir nach dem Museumsbesuch im Restaurant essen würden? Dort kenne ich eine Freundin, die ein großes Restaurant hat. Das Essen schmeckt bei ihr lecker. Bist du einverstanden?",
+  "Nils: Ja, das ist eine gute Idee. Wir können auch Eis essen und dann ein bisschen spazieren gehen.",
+  "Anna: Wunderbare Idee. Wir könnten eine schöne Zeit miteinander verbringen. Sollen wir noch etwas anderes machen? Ich könnte meine Gitarre mitnehmen, ich spiele sehr gut Gitarre.",
+  "Nils: Ja, das wäre sehr schön. Ich denke, dass wir viel Spaß mit unseren Freunden haben werden.",
+  "Anna: Jetzt könnten wir unseren Kollegen mitteilen, was wir besprochen haben. Viel Spaß, dann machen wir es so.",
+  "Nils: Bis dann.",
+  "Anna: Bis dann.",
+
+
+   "25- Informationsveranstaltung zum Thema Schule und Ausbildung",
+  "Sie wollen an einer Schule eine Informationsveranstaltung zum Thema Schule, Ausbildung und Beruf organisieren.",
+  "Überlegen Sie, welche Experten oder Redner Sie für einen Vortrag einladen möchten.",
+  "",
+  "Nils: Hallo Anna, du weißt doch, dass wir an unserer Schule eine Informationsveranstaltung zum Thema Schule und Ausbildung organisieren wollen. Hast du Vorschläge?",
+  "Anna: Hallo Nils, ja, ich weiß das schon. Ich interessiere mich dafür. Ich schlage vor, dass wir über Ausbildung sprechen, da dieses Thema sehr wichtig ist. Was hältst du davon?",
+  "Nils: Ja, ich stimme dir zu. Das Thema ist sehr wichtig, weil die meisten Schüler nicht genau über die Ausbildung Bescheid wissen. Aber wen sollen wir zum Vortrag einladen?",
+  "Anna: Meine Schwester ist Lehrerin von Beruf. Sie könnte zu unserer Informationsveranstaltung kommen. Außerdem lädt sie ihre Kollegen ein, um über Ausbildung zu sprechen, weil sie Erfahrung haben. Wann sollten wir das organisieren? Hast du einen Vorschlag?",
+  "Nils: Super Idee, wenn deine Schwester mit ihren Kollegen kommt. Der Vortrag findet am Montag, den 09.08., um 9 Uhr statt.",
+  "Anna: Die Uhrzeit passt gut. Wie könnten wir die Schüler einladen? Hast du eine Idee?",
+  "Nils: Ja, wir können eine Anzeige in der Zeitung schreiben. Außerdem können wir Flyer mit Datum, Uhrzeit, Ort und Thema an die Schüler verteilen.",
+  "Anna: Das ist eine gute Idee. Ich kenne einen Freund, der einen großen Verlag hat. Er hilft uns gern, damit wir eine Anzeige machen können.",
+  "Nils: Das ist eine gute Idee. Aber welche Werkzeuge und Geräte sollten wir verwenden?",
+  "Anna: In der Schule gibt es Computer, Beamer, Tische und Stühle. Ich finde, das reicht für unseren Vortrag. Bist du einverstanden?",
+  "Nils: Ja, ich stimme dir zu. In der Schule gibt es alles. Und was hältst du davon, wenn wir Süßigkeiten und Getränke mitbringen?",
+  "Anna: Ich finde, dass es eine gute Idee ist. Ich könnte ein Kuchenbuffet backen.",
+  "Nils: Das ist eine super Idee. Ich denke, dass wir über alle Punkte gesprochen haben. Und ich hoffe, dass wir gut organisiert sind und eine gute Zeit haben werden.",
+  "Anna: Ich denke das auch. Viel Spaß, dann machen wir es so.",
+  "Nils: Bis dann.",
+  "Anna: Bis dann.",
+
+
+   "26- Eine Gruppe von Schülern macht eine Studienreise",
+  "Sie sollen zusammen das Programm der Gruppe planen, auch wenn Sie aus unterschiedlichen Heimländern kommen.",
+  "Überlegen Sie, was Schüler interessieren könnte: Besuch von Schulen, Universitäten, Bibliotheken, Vorträgen usw.",
+  "Wafaa: Hallo Nour. Mein Chef hat mir mitgeteilt, dass eine Gruppe Schüler nächste Woche eine Studienreise machen soll. Kannst du mir helfen, was wir machen können?",
+  "Nour: Hallo Wafaa, ich helfe dir gern. Wir könnten an der Universität mit den Schülern eine Studienreise organisieren, da die Universität ein großer Bildungsträger ist. Dort könnten die Schüler viele Erfahrungen über die Bildung sammeln. Was meinst du dazu?",
+  "Wafaa: Ich stimme dir zu. Nächste Woche gibt es an der Universität Seminare für viele Branchen. Sie können die Branchen, die sie studieren möchten, besuchen und kennenlernen. Was hältst du davon, wenn wir sie einen ganzen Tag an der Universität verbringen lassen, um die Labore und auch die Bibliothek zu besuchen?",
+  "Nour: Ich finde, dass es eine gute Idee ist. Wie könnten wir an die Universität fahren? Hast du einen Vorschlag?",
+  "Wafaa: Es wäre besser, wenn wir einen Minibus für die Studenten mieten. Mein Nachbar ist Busfahrer von Beruf, er kann uns helfen.",
+  "Nour: Ich stimme dir zu, da der Bus bequemer und günstiger ist. Weißt du, wo die Schüler übernachten könnten? Ich habe einen Vorschlag: Ich habe ein großes Haus, sie könnten bei mir übernachten. Bist du damit einverstanden?",
+  "Wafaa: Ja, das ist eine gute Idee. Sie können auch bei mir schlafen. Oder wir können sie im Hotel buchen, wenn sie das wünschen.",
+  "Nour: Ich schlage vor, dass wir am letzten Tag nicht nur das Stadtmuseum besuchen, sondern auch eine Schifffahrt machen, damit die Schüler sich amüsieren. Außerdem könnten wir in einem Restaurant essen. Ich kenne ein großes Restaurant, dort schmeckt das Essen lecker. Was meinst du?",
+  "Wafaa: Das ist ein guter Vorschlag. Und vergiss nicht, den Blumengarten zu besuchen, er ist berühmt und wunderschön.",
+  "Nour: Das ist eine wunderbare Idee. Sollten wir noch etwas anderes machen?",
+  "Wafaa: Ich glaube, dass wir über alle Punkte gesprochen haben. Und ich hoffe, dass wir gut organisiert sind und eine gute Zeit haben werden.",
+  "Nour: Ich denke das auch. Viel Spaß, dann machen wir es so. Bis dann.",
+  "Wafaa: Bis dann.",
+
+
+   "27- An einem Kulturzentrum in Ihrer Stadt will eine Buchmesse stattfinden.",
+  "Sie wollen bei der Planung helfen.",
+  "Überlegen Sie, was Sie tun können. Denken Sie beispielsweise an Informationsmaterial oder Poster.",
+  "",
+  "Anna: Hallo Nils. An einem Kulturzentrum in unserer Stadt will nächste Woche eine Buchmesse stattfinden. Und wir wollen bei der Planung helfen. Hast du Vorschläge?",
+  "Nils: Hallo Anna, ich habe schon davon gehört, aber ich habe ein paar Fragen. Kannst du mir sagen, an welchem Tag die Buchmesse stattfinden sollte? Außerdem möchte ich wissen, um wie viel Uhr sie beginnt.",
+  "Anna: Die Buchmesse findet am Dienstag und Mittwoch von 9 Uhr bis 18 Uhr statt.",
+  "Nils: Ok, die Uhrzeit passt uns gut. Was könnten wir machen? Hast du einen Vorschlag?",
+  "Anna: Lass uns überlegen, was wir machen können. Wir müssen zuerst die Tische ordnen und die Bücher sammeln und organisieren. Zum Beispiel Romane, Geschichtsbücher, Wissenschaft und Kindergeschichten. Wir ordnen jede Art von Büchern zusammen. Was hältst du davon?",
+  "Nils: Ich finde, dass es eine gute Idee ist. Ich kenne einen Freund, der eine große Bücherei hat. Er hilft uns gern. Wir könnten Bücher ausleihen. Bist du damit einverstanden?",
+  "Anna: Ja, das wird uns sehr helfen. Und was hältst du davon, wenn wir die Tische dekorieren, um die Aufmerksamkeit der Menschen zu erregen?",
+  "Nils: Ich stimme dir zu. Sollten wir auch Essen und Getränke mitbringen?",
+  "Anna: Ja, ich glaube, dass es besser wäre, wenn wir ein paar Süßigkeiten und Getränke mitbringen. Ich kann alles machen.",
+  "Nils: Wir sollten nicht vergessen, dass wir eine Anzeige in der Zeitung schreiben. Was sollten wir noch machen?",
+  "Anna: Ja, wir können auch Flyer mit Datum, Uhrzeit und Ort an Schüler, Studenten, Freunde und die Gemeinde verteilen.",
+  "Nils: Ich finde, dass es eine wunderbare Idee ist. Wir könnten auch Journalisten zu unserer Buchmesse einladen.",
+  "Anna: Ja, ich stimme dir zu. Wir müssen unbedingt einen Journalisten einladen. Mein Nachbar arbeitet als Journalist bei einer Zeitung. Ich kann ihn anrufen, damit er zur Buchmesse kommt und mit Bildern dokumentiert.",
+  "Nils: Das ist eine tolle Idee. Der Journalist könnte eine Pressekonferenz machen und die Leute nach ihrer Meinung über die Buchmesse fragen. Was meinst du dazu?",
+  "Anna: Ja, das wäre sehr gut. Ich denke, dass wir alle Punkte besprochen haben. Und ich hoffe auch, dass wir gut organisiert sind und eine gute Zeit haben werden.",
+  "Nils: Ich denke das auch. Viel Spaß, dann machen wir es so. Bis dann.",
+  "Anna: Bis dann.",
+
+
+   "28- Eine Woche im Krankenhaus",
+  "Freund Valentin hat sein Bein gebrochen und muss noch eine Woche im Krankenhaus bleiben.",
+  "Er langweilt sich, weil er nicht herumlaufen darf.",
+  "Überlegen Sie, wie Sie ihn aufmuntern können. Diskutieren Sie Ihre Ideen mit Ihrem Partner oder Ihrer Partnerin und denken Sie sich gemeinsam einen Plan für die Woche aus.",
+  "",
+  "Anna: Hallo Nils. Weißt du noch, dass unser Freund Valentin sein Bein gebrochen hat und noch eine Woche im Krankenhaus bleiben muss? Deswegen langweilt er sich, weil er nicht herumlaufen darf. Hast du einen Vorschlag, wie wir ihn aufmuntern können?",
+  "Nils: Hallo Anna. Gestern habe ich schon davon gehört. Wir könnten nicht nur spannende Bücher, sondern auch ein Schachspiel mitbringen. Dort könnte ich mit ihm Schach spielen. Außerdem könnten wir mit ihm Spaziergänge im Garten machen, wenn das geht. Was hältst du davon?",
+  "Anna: Ja, super. Aber wir müssen uns einigen, wer morgens und nachmittags kommt. Ich kann nachmittags ab 14 Uhr kommen, weil ich morgens arbeite und leider keine Zeit habe. Kannst du morgens kommen?",
+  "Nils: Ja, ich könnte morgens bis 14 Uhr bei ihm bleiben. Was sollten wir noch machen? Hast du eine Idee?",
+  "Anna: Ich kann den Laptop mitbringen, um einige Filme und Programme auf YouTube anzusehen. Außerdem kann ich ihm helfen, im Krankenhausgarten zu laufen.",
+  "Nils: Das ist eine gute Idee. Wir könnten auch Essen und Getränke mitbringen. Bist du damit einverstanden?",
+  "Anna: Ja, was hältst du davon, wenn ich ein paar Süßigkeiten mache und Getränke mitbringe?",
+  "Nils: Wunderbare Idee. Er und ich mögen deine Süßigkeiten. Was könnten wir noch machen?",
+  "Anna: Was denkst du, wenn wir ihn überraschen? Ich schlage vor, dass wir unsere Freunde einladen, ihn zu besuchen und ihm ein Geschenk zu kaufen. Bist du damit einverstanden?",
+  "Nils: Ich stimme dir zu. Ich kenne einen Freund, der ein großes Modegeschäft hat. Wir könnten bei ihm einen Gutschein kaufen. Was meinst du dazu?",
+  "Anna: Ja, das ist eine gute Idee. Wir können das Geld von unseren Freunden sammeln und ein Geschenk kaufen.",
+  "Nils: Ich finde, dass es eine tolle Idee ist. Jeder könnte 10 Euro bezahlen.",
+  "Anna: Ja, das ist sehr gut. Ich denke, dass wir alle Punkte besprochen haben. Und ich hoffe auch, dass wir gut organisiert sind und eine gute Zeit haben werden.",
+  "Nils: Ich denke das auch. Viel Spaß, dann machen wir es so. Bis dann.",
+  "Anna: Bis dann.",
+
+   "29- Vorstellungsgespräch",
+  "Ihr Freund hat ein wichtiges Vorstellungsgespräch.",
+  "Überlegen Sie, welche Tipps Sie für einen guten ersten Eindruck geben können, und machen Sie Ihrem Partner/Ihrer Partnerin Vorschläge.",
+  "",
+  "Anna: Hallo Nils, wie du weißt, hat unser Freund Tarek ein Vorstellungsgespräch und wir müssen ihm ein paar Tipps geben, damit er einen guten ersten Eindruck machen kann. Hast du Vorschläge?",
+  "Nils: Hallo Anna, das ist eine gute Nachricht. Ich schlage vor, dass er vor dem Vorstellungsgespräch nicht nur Kaffee trinkt, sondern auch ein gesundes Frühstück isst, um seine Laune zu verbessern. Was meinst du dazu?",
+  "Anna: Ich finde, dass es eine gute Idee ist. Und ich schlage vor, dass wir im Internet suchen, wie man sich bewirbt, damit wir gute Ideen sammeln. Weißt du, was wir ihm noch empfehlen könnten?",
+  "Nils: Ich stimme dir zu, das ist eine wunderbare Idee. Wir sollten ihm auch helfen, passende Kleidung auszuwählen. Man muss im Vorstellungsgespräch gut aussehen. Ich kenne einen Freund, der ein Modegeschäft hat, er kann unserem Freund helfen. Was denkst du darüber?",
+  "Anna: Ich stimme dir zu. Ich finde, dass es besser wäre, wenn er zum ersten Mal einen Anzug trägt. Und weißt du noch, was er mitnehmen muss?",
+  "Nils: Ja, er muss die Unterlagen und seinen Lebenslauf zum Vorstellungsgespräch mitnehmen. Weißt du, dass unser Freund Jan gestern ein Vorstellungsgespräch hatte? Ich schlage vor, dass wir mit Jan einen Termin vereinbaren, damit er alles für Tarek erklärt. Bist du damit einverstanden?",
+  "Anna: Ja, ich bin damit einverstanden. Jan kann uns helfen, Tarek zu erklären, was er tun muss. Außerdem muss er Informationen über das Unternehmen sammeln und wissen, warum er es ausgewählt hat. Das ist eine wichtige Frage, die in allen Bewerbungsgesprächen gestellt wird. Was meinst du dazu?",
+  "Nils: Ich stimme dir zu. Wir sollten einen Termin mit Jan vereinbaren. Wir könnten entweder am Samstag um 12.00 Uhr oder am Sonntag um 14.00 Uhr zu ihm kommen. Was meinst du dazu?",
+  "Anna: Ja, wir können uns mit ihm treffen, wenn er sowohl am Samstag als auch am Sonntag Zeit hat.",
+  "Nils: Wir sollten nicht vergessen, Tarek zu empfehlen, dass er während des Vorstellungsgesprächs selbstbewusst sein muss. Was denkst du darüber?",
+  "Anna: Du hast Recht, er muss selbstbewusst sein, um einen guten Eindruck zu hinterlassen.",
+  "Nils: Gut, dann könnten wir unserem Freund Bescheid sagen, dass wir am Samstag um 12.00 Uhr zu Jan gehen sollen. Ich rufe ihn an. Ich wünsche unserem Freund viel Glück und Erfolg.",
+  "Anna: Ich wünsche das auch.",
+  "Nils: Ich denke, dass wir alle Punkte besprochen haben. Und ich hoffe, dass wir gute Tipps für unseren Freund geben konnten, damit er einen guten Eindruck bei seinem Vorstellungsgespräch macht. Dann machen wir es so. Bis dann.",
+  "Anna: Bis dann.",
+
+
+  "3- Vortrag über Erfahrungen von Fremdsprache",
+  "Sie sind von einer Schule eingeladen worden, um über die Notwendigkeit des Fremdsprachenlernens aus Ihrer Sicht und Ihren Erfahrungen zu berichten.",
+  "Sammeln Sie Argumente und machen Sie Ihrem Partner/Ihrer Partnerin Vorschläge.",
+  "Erstellen Sie zusammen eine Liste mit Stichpunkten für eine 15-minütige Präsentation vor den Schülern.",
+  "",
+  "(2) Hallo X, wie du weißt, wir wurden von der Schule eingeladen, über unsere Erfahrungen mit dem Erlernen von Fremdsprachen zu sprechen. Also würdest du dabei helfen?",
+  "(1) Ja, ich bin dabei. Allerdings müssen wir dafür gemeinsam einen Plan erstellen. Was denkst du, was sollten wir zuerst tun?",
+  "(2) Ich habe schon einige Notizen gemacht. Wir haben nur 15 Minuten Zeit, um uns vor den Schülern zu präsentieren. Wir brauchen nicht nur einen Computer, sondern auch einen Beamer für unsere Präsentation.",
+  "(1) Ich glaube, in der Schule gibt es alles. Weißt du, was wir über Fremdsprache sprechen könnten? Hast du eine Idee?",
+  "(2) Wir müssen zuerst über die Wichtigkeit der Fremdsprache in unserem Leben reden. Was denkst du, wenn wir einen Film zeigen, der diesen Punkt erklärt?",
+  "(1) Wir sollten sagen, dass die Wichtigkeit der Fremdsprache sowohl beim Arbeitssuchen als auch beim Reisen eine Rolle spielt. Was meinst du?",
+  "(2) Ich stimme dir zu. Und was hältst du davon, wenn wir einige lustige Situationen erzählen, die wir durchgemacht haben, damit sich die Schüler nicht langweilen?",
+  "(1) Ich stimme dir zu, das ist eine wunderbare Idee. Wir sollten auch zeigen, wie man eine Fremdsprache lernen kann. Man sollte schreiben, hören und lesen. Alle Sinne spielen eine wichtige Rolle beim Fremdsprachenlernen.",
+  "(2) Du hast recht. Wir dürfen nicht vergessen aufzuschreiben, was wir vereinbart haben.",
+  "(1) Ich denke, dass wir alle Punkte besprochen haben und hoffe auch, dass wir gut organisiert sind. Aber wir sollen uns wieder treffen, um alles noch einmal zu besprechen.",
+  "(2) Dieser Plan gefällt mir auch gut. Du hast recht. Wir sollten das besprechen. Dann müssen wir die Organisation dem Schulleiter vorlegen. Wann sollen wir uns treffen? Hast du am Samstag Zeit?",
+  "(1) Ja, am Samstag habe ich nach 12:00 Uhr Zeit. Passt es dir?",
+  "(2) Dann machen wir das. Ja, das passt mir auch. Vielen Dank für deine Hilfe. Bis dann.",
+  "(1) Bitte sehr, bis Samstag.",
+
+
+   "30- Eine Exkursion zu einem Museum",
+  "Sie wollen mit Ihrem Sprachkurs eine Exkursion zu einem Museum im deutschsprachigen Raum unternehmen.",
+  "Einigen Sie sich schnell auf ein Ziel. Falls Ihnen keines einfällt: Besuchen Sie die Pinakothek der Moderne in München.",
+  "Denken Sie auch an eine Führung und daran, was Sie sonst am Zielort unternehmen können. Planen Sie gemeinsam, was zu tun ist.",
+  "",
+  "Anna: Hallo Nils. Weißt du noch, dass wir mit unserem Sprachkurs eine Exkursion zu einem Museum im deutschsprachigen Raum unternehmen wollen? Und ich schlage vor, dass wir nach Österreich reisen, weil es in der Nähe von Deutschland ist und man dort Deutsch spricht. Was hältst du davon?",
+  "Nils: Ich stimme dir zu, dass wir nach Österreich reisen. Wir könnten entweder mit dem Zug oder mit dem Auto fahren. Was meinst du dazu?",
+  "Anna: Es wäre besser, wenn wir mit dem Zug reisen, denn es ist billiger, weil wir so viele sind.",
+  "Nils: Du hast Recht, dann fahren wir mit dem Zug. Aber weißt du, was wir noch machen müssten? Hast du Vorschläge?",
+  "Anna: Ja, ich weiß. Lass uns überlegen, wie wir planen. Zuerst müssen wir das Geld von unseren Freunden sammeln. Dann müssen wir einen Tag festlegen. Es wäre besser, wenn wir uns am Samstag um 7 Uhr am Bahnhof treffen und mit dem Zug fahren. Was denkst du darüber?",
+  "Nils: Ich stimme dir zu. Ich könnte die Tickets im Internet reservieren. Bist du damit einverstanden?",
+  "Anna: Super. Aber was ist mit Übernachten, wo werden wir schlafen? Weil wir eine Woche dort bleiben wollen. Hast du eine Idee?",
+  "Nils: Ich schlage vor, dass wir in einem Hotel übernachten. Mein Bruder wohnt in Wien und er hat ein Hotel. Ich rufe ihn an und spreche mit ihm, damit er passende Zimmer für die Schüler reservieren könnte. Er könnte uns auch ein gutes Angebot machen. Was denkst du darüber?",
+  "Anna: Das ist ein guter Vorschlag. Vielleicht könnte er uns auch helfen, das Museum zu besuchen und die Stadt zu besichtigen, oder?",
+  "Nils: Ja, er könnte uns helfen, da er das Museum und die Stadt kennt. Aber was sollten wir mitnehmen? Hast du eine Idee?",
+  "Anna: Wir dürfen nicht vergessen, die Kamera mitzubringen, um schöne Momente festzuhalten. Ich habe eine Kamera, die ich mitnehmen kann. Und was hältst du davon, wenn wir ein paar Süßigkeiten und Kaffee mitbringen?",
+  "Nils: Das ist eine gute Idee. Ich könnte ein Kuchenbuffet machen und Getränke mitbringen. Was sollten wir noch machen?",
+  "Anna: Jetzt könnten wir unsere Freunde informieren, was wir besprochen haben.",
+  "Nils: Ich denke, dass wir alle Punkte besprochen haben. Und ich hoffe auch, dass wir gut organisiert sind und eine gute Zeit haben werden.",
+  "Anna: Ich denke das auch. Viel Spaß, dann machen wir es so. Bis dann.",
+  "Nils: Bis dann.",
+
+
+   "31- Ein Buch in Ihrer Klasse vorstellen",
+  "Sie sollen gemeinsam ein Buch in Ihrer Klasse vorstellen.",
+  "Überlegen Sie, welches Buch Sie präsentieren möchten, wie Sie die Präsentation strukturieren (Kapitelweise, gesamt) und wer welche Schwerpunkte übernimmt (Inhalt, Interpretation, Hintergrundinformationen).",
+  "Überlegen Sie auch, ob Sie aus dem Buch vorlesen möchten und ob Sie Handzettel (mit welchem Inhalt?) erstellen und verteilen möchten. Planen Sie gemeinsam, was Sie tun wollen.",
+  "",
+  "Anna: Hallo Nils. Weißt du noch, dass wir gemeinsam ein Buch in unserer Klasse vorstellen sollen? Was hältst du davon?",
+  "Nils: Ja, ich bin dabei. Allerdings müssen wir dafür gemeinsam einen Plan erstellen. Was denkst du, was sollten wir zuerst tun?",
+  "Anna: Ich habe schon einige Notizen gemacht. Ich weiß, dass du gerne liest. Hast du ein interessantes Buch, das wir vorstellen könnten? Weil ich keine Ahnung habe, welches Buch wir nehmen sollen.",
+  "Nils: Ich habe ein bekanntes Buch gelesen, es heißt „Das große Heft“ und wurde in über 30 Sprachen übersetzt. Was hältst du davon, wenn wir dieses Buch nehmen?",
+  "Anna: Ja, das ist ein guter Vorschlag. Ich habe es auch schon gelesen. Es ist ein interessantes Buch. Es handelt davon, wie man im Bürgerkrieg überleben kann.",
+  "Nils: Zuerst könnten wir kurz über die Autorin sprechen: wo sie geboren wurde, wann sie gestorben ist. Ich habe mich schon über die Autorin informiert.",
+  "Anna: Super. Wir können dann das Buch zusammenfassen und über die Hauptfiguren sprechen. Worüber können wir noch sprechen?",
+  "Nils: Ich stimme dir zu, dass wir über die Hauptfiguren des Romans sprechen, die Zwillinge sind. Außerdem sollten wir das Ende des Romans nicht verraten, damit es spannend bleibt. Bist du einverstanden?",
+  "Anna: Ich stimme dir zu, es wäre besser, wenn wir das Ende nicht erzählen. Aber was brauchen wir für die Präsentation?",
+  "Nils: Es wäre besser, wenn wir das Buch den Schülern zeigen. Außerdem gibt es in der Schule Computer, Tafel und Display.",
+  "Anna: Ja, ich stimme dir zu. Und ich schlage vor, dass wir Flyer mit Datum, Uhrzeit und dem Thema des Buches an die Schüler verteilen. Was denkst du darüber?",
+  "Nils: Das ist eine gute Idee. Ich schlage vor, dass wir am Ende den Schülern dieses Buch empfehlen, damit sie es selbst lesen und verstehen können, was Bürgerkrieg ist und wie man überlebt.",
+  "Anna: Ich stimme dir zu, und es wäre besser, wenn wir am Ende auch über unsere eigenen Erfahrungen sprechen, weil es auch in unserer Heimat Bürgerkrieg gibt.",
+  "Nils: Du hast Recht. Ich könnte das Buch mitbringen, damit die Schüler es anschauen können.",
+  "Anna: Ich denke, dass wir alle Punkte besprochen haben. Und ich hoffe auch, dass wir gut organisiert sind.",
+  "Nils: Ja, ich denke das auch. Viel Spaß, dann machen wir es so.",
+
+
+   "32- Ein Theaterstück und Spenden",
+  "Sie organisieren ein Theaterstück und spenden das Geld für Wohltätigkeiten.",
+  "Sie sollen bei der Planung helfen. Überlegen Sie, was Sie tun können. Planen Sie gemeinsam, was Sie organisieren können.",
+  "",
+  "Anna: Hallo Nils. Wie du weißt, organisieren wir in unserer Stadt ein Theaterstück. Außerdem spenden wir das Geld für Wohltätigkeiten. Und wir sollen bei der Planung helfen. Was hältst du davon?",
+  "Nils: Wir müssen dafür gemeinsam einen Plan erstellen. Ich habe einige Notizen gemacht. Zuerst sollen wir überlegen, wo wir das Theaterstück machen können. Was hältst du davon, wenn wir es im Kulturzentrum machen? Es ist groß und gut ausgestattet.",
+  "Anna: Gute Idee. Aber wann soll es stattfinden? Wie wäre es, wenn wir es am Samstag um 13 Uhr machen? Was meinst du dazu?",
+  "Nils: Ich finde das sehr früh. Vielleicht ist es besser um 16 Uhr. Und woher können wir die Schauspieler holen, hast du eine Idee?",
+  "Anna: Ich stimme dir zu, um 16 Uhr ist besser. Mein Nachbar ist Schauspieler von Beruf, wir können einfach mit ihm Kontakt aufnehmen und er kann uns helfen. Und was ist mit den Einladungen?",
+  "Nils: Wir können eine Anzeige in der Zeitung schreiben und auch im Internet posten, um die Leute einzuladen. Außerdem könnten wir Einladungskarten drucken und an unsere Freunde, Schüler, Studenten und Nachbarn verteilen. Was denkst du darüber?",
+  "Anna: Toll. Wir können die Einladungen auch per WhatsApp schicken. Ist das okay?",
+  "Nils: Ja, das ist eine gute Idee. Wie lange soll das Theaterstück dauern?",
+  "Anna: Ich denke, es wäre besser, wenn wir es zwei Tage machen, damit wir so viel Geld wie möglich sammeln können.",
+  "Nils: Okay, ich finde das auch gut. An welche Wohltätigkeitsorganisation sollen wir das Geld abgeben?",
+  "Anna: Wir können es Straßenkindern spenden. Oder Waisenkindern. Oder einem Kinderkrankenhaus. Was hältst du davon?",
+  "Nils: Ich stimme dir zu. Ich hoffe, dass wir sowohl eine wunderbare Vorstellung als auch Spaß haben werden. Ich denke, wir haben alle Punkte besprochen. Aber wir sollten uns wieder treffen, um alles noch einmal zu besprechen.",
+  "Anna: Dieser Plan gefällt mir gut. Du hast recht. Wir sollten uns besprechen. Wann treffen wir uns? Hast du am Samstag Zeit?",
+  "Nils: Ja, am Samstag habe ich nach 12 Uhr Zeit. Passt es dir?",
+  "Anna: Dann machen wir das. Ja, das passt mir auch. Vielen Dank für deine Hilfe. Bis dann.",
+  "Nils: Bis dann.",
+
+
+   "33- Eine Ausstellung über Ihr Land",
+  "An einem Kulturzentrum in Ihrer Stadt soll eine Ausstellung über Ihr Land stattfinden.",
+  "Sie wollen bei der Planung helfen.",
+  "Überlegen Sie, was Sie tun können. Denken Sie beispielsweise an Informationsmaterial oder Poster.",
+  "",
+  "Anna: Hallo Nils, wie du weißt, soll in einem Kulturzentrum in unserer Stadt eine Ausstellung über unser Land stattfinden. Wir wollen bei der Planung helfen. Kannst du auch helfen?",
+  "Nils: Ich helfe gern. Allerdings müssen wir dafür gemeinsam einen Plan erstellen. Was denkst du, was sollten wir zuerst tun?",
+  "Anna: Ich habe schon einige Notizen gemacht. Die Ausstellung findet am Freitag und Samstag von 10 bis 16 Uhr statt. Lass uns überlegen, wie wir die Leute einladen. Ich schlage vor, dass wir eine Anzeige in der Zeitung schreiben. Was hältst du davon?",
+  "Nils: Ich halte das für eine gute Idee. Wir können auch Flyer mit Datum, Uhrzeit und Thema an Schüler, Studenten, Nachbarn, Freunde und die Gemeinde verteilen, weil wir viele Leute einladen wollen.",
+  "Anna: Das ist eine gute Idee. Wen könnten wir noch einladen? Mein Nachbar arbeitet als Journalist. Wir können ihn einladen, damit er die Ausstellung dokumentiert. Und was hältst du davon, wenn wir türkisches Essen mitbringen? Ich kann Aşure und Çiğköfte machen. Kannst du auch etwas mitbringen?",
+  "Nils: Wunderbare Idee. Ich könnte nicht nur Baklava, sondern auch türkischen Kaffee mitbringen. Außerdem könnten wir Bilder unserer Städte zeigen. Ich kenne einen Freund, der Fotos von Istanbul und Pamukkale hat. Wir könnten diese mitnehmen, um den Leuten unsere Kultur zu zeigen.",
+  "Anna: Das ist eine gute Idee. Wir können auch aus dem Internet ein paar Bilder unserer Stadt drucken. Und ich habe noch einen Vorschlag: Wir könnten ein folkloristisches Kleid aus Damaskus mitbringen. Mein Bruder hat einige solche Kleider, er kann sie uns leihen. Was können wir noch machen?",
+  "Nils: Ich finde, dass es eine gute Idee ist. Außerdem könnte ich meine Saz mitnehmen und dort orientalische Musik spielen. Bist du damit einverstanden?",
+  "Anna: Ja, ich bin einverstanden. Ich denke, dass unsere Ausstellung erfolgreich sein wird und die Leute sie mögen werden. Mit Essen, Musik und Fotos wird unsere Ausstellung wunderschön.",
+  "Nils: Ich denke das auch. Viel Spaß, dann machen wir es so. Bis dann.",
+  "Anna: Bis dann.",
+
+
+   "34- Aus Amerika nach Deutschland Urlaub",
+  "Ein Freund kommt aus Amerika nach Deutschland, um Urlaub zu machen, und Sie wollen ihm helfen.",
+  "Überlegen Sie gemeinsam, was Sie tun können.",
+  "",
+  "Anna: Hallo Nils, weißt du, dass unser Freund Jan am kommenden Freitag aus Amerika zu uns kommt, um in Deutschland Urlaub zu machen? Wir sollten ihm helfen. Kannst du dabei helfen?",
+  "Nils: Ich helfe gern. Allerdings müssen wir dafür gemeinsam einen Plan erstellen. Was denkst du, was sollten wir zuerst tun?",
+  "Anna: Ich habe schon einige Notizen gemacht. Lass uns überlegen, was wir machen können. Zuerst müssen wir die wichtigsten Sehenswürdigkeiten festlegen, weil es viele davon in Deutschland gibt. Was denkst du darüber?",
+  "Nils: Ich stimme dir zu. Ich schlage vor, dass wir mit unserem Freund nach Berlin fahren, da Berlin eine schöne Stadt ist und viele Sehenswürdigkeiten hat. Was meinst du dazu?",
+  "Anna: Ich stimme dir zu. Berlin ist eine Großstadt mit vielen Sehenswürdigkeiten. Leider habe ich sie noch nicht besucht, aber ich habe schon gehört, dass es viel zu sehen gibt, z. B. die Museumsinsel, Schloss Charlottenburg und das Alte Museum. Wir könnten sie alle besuchen. Was findest du?",
+  "Nils: Ich finde, dass es eine gute Idee ist. Mein Bruder wohnt in Berlin und er kennt viele Sehenswürdigkeiten. Außerdem hat er ein Auto. Er kann uns helfen, alle bekannten Orte in Deutschland zu besuchen. Bist du einverstanden? Wo könnten wir außerdem hingehen?",
+  "Anna: Es wäre sehr nett von deinem Bruder, uns zu helfen. Ich habe noch einen Vorschlag: Wir könnten Camping machen und zum Skifahren in die Alpen fahren. Und es wäre auch schön, eine Bootsfahrt zu machen. Was denkst du darüber?",
+  "Nils: Wunderbare Ideen. Ich schlage vor, dass wir mit unserem Freund nicht nur ins Kino gehen, sondern auch ein berühmtes Restaurant besuchen. Meine Freundin hat ein bekanntes Restaurant in Berlin. Wir könnten dort leckeres Essen probieren. Außerdem gibt es in Berlin viele Geschäfte – vielleicht möchte er ein paar Sachen einkaufen. Was meinst du dazu?",
+  "Anna: Ja, ich stimme dir zu. Vielleicht möchte er auch ein paar Geschenke für seine Freunde kaufen.",
+  "Nils: Ich denke, dass wir alle Punkte besprochen haben. Ich hoffe, dass unser Freund in seinem Urlaub sehr glücklich sein wird, da Deutschland ein schönes Land ist.",
+  "Anna: Ja, das hoffe ich auch. Bis dann.",
+
+
+    "35- Einen Betriebsausflug mit Ihren Kolleginnen und Kollegen",
+  "Organisieren Sie einen Betriebsausflug mit Ihren Kolleginnen und Kollegen.",
+  "Dazu benötigen Sie Vorschläge. Besprechen Sie Ihr Vorhaben.",
+  "Überlegen Sie, was Sie alles dazu brauchen (Ausflugsideen, Ziele, Kosten, Transportmöglichkeiten, Verpflegung etc.).",
+  "",
+  "Anna: Hallo Nils, weißt du, dass wir im kommenden Monat einen Betriebsausflug mit unseren Kolleginnen und Kollegen organisieren sollen? Hast du einen Vorschlag?",
+  "Nils: Ich möchte gern dabei helfen. Allerdings müssen wir dafür gemeinsam einen Plan erstellen. Was denkst du, was sollten wir zuerst tun?",
+  "Anna: Ich habe schon einige Notizen gemacht. Lass uns überlegen, was wir machen können. Zuerst müssen wir das Ausflugsziel festlegen. Hast du eine Idee, wohin wir fahren könnten?",
+  "Nils: Wir könnten entweder nach Berlin oder nach Frankfurt fahren. In Frankfurt gibt es einen großen Fluss. Was denkst du darüber?",
+  "Anna: Ja, ich denke, dass es besser wäre, wenn wir einen Campingausflug am Fluss machen. Dort könnten wir spielen, tanzen und grillen. Was hältst du davon?",
+  "Nils: Ich stimme dir zu, ein Campingausflug ist eine gute Idee. Weißt du, was wir für unseren Ausflug brauchen? Hast du Ideen?",
+  "Anna: Wir brauchen Campingausrüstung, Essen und Getränke. Wir können alles gemeinsam kaufen und dann das Geld von unseren Kollegen sammeln. Was denkst du darüber?",
+  "Nils: Das ist gut. Wir könnten nicht nur Fleisch, sondern auch Gemüse kaufen. Weißt du, wie wir fahren könnten? Hast du einen Vorschlag?",
+  "Anna: Wir können einen Bus von einer Touristenfirma mieten. Was meinst du dazu?",
+  "Nils: Es wäre besser, wenn wir mit dem Bus der Firma fahren würden, da es billiger ist. Bist du damit einverstanden?",
+  "Anna: Ja, du hast Recht. Es wäre besser, mit dem Firmenbus zu fahren.",
+  "Nils: Wie viel Geld sollten wir für unseren Ausflug ausgeben?",
+  "Anna: Ich weiß es nicht, aber wir werden die Kosten aufschreiben und sie unserem Manager vorlegen. Vielleicht zahlt die Firma einen Teil der Kosten für den Ausflug.",
+  "Nils: Du hast Recht. Ich glaube, dass wir für unseren Ausflug etwa 1000 Euro brauchen würden. Wir sollten das unserem Chef mitteilen.",
+  "Anna: Ich stimme dir zu. Lass uns wiedersehen, die Details mit den Kosten aufschreiben und unsere Kollegen informieren, was wir vereinbart haben.",
+  "Nils: Gut, ich denke, dass wir alle Punkte besprochen haben. Und ich hoffe, dass wir gut organisiert sind. Viel Spaß, bis dann.",
+  "Anna: Bis dann.",
+
+
+   "36- Ein multikulturelles Fest",
+  "Ihre Sprachschule veranstaltet einmal pro Jahr ein großes Fest, das den ganzen Tag dauert.",
+  "Dieses Jahr soll es ein multikulturelles Fest sein.",
+  "Sie sollen zu zweit dieses Fest planen. Überlegen Sie, was für ein Programm Sie anbieten können, wer welche Aufgaben übernimmt und was Sie alles brauchen und organisieren müssen.",
+  "",
+  "Anna: Hallo Nils, wie du weißt, veranstaltet unsere Sprachschule einmal pro Jahr ein großes Fest, das den ganzen Tag dauert. Dieses Jahr soll es ein multikulturelles Fest sein. Wir sollen es zusammen planen. Kannst du mir helfen?",
+  "Nils: Ich helfe dir gern. Allerdings müssen wir dafür gemeinsam einen Plan erstellen. Was denkst du, was sollten wir zuerst tun?",
+  "Anna: Ich habe schon einige Notizen gemacht. Was hältst du davon, wenn wir das Fest im Kulturzentrum unserer Stadt machen? Es ist mit Tischen und Stühlen ausgestattet und es gibt auch einen Computer und einen Bildschirm. Stimmst du mir zu?",
+  "Nils: Ja, ich stimme dir zu. Weißt du, wie wir die Leute einladen könnten? Ich schlage vor, dass wir eine Anzeige in der Zeitung veröffentlichen. Was meinst du dazu?",
+  "Anna: Super, ich finde auch, dass es besser wäre, wenn wir Flyer mit Datum, Uhrzeit und Ort an Schüler und Studenten verteilen.",
+  "Nils: Gut. Was sollten wir von unserer Kultur anbieten? Hast du eine Idee?",
+  "Anna: Wir müssen über die Kultur unseres Landes sprechen und den Unterschied zur deutschen Kultur erklären. Wir könnten Bilder und Videos verwenden, um unsere Kultur darzustellen. Hast du auch eine Idee?",
+  "Nils: Das ist eine wunderbare Idee. Wir könnten auch arabisches Essen anbieten. Ich könnte sowohl Baklava als auch Gebäck mitbringen, damit die Leute es probieren können. Bist du einverstanden?",
+  "Anna: Ja, das ist eine gute Idee. Ich kann auch Süßigkeiten wie Käsegebäck machen.",
+  "Nils: Sehr gut. Ich denke, dass wir alle Punkte besprochen haben. Und ich hoffe, dass wir gut organisiert sind. Viel Spaß, dann machen wir es so. Bis dann.",
+  "Anna: Bis dann.",
+
+
+   "37- Lehrveranstaltung mit dem Titel 'Deutsch als Fremdsprache'",
+  "Ihre Lehrerin hat Sie zu einer Lehrveranstaltung mit dem Titel 'Deutsch als Fremdsprache' eingeladen.",
+  "Sie möchten helfen. Überlegen Sie, wie Sie helfen können, und machen Sie Ihrem Partner/Ihrer Partnerin Vorschläge.",
+  "",
+  "Anna: Hallo Nils, wie du weißt, hat unsere Lehrerin uns zu einer Lehrveranstaltung mit dem Titel 'Deutsch als Fremdsprache' eingeladen. Wir sollen bei der Planung helfen. Kannst du auch helfen?",
+  "Nils: Ich helfe gern. Allerdings müssen wir dafür gemeinsam einen Plan erstellen. Was denkst du, was sollten wir zuerst tun?",
+  "Anna: Ich habe schon einige Notizen gemacht. Weißt du, wann die Lehrveranstaltung stattfinden soll und um wie viel Uhr sie beginnt?",
+  "Nils: Ja natürlich, sie findet nächste Woche am Montag um 11:00 Uhr statt.",
+  "Anna: Die Uhrzeit passt mir gut. Ich finde, dass der Vortrag sehr wichtig ist, da alle unsere Freunde Deutsch lernen müssen. Wir könnten unsere Freunde zu dieser Lehrveranstaltung einladen. Was meinst du dazu?",
+  "Nils: Ich stimme dir zu, diese Lehrveranstaltung ist sehr wichtig, speziell für die Menschen, die zum Studium oder zur Arbeit nach Deutschland kommen. Ich finde, dass es besser wäre, wenn wir eine Anzeige in der Zeitung veröffentlichen, um so viele Menschen wie möglich zu erreichen. Was können wir noch machen? Hast du eine Idee?",
+  "Anna: Das ist eine gute Idee. Außerdem könnten wir Flyer mit Datum, Uhrzeit und Ort an Schüler, Studenten und Leute anderer Institute verteilen. Bist du damit einverstanden?",
+  "Nils: Ja, ich bin mit dir einverstanden. Und was hältst du davon, wenn wir eine Videokamera mitbringen, um unsere Lehrveranstaltung zu dokumentieren? Was brauchen wir sonst noch?",
+  "Anna: Ich stimme dir zu, das ist eine wunderbare Idee. Ich finde, dass es in der Schule einen großen Raum mit Computer und Bildschirm gibt. Wir könnten den Raum mit Stühlen und Tischen einrichten.",
+  "Nils: Du hast Recht, in der Schule gibt es alles. Wir brauchen es nur zu ordnen.",
+  "Anna: Jetzt könnten wir unserer Lehrerin mitteilen, was wir besprochen haben. Ich hoffe, dass wir gut organisiert sind.",
+  "Nils: Viel Spaß, dann machen wir es so. Bis dann.",
+  "Anna: Bis dann.",
+
+
+    "38- Ausstellung mit dem Titel 'Weltreise'",
+  "An einem Rathaus in Ihrer Stadt soll eine Ausstellung mit dem Titel 'Weltreise' stattfinden.",
+  "Sie sollen bei der Planung helfen. Überlegen Sie, was Sie tun können. Denken Sie beispielsweise an Informationsmaterial oder Poster.",
+  "",
+  "Anna: Hallo Nils, wie du weißt, soll im Rathaus unserer Stadt eine Ausstellung mit dem Titel 'Weltreise' stattfinden. Wir sollen bei der Planung helfen. Kannst du mir dabei helfen?",
+  "Nils: Ich möchte gern dabei helfen. Allerdings müssen wir dafür gemeinsam einen Plan erstellen. Was denkst du, was sollten wir zuerst tun?",
+  "Anna: Ich habe schon einige Notizen gemacht. Der erste Punkt: Wir brauchen einen Computer und einen Bildschirm. Was sonst noch?",
+  "Nils: Ich glaube, wir können das vom Rathaus bekommen. Dort könnten wir nachfragen. Im Rathaus gibt es einen großen Raum mit Computer und Bildschirm. Was könnten wir außerdem machen? Hast du eine Idee?",
+  "Anna: Es wäre besser, wenn wir Broschüren und Fotos über die wichtigsten Touristenstädte und Hotels der Welt drucken. Aber wer kann uns helfen? Kennst du jemanden, der im Tourismus arbeitet?",
+  "Nils: Leider kenne ich niemanden, aber ich kann beim Touristeninformationszentrum fragen. Vielleicht können sie uns helfen. Wir müssen auch Werbung machen. Wie können wir das erledigen? Hast du eine Idee?",
+  "Anna: Wir können eine Anzeige in der Zeitung schreiben und auch im Internet posten. Außerdem könnten wir Flyer mit Datum, Uhrzeit, Ort und Thema an die Leute, Reisebüros, Fluggesellschaften, Studenten, Nachbarn und Hotels verteilen.",
+  "Nils: Ich stimme dir zu, das ist eine wunderbare Idee. Weißt du, wie viele Tage die Ausstellung dauern soll?",
+  "Anna: Ich glaube, dass sie zwei Tage dauern wird.",
+  "Nils: Ich sehe das genauso wie du. Ich glaube, dass wir alle Punkte besprochen haben. Aber wir sollten uns wieder treffen, um alles noch einmal zu besprechen.",
+  "Anna: Dieser Plan gefällt mir auch gut. Du hast recht. Wir sollten uns treffen und unsere Ideen der Kursleiterin und den anderen Freunden vorstellen. Wann sollen wir uns treffen? Hast du am Samstag Zeit?",
+  "Nils: Ja, am Samstag habe ich nach 12 Uhr Zeit. Passt es dir?",
+  "Anna: Dann machen wir das. Ja, das passt mir auch. Vielen Dank für deine Hilfe. Bis dann.",
+  "Nils: Bitte sehr, bis Samstag.",
+
+
+   "39- Schreibwettbewerb",
+  "Ihre Sprachschule möchte einen Schreibwettbewerb für alle Kursteilnehmer organisieren.",
+  "Sie sollen bei der Planung helfen. Überlegen Sie gemeinsam, was Sie tun können.",
+  "Denken Sie beispielsweise an verschiedene Textsorten (Aufsatz, Brief usw.), mögliche Preise oder Themen.",
+  "",
+  "Anna: Hallo Nils, unsere Sprachschule möchte einen Schreibwettbewerb für alle Kursteilnehmer organisieren. Wir sollen bei der Planung helfen. Kannst du mir dabei helfen?",
+  "Nils: Ich helfe dir gern. Allerdings müssen wir dafür gemeinsam einen Plan erstellen. Was denkst du, was sollten wir zuerst tun?",
+  "Anna: Ich habe schon einige Notizen gemacht. Erste Frage: Welches Thema sollen wir im Schreibwettbewerb vorgeben?",
+  "Nils: Wir könnten entweder einen Artikel oder eine Rede vorschlagen. Was meinst du dazu?",
+  "Anna: Ich denke, dass es besser wäre, wenn wir die Schüler selbst entscheiden lassen, was sie bevorzugen. Dann können sie leicht auswählen, was sie wollen. Stimmst du mir zu?",
+  "Nils: Ich stimme dir zu, das ist eine gute Idee. Weißt du, wen wir zum Schreibwettbewerb einladen könnten? Ich finde, dass wir einen Journalisten einladen sollten.",
+  "Anna: Mein Freund arbeitet als Journalist bei einer Zeitung. Er könnte uns helfen. Ich rufe ihn an und er würde gern kommen. Bist du damit einverstanden?",
+  "Nils: Ja natürlich. Es wäre sehr nett von deinem Freund, wenn er uns helfen würde.",
+  "Anna: Weißt du, wie wir Werbung machen können? Hast du einen Vorschlag?",
+  "Nils: Wir können eine Anzeige in der Zeitung veröffentlichen und auch im Internet posten. Außerdem könnten wir Flyer mit Datum, Uhrzeit und Ort an die Schüler und Schulen verteilen.",
+  "Anna: Das ist eine gute Idee. Was hältst du davon, wenn wir Getränke für die Teilnehmer mitbringen, damit sie in der Pause etwas trinken können?",
+  "Nils: Ich habe eine gute Idee: Ich könnte auch Süßigkeiten und Kaffee mitbringen. Aber was können wir den Gewinnern geben? Ich glaube, es wäre besser, wenn wir dem ersten Gewinner eine Goldmedaille, dem zweiten eine Silbermedaille und dem dritten eine Bronzemedaille geben. Bist du einverstanden?",
+  "Anna: Das ist eine schöne Idee. Ich glaube, dass wir alle Punkte besprochen haben. Aber wir sollten uns wieder treffen, um alles noch einmal zu besprechen.",
+  "Nils: Dieser Plan gefällt mir gut. Du hast recht. Wir sollten uns besprechen und unsere Ideen der Kursleiterin und den anderen Freunden vorstellen. Wann sollen wir uns treffen? Hast du am Samstag Zeit?",
+  "Anna: Ja, am Samstag habe ich nach 12 Uhr Zeit. Passt es dir?",
+  "Nils: Dann machen wir das. Ja, das passt mir auch. Vielen Dank für deine Hilfe. Bis dann.",
+  "Anna: Bis dann.",
+
+
+   "4- Für Straßenkinder",
+  "Sie wollen gemeinsam Geld für Straßenkinder sammeln.",
+  "Sprechen Sie mit Ihrem Partner, welche Ideen Sie haben, und einigen Sie sich über Einzelheiten: wer, was, wann usw. machen soll.",
+  "",
+  "(1) Ich habe neulich bemerkt, dass es in unserer Stadt viele Straßenkinder gibt. Ich denke, wir sollten ihnen helfen. Wir wollen gemeinsam Geld für Straßenkinder sammeln. Hast du eine Idee?",
+  "(2) Ja, gerne können wir uns zusammen organisieren, um Geld zu sammeln, denn es gibt so viele Kinder, die keine Unterkunft haben, und das ist traurig.",
+  "(1) Am Anfang können wir ein Fest in unserem Stadtpark organisieren und Menschen einladen, zu kommen und zu spenden.",
+  "(1) Gute Idee. Und es wäre besser, wenn wir eine Anzeige in der Zeitung machen, damit viele Leute kommen und wir mehr Geld sammeln.",
+  "(2) Ich stimme dir zu. Was meinst du dazu, wenn wir auch in der Schule und an der Universität Geld sammeln?",
+  "(2) Ja, das ist eine wunderbare Idee. Meine Schwester, die an der Universität studiert, kann uns einfach helfen. Ich finde, es wäre gut, wenn wir Blätter drucken, um sie an Studenten und Schüler zu verteilen.",
+  "(1) Ich habe auch eine andere Idee: dass wir am Sonntag zur Kirche gehen und dort mit den Leuten darüber sprechen. Was sagst du dazu?",
+  "(2) Prima. Und wir können am Sonntag zur Kirche gehen. Was können wir noch machen? Wie wäre es, wenn wir ein Buffet organisieren? Wir können zum Beispiel Kuchen verkaufen und das Geld spenden.",
+  "(1) Weißt du, vielleicht ist es besser, mit einer Wohltätigkeitsorganisation zusammenzuarbeiten, damit die Menschen mit ihr kommunizieren können. Es gibt in unserer Stadt eine Kinderhilfeorganisation, mit der wir Kontakt aufnehmen können. Sie wissen, was wir brauchen.",
+  "(2) Du hast recht. Das ist das wichtigste Thema. Ich schlage auch vor, dass wir die Geschäfte in unserer Stadt um finanzielle Unterstützung bitten, damit wir den Straßenkindern helfen können.",
+  "(2) Toll. Ich kann auch mit meinem Freund zu Geschäften in andere Städte gehen und sie um Hilfe bitten.",
+  "(1) Ja, das ist eine super Idee. Meine Tante hat beim Roten Kreuz gearbeitet, sie kann einfach mit ihrem Chef organisieren.",
+  "(2) Wir haben viele gute Ideen. Wir sollen uns wieder treffen und genau sprechen. Können wir uns am Samstag treffen?",
+  "(1) Du hast recht. Wir sollen uns treffen. Samstag nach 12 Uhr sollen wir uns im Café treffen. Passt es dir?",
+  "(2) Toll. Dann machen wir das. Bis Samstag.",
+
+
+   "40- Kursraum freundlicher machen",
+  "Ihre Kursleiterin möchte den Kursraum freundlicher machen und bittet Sie um Hilfe.",
+  "Welche Vorschläge können Sie ihr machen?",
+  "Überlegen Sie gemeinsam, was Sie tun können, und denken Sie dabei auch an die Kosten und daran, wer helfen könnte.",
+  "",
+  "Anna: Hallo Nils, wie du weißt, möchte unsere Kursleiterin den Kursraum freundlicher machen. Sie bittet uns um Hilfe. Kannst du mir helfen?",
+  "Nils: Ich helfe dir gern. Allerdings müssen wir dafür gemeinsam einen Plan erstellen. Was denkst du, was sollten wir zuerst tun?",
+  "Anna: Ich habe schon einige Notizen gemacht. Ich schlage vor, dass wir unseren Kursraum dekorieren. Wir könnten schöne Bilder an die Wände hängen. Was meinst du dazu?",
+  "Nils: Ja, ich stimme dir zu. Und wie du weißt, bin ich Maler. Ich könnte schöne Gemälde an die Wände malen. Aber was brauchen wir noch für unseren Kursraum?",
+  "Anna: Das ist gut. Wir brauchen nicht nur Farben, sondern auch Dekorationen. Ich könnte diese Sachen mitbringen.",
+  "Nils: Sehr gut. Wir können auch unsere Kollegen bitten, jeder bringt eine Dekoration mit. Und was hältst du davon, wenn wir Zimmerpflanzen und Blumen kaufen? Ich kenne ein Geschäft, das Pflanzen zu günstigen Preisen verkauft.",
+  "Anna: Ich stimme dir zu, das ist eine wunderbare Idee. Ich schlage vor, dass wir das Geld von unseren Freunden sammeln, um Blumen zu kaufen.",
+  "Nils: Ja, das ist ein guter Vorschlag. Und was hältst du davon, wenn wir auch die Tür des Kursraums dekorieren? Ich kann schöne Dekorationen basteln.",
+  "Anna: Schöne Idee. Wir könnten das gemeinsam machen. Sollten wir noch etwas anderes tun?",
+  "Nils: Ja, ich habe eine Idee. Mein Bruder arbeitet als Innenarchitekt und hat ein Ingenieurbüro. Ich kann ihn fragen, ob er uns helfen kann. Er wird uns sicher gern unterstützen.",
+  "Anna: Das ist eine schöne Idee. Ich glaube, dass wir alle Punkte besprochen haben. Aber wir sollten uns wieder treffen, um alles noch einmal zu besprechen.",
+  "Nils: Dieser Plan gefällt mir auch gut. Du hast recht. Wir sollten uns besprechen. Dann müssen wir unsere Ideen der Kursleiterin und den anderen Freunden vorstellen. Wann sollen wir uns treffen? Hast du am Samstag Zeit?",
+  "Anna: Ja, am Samstag habe ich nach 12 Uhr Zeit. Passt es dir?",
+  "Nils: Dann machen wir das. Ja, das passt mir auch. Vielen Dank für deine Hilfe. Bis dann.",
+  "Anna: Bitte sehr, bis Samstag.",
+
+
+   "41- Infotag zum Thema Lernen mit Musik",
+  "Ihre Sprachschule möchte einen Infotag zum Thema Lernen mit Musik durchführen.",
+  "Sie sollen bei der Planung helfen. Überlegen Sie, was Sie tun können, und denken Sie z. B. auch an Unterrichtsbeispiele.",
+  "Planen Sie gemeinsam, was zu tun ist.",
+  "",
+  "Anna: Hallo Nils, wie du weißt, möchte unsere Sprachschule einen Infotag zum Thema Lernen mit Musik durchführen, und wir sollen bei der Planung helfen. Hast du Vorschläge?",
+  "Nils: Ja, ich weiß das. Ich freue mich darauf. Lass uns überlegen, wo wir den Infotag machen könnten. Und um wie viel Uhr sollten wir ihn durchführen? Hast du eine Idee?",
+  "Anna: Was hältst du davon, wenn wir den Infotag nächste Woche am Samstag um 12 Uhr im Kulturzentrum unserer Stadt machen? Es ist sehr groß und mit allem ausgestattet, wie Computer, Display, Tischen und Stühlen. Stimmst du mir zu?",
+  "Nils: Ich stimme dir zu, dass wir den Infotag am kommenden Samstag im Kulturzentrum stattfinden lassen. Weißt du, was wir für den Infotag noch machen könnten? Ich habe eine Idee: Mein Freund ist Musiker, er kann Gitarre spielen. Wir könnten ihn einladen. Bist du damit einverstanden?",
+  "Anna: Ja, ich bin mit dir einverstanden, er kann uns helfen. Wir können auch einen Film zeigen, der die Bedeutung von Musik für das Lernen und den Einfluss von Musik auf unseren Körper erklärt. Was denkst du darüber?",
+  "Nils: Ich stimme dir zu, das ist eine wunderbare Idee. Weißt du, wie wir die Werbung machen könnten? Was hältst du davon, wenn wir eine Anzeige in der Zeitung veröffentlichen? Hast du noch eine andere Idee?",
+  "Anna: Ich halte das für eine gute Idee. Wir können zusätzlich im Internet posten und Flyer mit Datum, Uhrzeit, Ort und Thema an Schüler, Studenten und unsere Freunde verteilen.",
+  "Nils: Wie wäre es, wenn wir Einladungskarten ausdrucken, um unsere Lehrerinnen, Lehrer und Journalisten einzuladen?",
+  "Anna: Das ist eine gute Idee. Es wäre besser, wenn die Journalisten kommen, um den Infotag zu dokumentieren.",
+  "Nils: Ja, du hast Recht. Ich denke, dass wir alle Punkte besprochen haben. Ich hoffe auch, dass wir einen guten Plan haben.",
+  "Anna: Viel Spaß, dann machen wir es so. Bis dann.",
+  "Nils: Bis dann.",
+
+
+    "42- 3-tägige Reise ans Meer",
+  "Sie möchten mit einigen Teilnehmern aus Ihrem Sprachkurs eine 3-tägige Reise ans Meer machen.",
+  "Überlegen Sie, was Sie alles dazu brauchen. Planen Sie gemeinsam den Aufenthalt der Gruppe.",
+  "",
+  "Anna: Hallo Nils, weißt du, dass wir mit unseren Freunden aus dem Sprachkurs eine 3-tägige Reise ans Meer machen wollen? Hast du einen Vorschlag?",
+  "Nils: Ja, ich weiß, und ich freue mich darauf, dass wir ans Meer reisen möchten. Lass uns überlegen, was wir machen können. Zuerst müssen wir einen Tag festlegen. Wie wäre es, wenn wir nächste Woche am Freitag reisen?",
+  "Anna: Ich finde, dass es eine gute Idee ist, am kommenden Freitag zu reisen. Ich schlage vor, dass wir mit dem Bus fahren, da der Bus bequemer und billiger ist. Was denkst du darüber?",
+  "Nils: Ich stimme dir zu. Der Bus ist billiger und schneller. Ich kann für alle Fahrkarten im Internet besorgen. Und was ist mit der Übernachtung? Wie können wir buchen?",
+  "Anna: Wir könnten in einem Hotel übernachten. Ich könnte die Zimmer im Internet reservieren.",
+  "Nils: Sehr gut, wir müssen drei Nächte buchen. Und was sollen wir mitbringen? Was hältst du davon, wenn wir zwei Zelte und ein paar Spiele kaufen?",
+  "Anna: Ich stimme dir zu, das ist eine wunderbare Idee. Wir könnten dort nicht nur Schiff fahren, sondern auch angeln.",
+  "Nils: Das ist eine gute Idee. Ich habe eine Angelrute, die kann ich mitbringen. Wir können auch schwimmen und am Abend grillen, singen und tanzen. Was denkst du darüber?",
+  "Anna: Das sind gute Ideen. Wir könnten sowohl Schach als auch einen Fußball mitnehmen. Dort könnten wir miteinander spielen. Bist du damit einverstanden?",
+  "Nils: Ich bin mit dir einverstanden.",
+  "Anna: Jetzt könnten wir unseren Freunden mitteilen, was wir besprochen haben.",
+  "Nils: Ich denke, dass sie mit unserer Planung zufrieden sein werden.",
+  "Anna: Ich denke das auch. Viel Spaß, dann machen wir es so. Bis dann.",
+  "Nils: Bis dann.",
+
+
+   "43- Eine Sportveranstaltung für Kinder",
+  "In Ihrer Stadt organisieren Sie eine Sportveranstaltung für Kinder.",
+  "Sie sollen bei der Planung helfen. Überlegen Sie, was Sie tun können.",
+  "Planen Sie gemeinsam, was Sie organisieren können.",
+  "",
+  "Anna: Hallo Nils, wie du weißt, sollen wir in unserer Stadt eine Sportveranstaltung für Kinder organisieren. Und wir sollen bei der Planung helfen. Hast du Vorschläge?",
+  "Nils: Hallo Anna, ich freue mich darauf. Lass uns überlegen, wann wir die Veranstaltung machen sollten. Ich schlage vor, dass wir sie am kommenden Samstag organisieren. Außerdem könnten wir mit den Kindern zum Spielplatz gehen. Dort gibt es nicht nur Rutschen, sondern auch Schaukeln. Die Kinder könnten viele Aktivitäten machen. Was meinst du dazu?",
+  "Anna: Ja, das ist ein guter Vorschlag. Ich finde auch, dass der Spielplatz eine gute Idee ist, da er groß ist und viele Sitzplätze, Tische und große Flächen zum Spielen hat. Aber welche Spiele können die Kinder spielen? Hast du Vorschläge?",
+  "Nils: Wir könnten Bälle mitbringen. Dann könnten die Kinder sowohl Fußball als auch Handball spielen. Was könnten wir noch machen? Hast du eine Idee?",
+  "Anna: Was denkst du davon, wenn wir Wettbewerbe zwischen den Kindern veranstalten? Wir könnten kleine Geschenke an die Gewinner verteilen.",
+  "Nils: Ich stimme dir zu, das ist eine wunderbare Idee. Weißt du, wie wir die Kinder zur Sportveranstaltung einladen könnten? Ich schlage vor, dass wir eine Werbung in der Zeitung veröffentlichen. Hast du noch eine andere Idee?",
+  "Anna: Ja, wir können auch Flyer mit Datum, Uhrzeit und Ort an Schüler, Schulen, unsere Freunde und Nachbarn verteilen.",
+  "Nils: Das ist gut. Wir könnten auch Süßigkeiten zu dieser Sportveranstaltung mitbringen. Ich könnte nicht nur Baklava, sondern auch Cupcakes mitbringen. Bist du damit einverstanden?",
+  "Anna: Ja, super Idee. Ich glaube, dass wir alle Punkte besprochen haben. Und ich hoffe auch, dass wir gut organisiert sind.",
+  "Nils: Ich denke das auch. Viel Spaß, dann machen wir es so. Bis dann.",
+  "Anna: Bis dann.",
+
+
+   "44- Ein Kulturzentrum renovieren",
+  "Ein Kulturzentrum in Ihrer Stadt muss renoviert werden, aber die Stadt hat kein Geld dafür.",
+  "Sie möchten helfen. Überlegen Sie gemeinsam, was Sie tun können.",
+  "Denken Sie beispielsweise daran, ob Sie Geld für Renovierungsfirmen sammeln oder selbst renovieren möchten und wie Sie das machen könnten.",
+  "",
+  "Anna: Hallo Nils, weißt du, dass ein Kulturzentrum in unserer Stadt renoviert werden muss? Aber die Stadt hat kein Geld dafür. Wir sollten der Stadt helfen. Wir könnten entweder Geld für eine Renovierungsfirma sammeln oder selbst renovieren. Was denkst du darüber?",
+  "Nils: Hallo Anna, ich glaube, dass es besser wäre, wenn wir Geld sammeln. Lass uns überlegen, was wir machen können. Zuerst müssen wir Werbung machen. Was hältst du davon, wenn wir im Internet posten, eine Anzeige in der Zeitung schreiben und einen Link auf Facebook und Twitter einsetzen, um die Leute zum Spenden zu bewegen?",
+  "Anna: Ich stimme dir zu, das sind wunderbare Ideen. Mein Bruder ist Ingenieur von Beruf. Er hat ein Büro und er hilft uns gern. Was meinst du dazu?",
+  "Nils: Es ist sehr nett von deinem Bruder, uns zu helfen. Aber wie können wir noch Geld sammeln? Hast du eine Idee?",
+  "Anna: Ich schlage vor, dass wir eine Musikshow auf der Straße machen könnten. Ich kenne einen Freund, der sehr gut Gitarre spielen kann. Ich rufe ihn an, er hilft uns sicher gern. Außerdem kann ich Violine spielen. Wir könnten zusammen eine schöne Musikshow anbieten. Bist du einverstanden?",
+  "Nils: Ja, ich bin mit dir einverstanden. Wir könnten auch Essen kochen und Süßigkeiten backen und sie verkaufen. Was denkst du darüber?",
+  "Anna: Schöne Idee. Wir sollten auch Flyer mit dem Link und dem Thema ausdrucken. Wir könnten sie an Leute, Universitäten, Freunde und Geschäfte verteilen. Was meinst du dazu?",
+  "Nils: Ich finde, dass das eine gute Idee ist.",
+  "Anna: Ich denke, dass wir alle Punkte besprochen haben. Ich hoffe auch, dass wir gut organisiert sind. Viel Spaß, dann machen wir es so. Bis dann.",
+  "Nils: Bis dann.",
+
+
+   "45- Helfen Freund beim Ausland einleben",
+  "Ihr Freund hat ein Stellenangebot im Ausland erhalten und Sie haben dort schon eine Weile gelebt.",
+  "Sie möchten ihm helfen, sich auf das Leben dort einzustellen. Überlegen Sie gemeinsam, was Sie tun können. Welche Vorschläge können Sie ihm machen?",
+  "",
+  "Anna: Hallo Nils, weißt du, dass unser Freund Jan ein Stellenangebot in der Türkei hat? Wir sollten ihm helfen, da wir schon lange in der Türkei gelebt haben. Hast du einen Vorschlag?",
+  "Nils: Ja, das hat er mir gesagt, und ich freue mich für ihn. Da wir dort schon gelebt haben, können wir ihm helfen. Lass uns überlegen, wo er wohnen kann. Mein Bruder lebt in Istanbul und kann uns helfen, ein Haus für ihn zu finden. Was denkst du darüber?",
+  "Anna: Ich finde, dass es eine gute Idee ist. Ich schlage vor, dass wir einen Termin mit unserem Freund Jan vereinbaren, um ihm zu empfehlen, wo er in Istanbul wohnen könnte. Außerdem sollten wir mit ihm über eine gute Bank in Istanbul sprechen. Was meinst du dazu?",
+  "Nils: Das ist ein guter Vorschlag. Wir können ihm auch die wichtigsten Restaurants und schöne Plätze zeigen.",
+  "Anna: Ich stimme dir zu, das ist eine wunderbare Idee. Wir sollten ihm auch die Sehenswürdigkeiten in Istanbul zeigen. Mein Freund wohnt in Istanbul. Ich rufe ihn an, er könnte unserem Freund Jan helfen und ihm alles zeigen. Bist du damit einverstanden?",
+  "Nils: Ja, ich bin mit dir einverstanden. Was hältst du davon, wenn wir uns mit ihm treffen, um ihm Tipps zu geben? Hast du Zeit?",
+  "Anna: Wir könnten uns entweder am Samstag um 12:00 Uhr oder am Montag um 14:00 Uhr mit ihm treffen. Was denkst du darüber?",
+  "Nils: Ja, wir können uns am Samstag um 12:00 Uhr treffen. Ich rufe ihn an, um das zu vereinbaren.",
+  "Anna: Gut. Ich glaube, dass wir alle Punkte besprochen haben. Ich hoffe auch, dass wir unserem Freund gut helfen konnten. Dann machen wir es so. Bis dann.",
+  "Nils: Bis dann.",
+
+
+   "46- Sprachkurs: eine 3-tägige Reise mit dem Fahrrad",
+  "Sie möchten mit einigen Teilnehmern aus Ihrem Sprachkurs eine 3-tägige Reise mit dem Fahrrad durch eine schöne Landschaft in Deutschland oder Ihrem Heimatland machen.",
+  "Planen Sie gemeinsam den Aufenthalt der Gruppe.",
+  "Wenn Sie aus unterschiedlichen Heimatländern kommen, einigen Sie sich bitte schnell auf ein Reiseziel.",
+  "Überlegen Sie, wie weit Sie täglich fahren möchten, was Sie dabei eventuell besichtigen können und wo und wie Sie übernachten wollen. Wie sieht das optimale Reisegepäck aus?",
+  "",
+  "Anna: Hallo Nils, wie du weißt, möchten wir mit einigen Teilnehmern aus unserem Sprachkurs eine 3-tägige Reise mit dem Fahrrad durch eine schöne Landschaft in Deutschland machen. Wir wollen bei der Planung helfen. Hast du Vorschläge?",
+  "Nils: Ja, ich weiß das, und ich freue mich darauf. Lass uns überlegen, wann wir die Reise machen könnten. Ich schlage vor, dass wir am kommenden Wochenende fahren. Weißt du, wohin wir fahren könnten? Hast du einen Vorschlag?",
+  "Anna: Ehrlich gesagt, ich kenne hier keine Orte, weil ich neu bin. Hast du eine Idee, wohin wir fahren können?",
+  "Nils: Ich schlage vor, dass wir zum Edersee fahren. Dort gibt es nicht nur den Nationalpark Kellerwald-Edersee, sondern auch viele schöne Landschaften. Was meinst du dazu?",
+  "Anna: Das ist ein guter Vorschlag. Was hältst du davon, wenn wir ein Hotel buchen? Ich kann das im Internet reservieren.",
+  "Nils: Ich finde, dass das eine gute Idee ist. Weißt du, was wir für unsere Reise brauchen? Hast du eine Idee?",
+  "Anna: Ich finde es gut, wenn jeder seine privaten Sachen mitbringt.",
+  "Nils: Ich finde das auch gut. Wir könnten dort im Restaurant essen. Ich kenne einen Freund, der ein großes Restaurant in diesem Ort hat. Wir könnten bei ihm essen. Ich rufe ihn an, er freut sich darauf. Bist du einverstanden?",
+  "Anna: Ja, ich bin mit dir einverstanden. Und wohin können wir noch fahren, da ich nicht alle Orte kenne? Hast du eine Idee?",
+  "Nils: Mein Bruder kennt diesen Ort gut. Er könnte uns helfen, damit wir alle Sehenswürdigkeiten dort besuchen können.",
+  "Anna: Super Idee, wenn dein Bruder uns hilft.",
+  "Nils: Gut. Ich glaube, dass wir alle Punkte besprochen haben. Ich hoffe auch, dass wir gut organisiert sind. Viel Spaß, dann machen wir es so. Bis dann.",
+  "Anna: Bis dann.",
+
+
+   "47- Mit einer Gruppe Studenten und Studentinnen befassen",
+  "Mein Chef hat mir mitgeteilt, dass ich mich nächste Woche mit einer Gruppe Studenten und Studentinnen befassen muss.",
+  "Sie möchten unsere Stadt besichtigen. Sie sollen ein gutes Programm gemeinsam organisieren.",
+  "",
+  "Anna: Hallo Nils, mein Chef hat mir mitgeteilt, dass ich mich nächste Woche mit einer Gruppe Studenten und Studentinnen befassen muss. Ich möchte bei der Planung helfen. Kannst du mir helfen, damit wir ein gutes Programm gemeinsam organisieren?",
+  "Nils: Gerne helfe ich dir. Ich schlage vor, dass wir nicht nur das Museum, sondern auch den Zoo unserer Stadt besuchen. Was meinst du dazu? Hast du eine andere Idee?",
+  "Anna: Ja, wir haben auch einen schönen Fluss. Wir könnten eine Bootsfahrt machen. Was denkst du darüber?",
+  "Nils: Ich stimme dir zu, das ist eine wunderbare Idee. Weißt du, wie wir mit den Studenten fahren könnten? Ich schlage vor, dass wir mit dem Bus fahren, da der Bus sowohl bequemer als auch billiger ist. Was denkst du darüber?",
+  "Anna: Es wäre besser, wenn wir einen Minibus mieten. Mein Bruder arbeitet als Fahrer in einer Busgesellschaft. Er kann uns helfen, den Minibus zu mieten. Stimmst du mir zu?",
+  "Nils: Ich stimme dir zu, wenn dein Bruder uns helfen kann. Weißt du, wo die Studenten und Studentinnen übernachten könnten? Hast du einen Vorschlag?",
+  "Anna: Ich denke, dass es besser wäre, wenn wir ein Hotel im Internet buchen, weil es dort viele günstige Angebote gibt.",
+  "Nils: Ich finde, dass das ein guter Vorschlag ist. Wir sollten nicht vergessen, dass wir mit den Studenten auch ins Kino gehen. Außerdem sollten wir in einem Restaurant essen. Ich kenne ein Restaurant, das leckeres Essen anbietet. Bist du einverstanden?",
+  "Anna: Ja, ich bin mit dir einverstanden. Wir können auch den Blumengarten besuchen. Er ist wunderschön und berühmt.",
+  "Nils: Gut. Ich glaube, dass wir alle Punkte besprochen haben. Ich hoffe auch, dass wir gut organisiert sind. Viel Spaß, dann machen wir es so. Bis dann.",
+  "Anna: Bis dann.",
+
+
+    "48- Ein Kurstreffen für ein Wochenende",
+  "Ein Jahr nach Ende des Sprachkurses wollen Sie gemeinsam ein Kurstreffen für ein Wochenende organisieren.",
+  "Das Treffen soll in der Stadt stattfinden, in der der Sprachkurs war.",
+  "Erstellen Sie ein Programm für dieses Treffen (Vormittag, Nachmittag, Abend).",
+  "Denken Sie auch an Übernachtungsmöglichkeiten und daran, wie Sie alle Kursteilnehmer finden und informieren können.",
+  "",
+  "Anna: Hallo Nils, wie du weißt, haben wir seit einem Jahr unseren Kurs beendet. Jetzt wollen wir ein Kurstreffen für ein Wochenende organisieren. Kannst du mir helfen, ein Programm für dieses Treffen zu planen?",
+  "Nils: Ja, ich möchte dir gern helfen. Lass uns überlegen, was wir machen können. Zuerst müssen wir einen Tag festlegen. Wie wäre es, wenn wir nächste Woche am Samstag um 7 Uhr nach Berlin fahren? Berlin ist eine große und schöne Stadt mit vielen Sehenswürdigkeiten.",
+  "Anna: Ich stimme dir zu, das ist eine wunderbare Idee. Die Uhrzeit passt gut. Mein Freund wohnt in Berlin, ich rufe ihn an, er könnte uns helfen. Aber weißt du, wie wir nach Berlin fahren könnten? Ich schlage vor, dass wir mit dem Bus fahren, da der Bus sowohl bequemer als auch billiger ist. Was meinst du?",
+  "Nils: Ich stimme dir zu. Mit dem Bus zu reisen ist bequemer und billiger. Ich kann für alle Fahrkarten im Internet besorgen. Aber wie können wir die Kursteilnehmer informieren? Hast du ihre Telefonnummern?",
+  "Anna: Ja, ich habe alle Telefonnummern der Kursteilnehmer, weil ich eine WhatsApp-Gruppe erstellt habe. Ich kann allen Bescheid sagen oder sie anrufen. Was sollten wir in Berlin machen? Hast du eine Idee?",
+  "Nils: Wir können Schloss Charlottenburg und das Alte Museum besuchen. Und am Abend könnten wir ins Kino gehen.",
+  "Anna: Gute Idee. Danach könnten wir im Restaurant essen. Ich kenne einen Freund, der ein großes Restaurant in Berlin hat. Wir könnten bei ihm essen. Ich rufe ihn an, um Tische zu reservieren. Bist du einverstanden?",
+  "Nils: Ja, ich bin mit dir einverstanden. Und was hältst du davon, wenn wir eine Schiffstour machen, um die Stadt zu besichtigen? Ich denke, die Tour wird wunderschön.",
+  "Anna: Ich finde, dass das eine schöne Idee ist. Weißt du, wo wir in Berlin übernachten könnten? Hast du einen Vorschlag?",
+  "Nils: Wir können im Hotel übernachten. Ich kann das im Internet buchen, weil es dort viele günstige Angebote gibt.",
+  "Anna: Gut. Ich glaube, dass wir alle Punkte besprochen haben. Jetzt können wir unseren Kursteilnehmern sagen, was wir geplant haben. Ich hoffe auch, dass wir gut organisiert sind. Viel Spaß.",
+  "Nils: Dann machen wir es so.",
+
+
+   "5- Eine Spielemesse organisieren",
+  "An einem Kulturzentrum in Ihrer Stadt soll eine Spielemesse stattfinden. Sie sollen bei der Planung helfen.",
+  "Überlegen Sie, was Sie tun können. Denken Sie beispielsweise an Informationsmaterial oder Poster.",
+  "",
+  "Nils: Hallo Anna. Hast du gehört, dass nächsten Monat in unserer Stadt eine Spielemesse stattfinden soll? Ich würde gerne teilnehmen. Möchtest du auch? Was hältst du davon?",
+  "Anna: Ja, ich bin dabei. Allerdings müssen wir dafür gemeinsam einen Plan erstellen. Was denkst du, was sollten wir zuerst tun?",
+  "Nils: Ich habe schon einige Notizen gemacht. Erste Frage: Wie sollen wir anfangen?",
+  "Anna: Weißt du, mein Bruder hat ein Geschäft. Er kann uns helfen und uns einige Spiele geben. Er hat viele verschiedene Spiele, besonders handgefertigtes Spielzeug. Er kann sie für uns aus der Türkei transportieren.",
+  "Nils: Prima, und ich stricke doch viele Puppen. Wir können sie auch verkaufen. Gestrickte Puppen sind mittlerweile sehr populär.",
+  "Anna: Was denkst du? Um einen großen Tisch zu bekommen, ich denke, wir brauchen ihn.",
+  "Nils: Ja, stimmt. Wir brauchen wirklich einen großen Tisch, auf dem alle Spielwaren liegen können. Aber hast du darüber schon nachgedacht?",
+  "Anna: Wer kann es dekorieren, um Aufmerksamkeit zu lenken? Wir könnten im Rathaus fragen, ob wir einen großen Tisch leihen können, da das Rathaus immer für große Feste viele Tische hat.",
+  "Nils: Wir können auch ein Spiel auf den Tisch legen und mit den Leuten reden. Ich glaube, das bringt die Leute leicht zu uns.",
+  "Anna: Ja, kann sein, ich stimme dir zu. Dann sollten wir über den nächsten Punkt sprechen. Was denkst du, wenn wir unsere Anzeige schreiben?",
+  "Nils: Ja, das muss sein. Wir könnten eine Anzeige in der Zeitung schreiben und sie dann an verschiedenen Plätzen aufhängen, zum Beispiel im Kindergarten, in der Schule oder im Rathaus.",
+  "Anna: Ja, ich habe eine Idee. Wir sollen die Schilder an die Wand hängen und sie im sozialen Netzwerk teilen.",
+  "Nils: Ja, das ist eine tolle Idee. Außerdem können wir kleine Geschenke für Kinder geben.",
+  "Anna: Eine tolle Idee. Wie wäre es, wenn wir auch etwas Musik und farbiges Licht einbauen? Wunderbare Idee. Welche Musik meinst du? Sie muss angemessen sein.",
+  "Nils: Ich bringe verschiedene Lieder mit. Ja, stimmt. Ich glaube, dass wir über alles gesprochen haben.",
+  "Anna: Gut, dann lass uns morgen treffen. Ich bringe Spiele von meinem Bruder mit und wir organisieren unsere Angelegenheiten.",
+  "Nils: Ich hoffe, dass wir Erfolg haben, diese Messe zu organisieren. Bis dann!",
+
+
+   "Austauschprogramm",
+  "Ihre Schule nimmt an einem Austauschprogramm mit deutschen Schülerinnen und Schülern teil.",
+  "Für ausländische Gastschüler bleiben vier Wochen in Ihrem Land.",
+  "Organisieren Sie den ganzen Aufenthalt mit Programmvorschlägen.",
+  "",
+  "Nils: Mein Chef hat mir mitgeteilt, dass ich mich nächste Woche mit einer Gruppe Studenten und Studentinnen für vier Wochen befassen muss. Kannst du mir helfen, damit wir ein Programm gemeinsam organisieren können? Was können wir tun?",
+  "Anna: Ja, wir können gemeinsam ein gutes Programm organisieren, damit die Schüler Spaß haben. Aber wir müssen wissen, wie viele Schüler es gibt, damit wir bei der Busgesellschaft einen passenden Touristenbus mieten können. Was sagst du dazu?",
+  "Nils: Ja, du hast recht. Unser Chef hat mir Bescheid gegeben, dass wir mit 12 Schülern und 15 Schülerinnen arbeiten müssen. Mein Nachbar ist Busfahrer und hat einen eigenen Bus. Ich kann mit ihm sprechen und er hilft uns.",
+  "Anna: Das ist gut. Was hältst du davon, ein Programm für die erste Woche zu machen? Vielleicht wäre es besser, wenn wir zuerst die Stadt und die großen Märkte besuchen, um die Natur des Landes kennenzulernen. Was ist dein Vorschlag für die zweite Woche?",
+  "Nils: Ich stimme dir zu, zuerst sollen die Gäste die Stadt besichtigen. In der zweiten Woche können wir das Museum und das Theater besuchen. Wir sollen auch den Blumengarten nicht vergessen. Bist du damit einverstanden?",
+  "Anna: Ja, das ist ein guter Vorschlag. Der Blumengarten ist wunderschön und berühmt. Und in der dritten Woche, wohin können wir fahren und was sollen wir machen? Wir sollen die Schüler fragen, was sie machen möchten.",
+  "Nils: Ich denke, ein Campingausflug wäre gut. Wir können auch zum Skifahren in die Alpen fahren. Und vergiss nicht, den See zu besuchen. Es wäre schön, mit dem Boot zu fahren. Wie findest du das? Und was ist dein Vorschlag für die vierte Woche?",
+  "Anna: Ja, toll. Ich glaube, es wäre schön, wenn wir in der vierten Woche zu einem Konzert gehen. Was meinst du dazu?",
+  "Nils: Das ist eine gute Idee. Nach drei Wochen brauchen sie eine Ruhewoche. Wir können das Theater und das Kino besuchen. Aber wir haben einen wichtigen Punkt vergessen: Was ist mit dem Essen?",
+  "Anna: Oh, wir haben die wichtigen Punkte vergessen. Ich kenne ein bekanntes Restaurant. Es bietet jeden Tag verschiedene Mahlzeiten. Hast du einen anderen Vorschlag?",
+  "Nils: Was hältst du davon, wenn wir sie auch ein berühmtes Restaurant des Landes besuchen lassen?",
+  "Anna: Ja, warum nicht. Wir besuchen alle Restaurants in der Stadt.",
+  "Nils: Ich glaube, dass dies gut für sie ist, um unser Essen zu probieren. Super, ich bin ganz sicher, dass unser Chef mit unserem Plan sehr zufrieden sein wird.",
+  "Anna: Ok, dann treffen wir uns nächste Woche. Tschüss.",
+
+
+    "7- Flohmarkt",
+  "Zum Frühlingsbeginn möchten Sie in Ihrem Stadtviertel einen Flohmarkt organisieren.",
+  "Sie wollen Ihre Nachbarn zur gemeinsamen Organisation einladen und den Ablauf festlegen.",
+  "Überlegen Sie, wie Sie möglichst viele Nachbarn zum Mitmachen bewegen können. Machen Sie Ihrem Partner/Ihrer Partnerin Vorschläge.",
+  "Legen Sie gemeinsam ein passendes Datum und geeignete Örtlichkeiten fest und besprechen Sie Organisationsdetails.",
+  "",
+  "Nils: Hallo Anna, wie du weißt, nächsten Monat ist Frühlingsanfang. Ich möchte in unserem Stadtviertel einen Flohmarkt organisieren. Was meinst du dazu? Wann können wir das machen und wo?",
+  "Anna: Ich möchte gerne teilnehmen. Wir können es in unserem Stadtpark machen, dort gibt es einen schönen Fluss. Aber welcher Tag ist besser? Was hältst du davon, wenn wir es am Sonntag stattfinden lassen?",
+  "Anna: Super. Sonntag haben alle Zeit. Es beginnt um 8 Uhr. Was denkst du darüber?",
+  "Nils: Ich stimme dir zu. Du hast recht, es findet um 8 Uhr statt. Aber wir müssen früher kommen, da wir viel Arbeit haben. Wir treffen uns am Samstag um 6 Uhr, bist du einverstanden? Und was ist mit der Genehmigung vom Rathaus? Kennst du jemanden, der dort arbeitet?",
+  "Anna: Ja, ich stimme dir zu. Ich kenne jemanden, mein Nachbar arbeitet zurzeit im Rathaus und er kann uns helfen. Er kann uns einfach eine Genehmigung der Gemeinde besorgen.",
+  "Nils: Super! Wir können eine Anzeige in der Zeitung machen und auch im Internet. Es wäre schön, wenn wir Flyer drucken und sie an Nachbarn und Freunde verteilen. Aber was sollen wir verkaufen? Hast du eine Idee?",
+  "Anna: Gut. Wir können alte Kleidung, einige Bücher und Spiele verkaufen. Ich denke, meine Freunde und Nachbarn haben viele alte Sachen. Was denkst du?",
+  "Nils: Wir können Fahrräder und Möbel wie Spiegel und Stühle verkaufen. Wir können ein Angebot machen, zum Beispiel: jedes Teil kostet nur 1 Euro. Was möchtest du mit dem Geld machen, das wir vom Flohmarkt sammeln?",
+  "Anna: Ja, das ist eine wunderbare Idee. Ich denke, es wäre besser, wenn wir das Geld Straßenkindern spenden. Stimmst du mir zu?",
+  "Nils: Ich hoffe, dass unser Plan erfolgreich wird. Wir haben alle Punkte besprochen. Aber wir sollen uns wieder treffen, um alles noch einmal zu besprechen.",
+  "Anna: Dieser Plan gefällt mir auch gut. Du hast recht. Wir sollten das besprechen. Dann müssen wir unsere Idee den anderen Nachbarn vorstellen. Wann sollen wir uns treffen? Hast du morgen Zeit?",
+  "Nils: Ja, morgen habe ich nach 12:00 Uhr Zeit. Passt es dir?",
+  "Anna: Dann machen wir das. Ja, das passt mir auch. Vielen Dank für deine Hilfe. Bis dann.",
+  "Nils: Bis dann!",
+
+
+   "8- Alleinerziehende Nachbarin wurde unerwartet ins Krankenhaus eingeliefert",
+  "Ihre alleinerziehende Nachbarin wurde unerwartet ins Krankenhaus eingeliefert.",
+  "Sie und Ihre Familie haben ihr versprochen, ihre Eltern zu benachrichtigen und für die erste Zeit die Betreuung ihrer beiden Kinder zu organisieren.",
+  "Überlegen Sie, wer in Ihrer Familie für welche Dienste (Kinder in die Schule bringen, kochen, einkaufen, eventuelles Übernachten ...) infrage käme und wie der zeitliche Ablauf zu organisieren ist.",
+  "",
+  "Nils: Weißt du Anna, dass unsere Nachbarin Frau Müller krank geworden ist und sie ins Krankenhaus eingeliefert wurde? Ich habe ihr versprochen, dass ich und meine Familie für die erste Zeit die Betreuung ihrer beiden Kinder organisieren. Was meinst du? Was können wir tun?",
+  "Anna: Ja, das habe ich schon gehört. Lass uns überlegen, was wir mit ihnen machen können. Da ich ein Auto habe, kann ich sie jeden Morgen zur Schule bringen und wieder abholen. Was kannst du tun?",
+  "Nils: Super. Leider soll Frau Müller drei Tage im Krankenhaus bleiben. Ich kümmere mich um das Essen. Ich kann Pizza backen und Reis mit Hähnchen kochen. Aber wer kümmert sich ums Einkaufen? Kannst du das machen?",
+  "Anna: Ja, natürlich. Ich kann einkaufen gehen, weil ich ein Auto habe.",
+  "Nils: Toll. Am Freitag kann ich den Kindern bei den Hausaufgaben helfen. Und am Nachmittag finde ich es gut, wenn wir zusammen spazieren gehen. Was meinst du?",
+  "Anna: Super. Wir können sie auf den Spielplatz bringen, damit sie spielen. Weil alle Kinder gerne spielen. Und was hältst du davon, wenn wir sie am nächsten Tag ins Schwimmbad mitnehmen?",
+  "Nils: Bestimmt, ich stimme dir zu, da wir im Sommer sind und die Kinder gerne im Wasser spielen. Und am letzten Tag können wir ins Kino oder ins Theater gehen. Was hältst du davon?",
+  "Anna: Ja, ich finde das gut. Wir können ins Kino gehen und einen Animationsfilm schauen. Ich glaube, dass die Kinder sich freuen werden.",
+  "Nils: Das finde ich toll. Ich kann das Mittagessen kochen, auf sie warten, bis sie ihre Hausaufgaben erledigt haben, und ihnen helfen.",
+  "Anna: Ja, aber die Kinder müssen früher ins Bett gehen. Ich glaube, gegen 20 Uhr wäre gut.",
+  "Anna: Ich stimme dir zu. Es wäre schön, wenn wir ihnen vor dem Schlafengehen Geschichten vorlesen. Was denkst du?",
+  "Nils: Ich lese ihnen lieber Geschichten vor, damit sie nicht das Gefühl haben, dass ihre Mutter abwesend ist. Außerdem bringe ich sie in den Park, um mit den Kindern zu spielen.",
+  "Nils: Sehr schön. Und kannst du bitte Farbstifte und einen Zeichenblock kaufen? Natürlich, sie ist alleinerziehend und wir sollten ihr helfen.",
+  "Anna: Vielen Dank für deine Hilfe.",
+  "Nils: Gern geschehen. Bis bald!",
+
+
+   "9- Geburtstag",
+  "Ein Teilnehmer aus Ihrem Sprachkurs hat am Wochenende Geburtstag.",
+  "Dazu überlegen Sie, was der Kurs dem Teilnehmer schenken und wie die Feier ablaufen könnte.",
+  "Teilen Sie Ihrem Partner/Ihrer Partnerin Ideen mit.",
+  "Entwickeln Sie dann gemeinsam Ihre Vorschläge für das Geschenk und das Programm für die Feier am Wochenende.",
+  "",
+  "Nils: Hallo Anna, ich habe gehört, dass der Geburtstag unseres Freundes Tariq nächste Woche am Samstag ist. Was denkst du, wenn wir ihn bei seiner Geburtstagsfeier überraschen?",
+  "Anna: Echt? Das freut mich, dass wir ihn überraschen können. Wir können eine Party machen und natürlich ein Geschenk schenken. Was denkst du, was können wir kaufen?",
+  "Nils: Ich finde, es ist besser, Geld von unseren Freunden zu sammeln und eine Uhr zu kaufen. Stimmst du mir zu?",
+  "Anna: Das ist eine gute Idee, Geld zu sammeln, um ein Geschenk zu kaufen. Aber wie wäre es, wenn wir auch einen Blumenstrauß und Kleidung wie Hose und Hemd kaufen? Meine Freundin arbeitet bei C&A, sie kann uns beraten und helfen. Was meinst du dazu?",
+  "Nils: Super. Das ist eine gute Idee. Aber wo sollen wir die Geburtstagsfeier machen? Was hältst du davon, wenn wir die Feier in einem Restaurant machen, weil es dort alles gibt? Also müssen wir nichts kaufen.",
+  "Anna: Im Restaurant ist gut, aber meiner Meinung nach wäre es besser, wenn wir die Geburtstagsfeier im Garten machen. Meine Wohnung ist nicht nur groß, sondern hat auch einen schönen Garten, damit wir die frische Luft genießen können.",
+  "Nils: Ich stimme dir zu. Es wäre besser, die Feier draußen in frischer Luft zu machen. Aber lass uns über das Essen nachdenken. Was denkst du, wenn wir alle bitten, Essen und Trinken mitzubringen?",
+  "Anna: Das ist ein guter Vorschlag, dass jeder etwas mitbringt. Ich kann Kuchen backen und Getränke kaufen. Bist du einverstanden? Was kannst du mitbringen?",
+  "Nils: Das ist sehr gut. Ich kann einen Salat machen und syrisches Essen kochen. Ich denke, jeder wird das Essen lieben. Wir können auch Musik hören, tanzen und genießen. Aber um wie viel Uhr sollen wir unsere Party beginnen?",
+  "Anna: Wie wäre es, wenn wir um 19 Uhr anfangen? Kannst du bitte die anderen Teilnehmer in unserem Kurs benachrichtigen?",
+  "Nils: Diese Zeit passt sehr gut. Ich werde unseren Freunden das Datum und unsere Vereinbarungen mitteilen.",
+  "Anna: Ich hoffe, dass unsere Überraschung unserem Freund Tariq gefällt.",
+  "Mohamad: Ali hat mir mitgeteilt, dass ein Freund in meinem Kurs nächsten Monat Geburtstag hat. Ich finde, er sollte eine Party machen. Hast du eine andere Idee?",
+  "Anna: Ja, ich schlage vor, dass wir die Party in der Schule machen. Was meinst du dazu?",
+  "Mohamad: Ich finde, wir sollten sie in meinem Garten machen, da ich einen großen Garten habe.",
+  "Anna: Super, und was für ein Geschenk?",
+  "Mohamad: Was sollen wir mitnehmen? Ich würde vorschlagen, dass wir eine Karte und Blumen kaufen. Hast du eine andere Idee?",
+  "Anna: Nein. Es wäre besser, wenn wir ein neues Handy, zum Beispiel ein iPhone, schenken.",
+  "Mohamad: Na ja, das wäre toll, aber leider habe ich kein Geld, da es teuer ist.",
+  "Anna: Ok, dann kaufen wir einen Blumenstrauß.",
+  "Nils: Ich hoffe, dass das Geschenk ihm gefallen wird. Wir haben alle Punkte besprochen. Aber wir sollen uns wieder treffen, um alles noch einmal zu besprechen.",
+  "Anna: Dieser Plan gefällt mir auch gut. Du hast recht. Wir sollten das besprechen. Dann müssen wir unsere Idee den anderen Freunden vorstellen. Wann sollen wir uns treffen? Hast du am Samstag Zeit?",
+  "Nils: Ja, am Samstag habe ich nach 12:00 Uhr Zeit. Passt es dir?"
+    ];
+
+    function getTodayKey() {
+      const now = new Date();
+      return now.toISOString().slice(0, 10); // YYYY-MM-DD formatında anahtar
+    }
+
+    // İstatistikleri ve son indeksi localStorage'dan yükle
+    let sentenceCount = parseInt(localStorage.getItem("sentenceCount_" + getTodayKey())) || 0;
+    let workSeconds = parseInt(localStorage.getItem("workSeconds_" + getTodayKey())) || 0;
+    // ---> YENİ: Son kalınan indeksi yükle <---
+    let savedIndex = localStorage.getItem('lastSentenceIndex');
+    if (savedIndex !== null && !isNaN(savedIndex)) {
+        currentIndex = parseInt(savedIndex);
+        // Kayıtlı indeksin geçerli aralıkta olduğundan emin ol
+        if (currentIndex >= sentences.length || currentIndex < 0) {
+            currentIndex = 0; // Geçersizse sıfırla
+        }
+    } else {
+         currentIndex = 0; // Kayıt yoksa sıfırdan başla
+    }
+    // ---> YENİ BİTİŞ <---
+
+    function updateStats() {
+      document.getElementById("sentenceCount").textContent = sentenceCount;
+      document.getElementById("workTime").textContent = Math.floor(workSeconds / 60);
+      localStorage.setItem("sentenceCount_" + getTodayKey(), sentenceCount);
+      localStorage.setItem("workSeconds_" + getTodayKey(), workSeconds);
+    }
+
+    function startStatsClock() {
+      // Sadece bir kere başlatmak için kontrol
+      if (typeof statsInterval !== 'undefined' && statsInterval) {
+        clearInterval(statsInterval);
+      }
+      statsInterval = setInterval(() => {
+        if (isSpeaking) { // Sadece konuşma aktifken süreyi artır
+             workSeconds++;
+             updateStats();
+        }
+      }, 1000);
+    }
+
+    function toggleReadingMode() {
+      isRandomMode = !isRandomMode;
+      const btn = document.getElementById("toggleModeBtn");
+      btn.textContent = isRandomMode ? "Mod: Rastgele" : "Mod: Sıralı";
+       // Mod değiştiğinde indeksi sıfırlamamak için bu satırı kaldırdık
+       // currentIndex = 0;
+       // localStorage.removeItem('lastSentenceIndex'); // Mod değişince indeksi sıfırlamak istemiyorsak bunu da kaldırırız.
+       if (!isSpeaking) { // Eğer konuşmuyorsa, gösterilen metni güncelle
+            displayCurrentTextSegment(); // Mevcut indekse göre metni gösterir
+       }
+    }
+
+    // ---> YENİ: Metni göstermek için fonksiyon <---
+    function displayCurrentTextSegment() {
+        const container = document.getElementById("currentSentence");
+        container.innerHTML = ""; // Önce temizle
+        if (!isSpeaking && !isRandomMode) {
+             // Konuşma durukken ve sıralı moddayken, mevcut indeksten itibaren göster
+             sentences.forEach((line, index) => {
+                 const p = document.createElement("p");
+                 p.textContent = line;
+                 if (index === currentIndex) {
+                     p.style.fontWeight = "bold"; // Sıradaki cümleyi vurgula
+                     p.style.color = "#007BFF";
+                 }
+                 container.appendChild(p);
+             });
+             // Vurgulanan cümleye scroll yap (opsiyonel)
+             const boldElement = container.querySelector('p[style*="bold"]');
+             if (boldElement) {
+                // setTimeout(() => boldElement.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100); // Küçük bir gecikme ekleyebiliriz
+             }
+        } else {
+             // Konuşurken veya rastgele moddayken tüm metni göster
+             container.innerHTML = sentences.map(line => "<p>" + line + "</p>").join("");
+        }
+    }
+
+    window.onload = function () {
+      updateStats();
+      startStatsClock();
+      // İlk yüklemede metni göster
+      displayCurrentTextSegment();
+    };
+
+    function speakRandomSentence() {
+      if (!isSpeaking) return;
+
+      synth.cancel(); // Önceki konuşmayı durdur
+
+      let sentenceToSpeak;
+      if (isRandomMode) {
+        sentenceToSpeak = sentences[Math.floor(Math.random() * sentences.length)];
+      } else {
+        // ---> GÜNCELLENDİ: Döngü ve index kaydetme <---
+        if (currentIndex >= sentences.length) {
+          currentIndex = 0; // Sonuna gelince başa dön
+        }
+        sentenceToSpeak = sentences[currentIndex];
+        currentIndex++; // Bir sonraki cümle için indeksi artır
+        localStorage.setItem('lastSentenceIndex', currentIndex); // Yeni indeksi kaydet
+        // ---> GÜNCELLEME BİTİŞ <---
+      }
+
+      // Boş satırları atla
+      if (!sentenceToSpeak || sentenceToSpeak.trim() === "") {
+           // Hemen bir sonrakine geçmek için timeout'u kısaltabilir veya doğrudan çağırabiliriz
+           let multiplier = parseFloat(document.getElementById('delayInput').value) || 0.1;
+           speakingLoop = setTimeout(speakRandomSentence, 50 * multiplier); // Çok kısa bekleme
+           return; // Bu boş satır için işlemi bitir
+      }
+
+
+      let utterance = new SpeechSynthesisUtterance(sentenceToSpeak);
+      utterance.lang = 'de-DE';
+      utterance.rate = 0.9; // Hızı biraz yavaşlattık
+
+      // Konuşma sırasındaki cümleyi vurgulamak için (opsiyonel)
+      const allParagraphs = document.querySelectorAll("#currentSentence p");
+      allParagraphs.forEach(p => {
+          p.style.fontWeight = "normal"; // Önceki vurguları kaldır
+          p.style.color = "inherit";
+          if (p.textContent === sentenceToSpeak) {
+              p.style.fontWeight = "bold"; // Mevcut olanı vurgula
+              p.style.color = "#4CAF50"; // Yeşil renk
+             // p.scrollIntoView({ behavior: 'smooth', block: 'center' }); // O anki cümleye odaklan
+          }
+      });
+
+      synth.speak(utterance);
+
+      sentenceCount++;
+      updateStats(); // İstatistikleri her cümleden sonra güncelle
+
+      utterance.onend = () => {
+        // Vurguyu kaldır
+        allParagraphs.forEach(p => {
+            if (p.textContent === sentenceToSpeak) {
+                p.style.fontWeight = "normal";
+                p.style.color = "inherit";
+            }
+        });
+
+        // Bekleme süresini hesapla
+        let multiplier = parseFloat(document.getElementById('delayInput').value) || 0.1;
+        // Kelime sayısına göre değil, karakter sayısına göre daha iyi olabilir
+        let charCount = sentenceToSpeak.length;
+        // let wordCount = sentenceToSpeak.trim().split(/\s+/).length; // Kelime sayısına göre
+        // let calculatedDelay = wordCount * multiplier; // Kelime başına
+        let calculatedDelay = charCount * multiplier * 0.1; // Karakter başına daha hassas ayar (çarpanı ayarla)
+
+        // Çok kısa olmasını engelle, minimum 0.5 saniye gibi
+        calculatedDelay = Math.max(calculatedDelay, 0.5);
+
+        speakingLoop = setTimeout(speakRandomSentence, calculatedDelay * 1000);
+      };
+
+       utterance.onerror = (event) => {
+            console.error("SpeechSynthesisUtterance.onerror", event);
+            // Hata olursa bir sonraki cümleye geçmeyi dene
+            if (isSpeaking) {
+                 clearTimeout(speakingLoop);
+                 speakingLoop = setTimeout(speakRandomSentence, 500); // Kısa bir süre sonra devam etmeyi dene
+            }
+       };
+    }
+
+    function toggleSpeech() {
+      const button = document.getElementById("startButton");
+
+      if (!isSpeaking) {
+        // Konuşmayı başlatırken mevcut indeksten başla
+        // (Eğer sayfa yeni yüklendiyse, localStorage'dan gelen indeks kullanılacak)
+        isSpeaking = true;
+        button.style.backgroundColor = "#db343c"; // Durdurma rengi (kırmızı)
+        button.innerHTML = '<span class="mic">🎤</span> Konuşmayı Durdur';
+        displayCurrentTextSegment(); // Konuşma başlarken tüm metni göster
+        speakRandomSentence();
+        if (!statsInterval) startStatsClock(); // Zamanlayıcıyı başlat (eğer durmuşsa)
+      } else {
+        isSpeaking = false;
+        button.style.backgroundColor = "#4CAF50"; // Başlatma rengi (yeşil)
+        button.innerHTML = '<span class="mic">🎤</span> Konuşmaya Başla';
+        synth.cancel(); // Aktif konuşmayı iptal et
+        clearTimeout(speakingLoop); // Zamanlanmış bir sonraki konuşmayı iptal et
+        // Konuşma durduğunda metni güncelle
+        displayCurrentTextSegment();
+      }
+    }
+
+    // Tarayıcı kapatılırken konuşmayı durdurma (isteğe bağlı ama iyi bir pratik)
+    window.addEventListener('beforeunload', () => {
+        if (isSpeaking) {
+            synth.cancel();
+        }
+    });
+
+  </script>
+</body>
+</html>
