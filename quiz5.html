@@ -1,0 +1,2577 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Hörverstehen Karma Çalışması (Rastgele Sıralı)</title>
+  <style>
+    /* Orijinal dosyalarınızdaki stil korunmuştur */
+    body {
+        font-family: Arial, sans-serif;
+        background: #FFF8E1;
+        margin: 0;
+        padding: 0;
+        width: 100vw;
+        height: 100vh;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        overflow: hidden;
+    }
+    .container {
+        background: #FFFBEA;
+        padding: 3vw 3vw 2vw 3vw;
+        border-radius: 18px;
+        box-shadow: 0 2px 12px #0002;
+        margin: 0;
+        width: 100vw;
+        max-width: 100vw;
+        min-width: 100vw;
+        height: 100vh;
+        max-height: 100vh;
+        min-height: 100vh;
+        position: relative;
+        overflow-y: auto;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    .page-number {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: #f3ca7b;
+        color: #7a5e1a;
+        font-size: 1.1rem; /* Total grup sayısını göstermek için küçültüldü */
+        font-weight: bold;
+        border-radius: 16px; /* Dikdörtgen yapmak için */
+        width: auto; /* Genişlik ayarlandı */
+        padding: 0 10px; /* İç boşluk */
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 1px 6px #0002;
+        border: 2px solid #e6bb5c;
+        z-index: 10;
+        user-select: none;
+    }
+    .stats-box {
+        position: absolute;
+        top: 14px;
+        left: 26px;
+        background: #fffbe7;
+        color: #8b7200;
+        border: 1.2px solid #f3ca7b;
+        border-radius: 9px;
+        box-shadow: 0 1px 6px #0001;
+        padding: 5px 9px 4px 8px;
+        font-size: 0.68rem;
+        font-weight: bold;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        min-width: 64px;
+        z-index: 10;
+        user-select: none;
+        letter-spacing: 0.4px;
+    }
+    .stats-title {
+        font-size: 0.68rem;
+        color: #bf9000;
+        font-weight: bold;
+        letter-spacing: 0.2px;
+        margin-bottom: 1px;
+    }
+    .stats-row {
+        margin-bottom: 0px;
+        font-size: 0.75rem;
+        display: flex;
+        gap: 5px;
+        align-items: center;
+    }
+    .stats-correct {
+        color: #259910;
+        font-size: 0.93rem;
+    }
+    .stats-wrong {
+        color: #b01111;
+        font-size: 0.93rem;
+    }
+    .main-title {
+        font-size: 2.2rem;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 12px;
+        letter-spacing: 1px;
+        text-transform: capitalize;
+    }
+    .test-group {
+        border: 2px solid #f3ca7b;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 25px;
+        background: #fffafa;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+    .test-title {
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: #7a5e1a;
+        margin-bottom: 10px;
+        border-bottom: 2px dashed #f3ca7b;
+        padding-bottom: 5px;
+        letter-spacing: 1px;
+    }
+    .code-box {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #444;
+        letter-spacing: 3px;
+        margin-bottom: 10px;
+        text-align: center;
+        min-height: 1.2em; /* Kutu kaymasını engellemek için min yükseklik */
+    }
+    .option, .option * {
+        text-decoration: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        user-select: none;
+    }
+    .option {
+        background: #fafafa;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        padding: 13px 12px;
+        margin: 8px 0;
+        cursor: pointer;
+        font-size: 1.0rem;
+        display: flex;
+        align-items: flex-start;
+        transition: background 0.3s, border 0.3s, color 0.3s;
+    }
+    .option.selected.correct {
+        background: #eaffea;
+        border-color: #1cb31c;
+        color: #118011;
+        font-weight: bold;
+    }
+    .option.selected.incorrect {
+        background: #ffeaea;
+        border-color: #ee2222;
+        color: #b01111;
+        font-weight: bold;
+    }
+    .option-number {
+        font-weight: bold;
+        margin-right: 10px;
+        font-size: 1.05rem;
+        flex-shrink: 0;
+    }
+    .nav-btns {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+        align-items: center;
+    }
+    .nav-btn {
+        background: #eee;
+        border: none;
+        padding: 12px 24px;
+        font-size: 1.2rem;
+        border-radius: 14px;
+        cursor: pointer;
+        transition: background 0.25s;
+        font-weight: bold;
+        box-shadow: 0 1px 5px #0001;
+        user-select: none;
+        margin: 0 4px;
+    }
+    .nav-btn:hover {
+        background: #e1e6fd;
+    }
+    .nav-btn:disabled {
+        background: #f5f5f5;
+        color: #aaa;
+        cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="page-number" id="pageNumber">1</div>
+    <div class="stats-box" id="statsBox">
+      <div class="stats-title">İstatistik</div>
+      <div class="stats-row"><span class="stats-correct">✔</span> <span id="correctCount">0</span> <span>Doğru</span></div>
+      <div class="stats-row"><span class="stats-wrong">✗</span> <span id="wrongCount">0</span> <span>Yanlış</span></div>
+      <div class="stats-row">
+        <span>%</span>
+        <span id="correctPercent">0</span>
+        <span>Doğru</span>
+        <span>/</span>
+        <span id="wrongPercent">0</span>
+        <span>Yanlış</span>
+      </div>
+    </div>
+    <div class="main-title">Hörverstehen Karma Çalışma (3'lü Grup)</div>
+    <div id="testContainer">
+      </div>
+    <div class="nav-btns">
+      <button class="nav-btn" id="prevBtn">&#8592; Geri</button>
+      <button class="nav-btn" onclick="window.location.reload()">Baştan Başla</button>
+      <button class="nav-btn" id="nextBtn">İleri &#8594;</button>
+    </div>
+  </div>
+  <script>
+    // SESLER
+    const dogruSes = new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
+    const yanlisSes = new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg");
+
+    let currentGroup = 0;
+    let totalCorrect = 0;
+    let totalWrong = 0;
+    
+    // --- quiz (3).html verileri (Teil 1) ---
+    // (Toplam 47 Test)
+    const tests1 = [
+      {
+        title: "Quiz 1 (Teil 1): ",
+        correct: [3,4,5],
+        options: [
+          "41)Viele Kunden würden für bessere Service Leistungen der Paketdienstw höhere geboren.",
+          "42)Nach dem Unfall konnten beide Schiffe ihre Fahrt nicht fortsetzen.",
+          "43)Europaweit gibt es immer weniger Vögel.",
+          "44)Die Polizei hat auf der Autobahn ein dort verbotenes Fahrzeug entdeckt.",
+          "45)Bei dem Festival konnte man Konzert an verschiedenen Orten besuchen."
+        ]
+      },
+            {
+        title: "Quiz 1 (Teil 1): ",
+        correct: [3],
+        options: [
+          "41) Die 50 Euro Noten der Deutschen Bundesbank sind jetzt fälschungssicherer.",
+          "42) Der Ärzteverband hat gefordert, dass junge Ärzte in Zukunft ein Pflichtjahr in einer Landarztpraxis absolvieren müssen.",
+          "43) Wissenschaftler der Universität Mainz sind am Projekt zur Erforschung des Planeten Mars beteiligt.",
+          "44) Der Verband Bildung und Erziehung fordert 10,000 zusätzlich lehrerstellen.",
+          "45) Die Schwarzarbeit hat im vergangenen Jahr um 15% zugenommen."
+
+        ]
+      },
+            {
+        title: "Quiz 1 (Teil 1): ",
+        correct: [1, 2],
+        options: [
+          "41)In der Europäischen Union verzeichnet man weniger jugendliche Arbeitslose.",
+          "42)Das Bundesarbeitsministerium bemüht sich um ausländische Arbeitnehmer bestimmter Berufs.",
+          "43)Die \"Lange Nacht der Musik\" findet am Odeonsplatz in München statt.",
+          "44)Im \"Tal der goldenen Mumien\" wurden bisher fast 10.000 Tote gefunden.",
+          "45)Die Gefahr schwerer Unwetter ist nun vorbei."
+        ]
+      },
+
+      {
+  title: "Quiz 1 (Teil 1): ",
+  correct: [1, 2],
+  options: [
+    "41)Die Tschechische Stadt Pilsen ist europäische Kulturhauptstadt 2015.",
+    "42)In der Nähe von St. Veit an der Glan gab es einen Autounfall mit einem Toten.",
+    "43)Den Film „Everest“ kann man schon jetzt in allen europäischen Kinos sehen.",
+    "44)Nach Gewittern wird es im Nordwesten Österreichs wieder wärmer.",
+    "45)Wassermänner haben in dieser Woche rundum Glück in Beruf, Gesundheit und Liebe."
+  ]
+},
+
+      {
+  title: "Quiz 1 (Teil 1): ",
+  correct: [1, 2],
+  options: [
+    "41)Die Tschechische Stadt Pilsen ist europäische Kulturhauptstadt 2015.",
+    "42)In der Nähe von St. Veit an der Glan gab es einen Autounfall mit einem Toten.",
+    "43)Den Film „Everest“ kann man schon jetzt in allen europäischen Kinos sehen.",
+    "44)Nach Gewittern wird es im Nordwesten Österreichs wieder wärmer.",
+    "45)Wassermänner haben in dieser Woche rundum Glück in Beruf, Gesundheit und Liebe."
+  ]
+},
+            {
+  title: "Quiz 1 (Teil 1): ",
+  correct: [1, 2],
+  options: [
+          "41) Viele Angestellte würden gern nur vier Tage pro Woche arbeiten.",
+          "42) In handwerklichen Berufen gibt es zurzeit viele freie Stellen.",
+          "43) Der Online-Kauf von Fahrzeugen gewinnt an Beliebtheit.",
+          "44) Das Tourismus-Geschäft in Deutschland kämpft dieses Jahr mit Verlusten.",
+          "45) In Düsseldorf wurden neue Bürogebäude errichtet."
+
+  ]
+},
+{
+  title: "Quiz 1 (Teil 1):  ",
+  correct: [1, 3],
+  options: [
+    "41)Die Wahlbeteiligung in Deutschland nimmt wieder zu.",
+    "42)150 Bauarbeiter müssen entlassen werden.",
+    "43)Bei der Sportveranstaltung wurden neue Bestzeiten aufgestellt.",
+    "44)Die Sicherheitslücke beim Online-Banking wurde noch nicht gefunden.",
+    "45)Kinder können in der Bücherei ihre eigenen Texte vorlesen."
+  ]
+},
+    {
+  title: "Quiz 1 (Teil 1): ",
+  correct: [1, 3],
+  options: [
+    "41)Auf einer internationalen Konferenz in Bonn wurde beschlossen, weltweit verstärkt umweltfreundliche Energien zu nutzen.",
+    "42)Die Luftfahrtgesellschaft Adler stellt wieder Mitarbeiter ein.",
+    "43)In Ulm beginnt heute der Katholikentag, ein großes christliches Laientreffen in Deutschland.",
+    "44)Die Bundesregierung hat zum Schutz jugendlicher Verbraucher eine Steuer auf alkoholhaltige Mischgetränke eingeführt.",
+    "45)In Hagen gab es ein Sprengstoffunglück."
+  ]
+},
+
+    {
+  title: "Quiz 1 (Teil 1): ",
+  correct: [1, 3],
+  options: [
+    "41)Auf einer internationalen Konferenz in Bonn wurde beschlossen, weltweit verstärkt umweltfreundliche Energien zu nutzen.",
+    "42)Die Luftfahrtgesellschaft Adler stellt wieder Mitarbeiter ein.",
+    "43)In Ulm beginnt heute der Katholikentag, ein großes christliches Laientreffen in Deutschland.",
+    "44)Die Bundesregierung hat zum Schutz jugendlicher Verbraucher eine Steuer auf alkoholhaltige Mischgetränke eingeführt.",
+    "45)In Hagen gab es ein Sprengstoffunglück."
+  ]
+},
+      
+      {
+        title: "Quiz 1 (Teil 1): ",
+        correct: [1,4],
+        options: [
+          "41)Es ist nicht sicher, ob es erneut zu diesem Problem kommen kann.",
+          "42)Hamburgs Politiker befürworteten den Bau des Einkaufszentrums nicht.",
+          "43)Zwischen Frankreich und Deutschland wurde ein neuer Hochgeschwindigkeits genommen.",
+          "44)Die Produkte von TipTop sind in Deutschland nicht mehr so gefragt.",
+          "45)Ingrid Thieme wird sich an der kommenden WM beteiligen."
+        ]
+      },
+       {
+        title: "Quiz 1 (Teil 1): ",
+        correct: [1,4],
+        options: [
+          "41)Es ist unklar, ob das Problem noch einmal auf treten kann.",
+          "42)Hamburgs Politiker befürworteten den Bau des Einkaufszentrums nicht.",
+          "43)Zwischen Frankreich und Deutschland wurde ein neuer Hochgeschwindigkeits genommen.",
+          "44)Die Produkte von TipTop sind in Deutschland nicht mehr so gefragt.",
+          "45)Ingrid Thieme wird sich an der kommenden WM beteiligen."
+        ]
+      },
+            {
+        title: "Quiz 1 (Teil 1): ",
+        correct: [1, 4],
+        options: [
+          "41)Wegen Unwetterschäden wurden Urlauber in einer Notunterkunft untergebracht.",
+          "42)Sämtliche Waren der Firma Mirella wurden aus den Läden entfernt.",
+          "43)Das Arbeitsplatzangebot in der Bundesrepublik hat einen Tiefstand erreicht.",
+          "44)Am 21. Mai ist der Besuch der Sonderausstellung kostenlos.",
+          "45)Entlaufene Tiere verursachten einen Unfall auf der Autobahn."
+        ]
+      },
+
+         {
+  title: "Quiz 1 (Teil 1): ",
+  correct: [1, 4],
+  options: [
+    "41)Experten aus Bankenwelt und Wirtschaft sehen die Konjunkturentwicklung negativ.",
+    "42)Die Bundesregierung hat sich erneut gegen die Förderung von Eliteuniversitäten entschieden.",
+    "43)Beim Filmfestival in Cannes hat nach elf Jahren wieder ein deutscher Film den ersten Preis gewonnen.",
+    "44)Das Internationale Olympische Komitee trifft sich in Lausanne, um über den Austragungsort für die Olympischen Spiele 2012 zu beraten.",
+    "45)In Hessen gibt es ein Überangebot an Lehrstellen."
+  ]
+},
+
+         {
+  title: "Quiz 1 (Teil 1): ",
+  correct: [1, 4],
+  options: [
+    "41)Experten aus Bankenwelt und Wirtschaft sehen die Konjunkturentwicklung negativ.",
+    "42)Die Bundesregierung hat sich erneut gegen die Förderung von Eliteuniversitäten entschieden.",
+    "43)Beim Filmfestival in Cannes hat nach elf Jahren wieder ein deutscher Film den ersten Preis gewonnen.",
+    "44)Das Internationale Olympische Komitee trifft sich in Lausanne, um über den Austragungsort für die Olympischen Spiele 2012 zu beraten.",
+    "45)In Hessen gibt es ein Überangebot an Lehrstellen."
+  ]
+},
+
+               {
+        title: "Quiz 1 (Teil 1): ",
+        correct: [1, 5],
+        options: [
+          "41)Kunden der Fluggesellschaft DL äußern Unzufriedenheit.",
+          "42)Die Preise von Süßwaren wurden dieses Jahr gesenkt, um Käufer zurückzugewinnen.",
+          "43)Die Sonnenstürme hatten keine negativen Auswirkungen.",
+          "44)Einer der Kandidaten konnte die Mehrheit der Zuschauer auf seine Seite bringen.",
+          "45)Das Tiefdruckgebiet \"Helena\" kann morgen im Südwesten Deutschlands Verkehrsprobleme verursachen."
+        ]
+      },
+{
+  title: "Quiz 1 (Teil 1): ",
+  correct: [1, 5],
+  options: [
+    "41)Nach dem Erdbeben meldeten viele Bürger Schäden bei Polizei und Feuerwehr.",
+    "42)Eltern müssen sich neuerdings über den Impfschutz für ihre Kinder beraten lassen.",
+    "43)Verkehrsbehinderungen drohen in den nächsten Wochen besonders samstags und sonntags.",
+    "44)Pipelines tragen maßgeblich zur Umweltverschmutzung in Schleswig-Holstein bei.",
+    "45)Anfang nächster Woche ist mit einer erhöhten Ozonbelastung zu rechnen."
+  ]
+},
+          {
+  title: "Quiz 1 (Teil 1):",
+  correct: [1, 5],
+  options: [
+          "41) Die Verwendung des Bio-Siegels ist streng geregelt.",
+          "42) Die EU-Agrarminister vertreten unterschiedliche Positionen.",
+          "43) Der S-Bahn-Betrieb in Berlin verlief störungsfrei.",
+          "44) Neue Regelungen zur Gasförderung wurden beschlossen.",
+          "45) Die EU-Kommission kritisiert die Stickstoffdioxid-Werte in deutschen Städten."
+
+  ]
+},
+
+    {
+  title: "Quiz 1 (Teil 1): ",
+  correct: [1, 5],
+  options: [
+    "41)die Fluggeselschaft DL fligt z. B Rostok nicht mehr an.",
+    "42)Süßwaren warden dieses Jahr angeboten, um Käufer zurückzugewinnen.",
+    "43)Die Sonnenstürme hatten keine negativen Auswirkungen.",
+    "44)Einer der kandidaten konnte die Mehrheit der Zuschauer für sich gewinnen.",
+    "45)Das Tiefdruckgebiet \"Helena\" kann morgen im SüdWesten Deutschlands Verkehrsprobleme verursachen."
+  ]
+},
+         
+
+
+{
+  title: "Quiz 1 (Teil 1): ",
+  correct: [2, 3],
+  options: [
+    "41)Die Deutsche Lufthansa hat ihre Führungsposition verloren.",
+    "42)Ein Bonner Sportverein zeigt der Öffentlichkeit sein Angebot.",
+    "43)Die Rahmenbedingungen in deutschen Pflegeheimen bedürfen dringend einer Änderung.",
+    "44)Durch moderne Wärmedämmung könnten die Heizkosten deutlich reduziert werden.",
+    "45)Das Nationale Olympische Komitee hat die Dopingsperre für Tom Sanders aufgehoben."
+  ]
+},
+
+      {
+  "title": "Quiz 1 (Teil 1): ",
+  "correct": [2, 3],
+  "options": [
+    "41) Deutsche Lufthansa hat ihre Führungsposition verloren.",
+    "42) Ein Bonner Sportverein zeigt der Öffentlichkeit sein Angebot.",
+    "43) Die Situation im Pflegesektor ist es noch nicht verbessert.",
+    "44) Durch moderne Wärmedämmung konnten die Heizkosten deutlich reduziert werden.",
+    "45) Das Nationale Olympische Komitee hat die Dopingsperre für Tom Sanders aufgehoben."
+  ]
+},
+      {
+  title: "Quiz 1 (Teil 1): ",
+  correct: [2, 3],
+  options: [
+    "41) Die Wetterlage in den Alpen wird sich in den nächsten Tagen verbessern.",
+    "42) Die Fans des FC neustadt waren von dem Sieg ihrer Mannschaft überrascht.",
+    "43 )Erzieherinnen verlangen eine bessere Bezahlung.",
+    "44) Im Berliner Zoo gibt eine große Pandafamilie.",
+    "45) Die Zahl der Deutschland Urlauber ist rückläufig."
+  ]
+},
+
+      
+
+{
+  title: "Quiz 1 (",
+  correct: [2, 4],
+  options: [
+    "41) Der Bierkonsum steigt um 10%.",
+    "42) Deutsche Einkommen liegen im europäischen Vergleich nur im Mittelfeld.",
+    "43) Es ist ein Ende des Bahnstreiks in Sicht.",
+    "44) Es wird Gewalt von Fußballfans auch in Deutschland befürchtet.",
+    "45) Die leopoldina soll internationale Akademie werden."
+  ]
+},
+{
+  title: "Quiz 1 (Teil 1):",
+  correct: [2, 4],
+  options: [
+    "41) Der Verbrauch von Bier steigt um 10 %",
+    "42) Deutsche Einkommen liegen im europäischen Vergleich nur im Mittelfeld.",
+    "43) Es ist ein Ende des Bahnstreiks in Sicht.",
+    "44) Man befürchtet auch in Deutschland Gewalt von Fußballfans.",
+    "45) Die Leopoldina eine internationale Akademie werden."
+  ]
+},
+{
+  title: "Quiz 1 (Teil 1):",
+  correct: [2, 4],
+  options: [
+    "41) Die Quote der Hochschulabsolventen in Deutschland ist auf den internationalen Durchschnittswert von 32% angestiegen.",
+    "42) Berufspendler kritisieren unnötige Wartezeiten und Kosten der täglichen Fahrten.",
+    "43) Der Deutsche Bauernverband ist mit den diesjährigen Ernteerträgen im Allgemeinen zufrieden.",
+    "44) Das Deutsche Filmmuseum möchte die Besucherzahlen in Zukunft erhöhen.",
+    "45) Die Laufrouten des Mainzer Gutenberg-Marathons führt traditionell nach Wiesbaden."
+  ]
+ 
+},
+      {
+  title: "Quiz 1 (Teil 1):",
+  correct: [2, 4],
+  options: [
+          "41) Die ÖBB wollen ihre Kooperation mit den Schweizer Bundesbahnen (SBB) ausbauen.",
+          "42) Aufgrund eines Unfalls kam es zu einem Großaufgebot von Einsatzwägen.",
+          "43) Baden bereitet den Antrag für die Aufnahme als 'Kleine historische Stadt' vor.",
+          "44) Bei der Sportveranstaltung 'Stilecht' sind Fahrräder aller Arten vertreten.",
+          "45) In den nächsten Wochen sind österreichweit starke Niederschläge zu erwarten."
+
+  ]
+ 
+},
+  
+      {
+  title: "Quiz 1 (Teil 1): ",
+  correct: [2, 4],
+  options: [
+          "41) In Zukunft wird es schwieriger sein, Bauvorhaben des Bundes – wie Autobahnen oder Schienenwege zu verhindern.",
+          "42) Eine weitere Verlängerung der Lebensarbeitszeit würde keine ernsthaften sozialen Probleme verursachen.",
+          "43) Der auf der Nordsee in Seenot geratene Fischkutter ist inzwischen gefunden worden.",
+          "44) Das Bundesfamilienministerium betrachtet den Ausbau der Familienpolitik als abgeschlossen.",
+          "45) Für Kinder, die sich im Kindergarten beim Spielen verletzen, haftet nicht automatisch die Einrichtung."
+
+
+  ]
+ 
+},
+            {
+  title: "Quiz 1 (Teil 1): ",
+  correct: [2, 4],
+  options: [
+          "41) Spektakulärer Drogenfund: Polizei entdeckt Kokain auf einem Frachtschiff.",
+          "42) Bauern warnen: Zu viel Umweltschutz gefährdet die Existenz vieler Bauernhöfe.",
+          "43) Verschiedene Verkehrsverbände einigen sich mit der Automobilindustrie auf ein Tempolimit.",
+          "44) Deutliche Unterschiede bei den Gehältern zwischen ost- und westdeutschen Bundesländern.",
+          "45) Ein Raucher hat einen Brand in einem mehrstöckigen Wohnhaus verursacht."
+
+
+
+  ]
+ 
+},
+                  {
+  title: "Quiz 1 (Teil 1): ",
+  correct: [2, 4],
+  options: [
+          "41) Die Waldbrände in Südkalifornien sind noch nicht unter Kontrolle.",
+          "42) Nach Ansicht mancher Politiker führt eine Reduzierung der Arbeitszeit unweigerlich zu einem Verlust an Wohlstand.",
+          "43) Deutschland und Frankreich wollen ihre wirtschaftliche Zusammenarbeit verbessern.",
+          "44) In verschiedenen Berufszweigen sind noch Lehrstellen frei.",
+          "45) Die DDR-Sportlerin Katja Kaiser erhielt vom Nationalen Olympischen Komitee Schmerzensgeld."
+
+
+
+
+  ]
+ 
+},
+            {
+  title: "Quiz 1 (Teil 1): ",
+  correct: [2, 5],
+  options: [
+          "41) Laut einer Studie wurden seit Jahresbeginn in Deutschland und China deutlich mehr Autos verkauft.",
+          "42) An den deutschen Meeresküsten soll in Zukunft mehr Windkraft produziert werden.",
+          "43) Jede Polizeidienststelle kann ab sofort selbst entscheiden, welche Tätowierungen ihre Bewerberinnen und Bewerber haben dürfen.",
+          "44) Durch Luftverschmutzung und Ascheregen sind im Osten Australiens zahlreiche Tiere ums Leben gekommen.",
+          "45) Ein aufmerksamer Nachbar verhindert den geplanten Einbruch in ein Wohnhaus."
+
+
+  ]
+ 
+},
+      
+            {
+        title: "Quiz 1 (Teil 1): ",
+  correct: [3, 4],
+  options: [
+          "41) Um Tickets zu gewinnen, muss man wissen, wann die Veranstaltung ist.",
+          "42) In nur 11 Tagen spielte der Film 'Jurassic World' außerhalb der USA mehr als 700 Millionen Dollar ein.",
+          "43) In Kärnten kann es aufgrund von starkem Gegenverkehr zu Verzögerungen kommen.",
+          "44) Aufgrund einer Kaltfront sinkt die Schneefallgrenze entlang der Alpennordseite knapp unter 2000 m herab.",
+          "45) Mit Frankreich gegen Kanada steht das erste Viertelfinale der Frauenfußball-WM fest."
+
+  ]
+},
+       {
+        title: "Quiz 1 (Teil 1): ",
+  correct: [3, 5],
+  options: [
+          "41) Die Piloten der Lufthansa kämpfen für eine bessere Bezahlung.",
+          "42) Das Gesundheitsministerium empfiehlt allen Bürgern eine Grippeimpfung.",
+          "43) Immer mehr Menschen besuchen den Tag des offenen Denkmals.",
+          "44) Die Mehrheit der deutschen Arbeitnehmer würde auch im Ausland arbeiten.",
+          "45) Bei den Fußballspielen gab es keinen Sieger."
+  ]
+},
+
+            {
+  title: "Quiz 1 (Teil 1): ",
+  correct: [3, 5],
+  options: [
+    "41) Bayern und Nordrhein-Westfalen erhalten zukünftig jedes Jahr 2,3 Milliarden Euro für den Bau neuer Autobahnen.",
+    "42) Wegen hoher Minustemperaturen findet in ganz Russland kein Unterricht statt.",
+    "42) Bei einer Studentenparty in Frankreich gibt es Tote und Verletzte.",
+    "44) Das Bundesfinanzministerium hat im letzten Jahr die Steuern gesenkt.",
+    "45) Die Regierung plant eine Änderung bei der Führerschein-Probezeit."
+  ]
+},
+            {
+  title: "Quiz 1 (Teil 1):   ",
+  correct: [3, 5],
+  options: [
+    "41) Bei den Europawahlen haben die Linksparteien deutlich zugelegt.",
+    "42) Die Tarifverhandlungen zwischen Arbeitgebern und Arbeitnehmern in der Chemiebranche sind gescheitert.",
+    "43) Der Benzinpreis hat sich aufgrund internationaler Einflussfaktoren erhöht.",
+    "44) Die Rechtschreibreform in den deutschsprachigen Ländern wird abermals überarbeitet.",
+    "45) Bei einem S-Bahn-Unglück in München gab es zahlreiche Verletzte und einen hohen Sachschaden."
+  ]
+},
+
+      {
+  title: "Quiz 1 (Teil 1):",
+  correct: [4, 5],
+  options: [
+    "41) Auf der Insel Bali wurden neue Maßnahmen zur Müllentsorgung beschlossen.",
+    "42) In Nordfrankreich wird nach einem entlaufenen Panther gesucht.",
+    "43) Die Mietervereinigung rät Mieterinnen und Mietern, die Betriebskosten nicht zu bezahlen.",
+    "44) Der Sekthersteller hat die Pläne für sein Bauvorhaben geändert.",
+    "45) Die Löscharbeiten sind noch nicht abgeschlossen."
+  ]
+},
+      {
+  title: "Quiz 1 (Teil 1):  ",
+  correct: [1, 2, 3],
+  options: [
+    "41) München wurde wieder zur Stadt mit der höchsten Lebensqualität in Deutschland gewählt.",
+    "42) In Frankfurt haben Manager darüber diskutiert, was Unternehmen tun müssen, um zukünftig weiterhin erfolgreich zu sein.",
+    "43) Nach Worten des Ministers fördert mobiles Arbeiten das Wirtschaftswachstum und die Produktivität.",
+    "44) Da es im Sommer in Katar zu heiß ist, sind die europäischen Fußballclubs mit der Entscheidung der Fifa, die WM 2022 im Winter austragen zu lassen, zufrieden.",
+    "45) Das Wetter bleibt in den nächsten Tagen kühl und unbeständig."
+  ]
+},
+      {
+      title: "Quiz 1 (Teil 1): ",
+  correct: [1, 2, 3],
+  options: [
+          "41) Laut BILD AM SONNTAG können in Zukunft nur Mieter, aber nicht Vermieter bestimmte Mietverträge schneller kündigen.",
+          "42) In bestimmten Bundesländern sollen Wohnhäuser abgerissen werden, weil sie unbewohnt sind.",
+          "43) Sowohl die Waldbrände als auch die Hitzewelle in Griechenland sind zu Ende.",
+          "44) In Kanada mussten die Bergungsarbeiten nach einem Tornado wegen erneuter Unwetterwarnungen eingestellt werden.",
+          "45) Bei einem Fährunglück in der Nähe von Gibraltar gab es nur Sachschaden."
+
+  ]
+},
+      {
+  title: "Quiz 1 (Teil 1): ",
+  correct: [1, 2, 4],
+  options: [
+    "41) Die Zahl der Arbeitslosen in Deutschland hat sich im Mai verringert.",
+    "42) Mexiko und Russland wollen ihre Zusammenarbeit in den Bereichen Wirtschaft und Finanzen weiter vertiefen.",
+    "43) Der deutsche Einzelhandel ist mit den Ergebnissen des Sommerschlussverkaufs sehr zufrieden.",
+    "44) Der Präsident der Weltbank äußerte sich besorgt über die Entwicklungshilfe für die so genannte 'Dritte Welt'.",
+    "45) Bei einer Explosion im Erich-Kästner-Kinderdorf starben vier Jugendliche."
+  ]
+},
+
+
+
+{
+  title: "Quiz 1 (Teil 1): ",
+  correct: [1, 2, 5],
+  options: [
+    "41) Das Schladminger Skirennen fällt wieder aus.",
+    "42) Mehr Mädchen als Jungen leisten als pflegende Kinder und Jugendliche Betreuungsarbeit in den Familien.",
+    "43) Ein Grazer Wohnhaus brannte bei einem Großbrand komplett aus.",
+    "44) Alle bei Australien gestrandeten Wale sind verendet.",
+    "45) Insgesamt bleibt es mild."
+  ]
+},
+
+      {
+  "title": "Quiz 1 (Teil 1): ",
+  "correct": [1, 2, 5],
+  "options": [
+    "41) Die Bundesländer sollen in Zukunft Geld für alternative Energien bekommen.",
+    "42) Wenn man im Internet etwa kaufen möchte, sollte man seine Identität nachweisen müssen.",
+    "43) Bei einem Überfall wurde ein Schiff gezwungen, Richtung Küste zu fahren.",
+    "44) Laut Tourismus Minister soll man einen Geparden Urlaub auf Gran Carina absagen.",
+    "45) Es ist der Zeit noch nicht entschieden, wie lange der Streck dauern soll."
+  ]
+},
+
+      {
+  title: "Quiz 1 (Teil 1):",
+  correct: [1, 2, 5],
+  options: [
+    "41) Ein deutsches Schiff ist am Südpol eingefroren, aber Menschen kamen nicht zu Schaden.",
+    "42) Die Firma Brain International ist in wirtschaftliche Schwierigkeiten geraten.",
+    "43) Die Europäische Union will Gesetze zur Kontrolle sozialer Netzwerke erlassen.",
+    "44) Mit einem neuen Gesetz wollen die österreichischen Banken Sparkonten wieder attraktiver machen.",
+    "45) Nach den Bürgermeisterwahlen in Bensheim bleibt die CDU weiterhin an der Regierung."
+  ]
+},
+          {
+  title: "Quiz 1 (Teil 1): ",
+  correct: [1, 3, 4],
+  options: [
+          "41) Der Bau des höchsten Gebäudes der Welt in Dubai hat eine Milliarde Dollar gekostet.",
+          "42) Nach der Aussage der Bundesbank wirkt sich die abkühlende US-Konjunktur auffallend auf die deutsche Industrie aus.",
+          "43) Die niedersächsischen Grünen haben vor, viel Geld in die Bereiche Klimaschutz und Bildung zu stecken.",
+          "44) Die Freiburger FC hat das Finale verloren.",
+          "45) Am Nachmittag herrscht Windstille und die Temperaturen steigen im Norden und Nordosten auf 2 bis 7 Grad, im Westen und Südwesten auf 6 bis 11 Grad."
+
+
+  ]
+},
+              {
+  title: "Quiz 1 (Teil 1): ",
+  correct: [1, 3, 4],
+  options: [
+          "41) Die Sprecherin möchte allein leben und machen können, was sie will.",
+          "42) Der Sprecher wohnt mit seiner Partnerin in einer großen Wohnung.",
+          "43) Die Sprecherin ist verheiratet und hat zwei Kinder.",
+          "44) Der Sprecher ist geschieden und lebt mit seiner Tochter bei einer anderen Familie.",
+          "45) Die Sprecherin wollte nie viele Kinder haben."
+
+  ]
+},
+      {
+  title: "Quiz 1 (Teil 1):  ",
+  correct: [1, 3, 5],
+  options: [
+    "Bei den Europawahlen haben die CDU und CSU fast die Hälfte aller Stimmen erhalten.",
+    "Die Tarifverhandlungen zwischen Arbeitgebern und Arbeitnehmern in der Chemiebranche sind gescheitert.",
+    "Der Benzinpreis hat sich aufgrund internationaler Einflussfaktoren erhöht.",
+    "Die Rechtschreibreform in den deutschsprachigen Ländern wird abermals überarbeitet.",
+    "Bei einem S-Bahn-Unglück in München gab es zahlreiche Verletzte und einen hohen Sachschaden."
+  ]
+},
+          {
+  title: "Quiz 1 (Teil 1):",
+  correct: [1, 3, 5],
+  options: [
+          "41) Ein Treffen bei der Integrationsbeauftragten soll dazu beitragen, die Integration von Migrantinnen und Migranten zu verbessern.",
+          "42) In Teilen von Karlsruhe gab es am Mittwochabend vierzig Minuten lang keinen Strom.",
+          "43) Untersuchung zum Essverhalten der Deutschen zeigt: Viele haben Gewichtsprobleme.",
+          "44) Chinas Polizei hilft Unwetteropfern.",
+          "45) Später Bestattungsritus für Mahatma Gandhi."
+
+  ]
+},
+
+
+{
+  title: "Quiz 1 (Teil 1): ",
+  correct: [1, 4, 5],
+  options: [
+    "41) Laut Statistischem Bundesamt müssen junge Leute mit fehlenden Berufserfahrungen häufig ein zeitlich begrenztes Arbeitsverhältnis eingehen.",
+    "42) Auf der Autobahn Richtung Stuttgart kam es zum Unfall, weil das Tempolimit überschritten wurde.",
+    "43) Die chinesische Botschaft in München wählte die Namen für die zwei Pandabären aus.",
+    "44) Sowohl Asien als auch Europa tragen zur Verschmutzung der Meere durch Plastikmüll bei.",
+    "45) Das neuartige Ampelsystem zur Verbesserung der Sicherheit von Fußgängern befindet sich aktuell in der Testphase."
+  ]
+},
+  
+{
+  title: "Quiz 1 (Teil 1): ",
+  correct: [2, 3, 5],
+  options: [
+    "41) Die Stadt Friedrichsberg lädt zu einer Preisverleihung ein.",
+    "42) Die Alte brücke ist zum Jahresbeginn wieder befahrbar.",
+    "43) Der Wanderer wurde verarztet und in Sicherheit gebracht.",
+    "44) In dem Unternehmen kommt es zu Kündigungen.",
+    "45) Man kann nach einer Registrierung an einem Gruppenlauf teilnehmen."
+  ]
+},
+
+      {
+  title: "Quiz 1 (Teil 1):",
+  correct: [2, 3, 5],
+  options: [
+    "41) Wetter lang in den Alpen",
+    "42) Die Fans, die das Spiel unterstützten, waren überrascht und überrascht",
+    "43) Eine Familie von Pandas kommt im Park an",
+    "44) Urlaub in Deutschland und weniger Kosten",
+    "45) Erzieherinnen verlangen bessere Bezahlung"
+  ]
+},
+      
+{
+  title: "Quiz 1 (Teil 1): ",
+  correct: [3, 4, 5],
+  options: [
+    "41) Frau Jürgens tritt wegen Streitigkeiten zurück.",
+    "42) Die Filme werden in den Kinos der Stadt gezeigt.",
+    "43) Der öffentliche Nahverkehr funktioniert noch nicht störungsfrei.",
+    "44) Wildes Camping ist im In- und Ausland nur bedingt zugelassen.",
+    "45) Die Temperaturen steigen in den nächsten Tagen an."
+  ]
+},
+                        {
+        title: "Quiz 1 (Teil 1): ",
+        correct: [1,2,4,5],
+        options: [
+          "41) Innenstädte werden immer weniger interessant.",
+          "42) Für die Polizei in Berlin gab es einen schwierigen Fall.",
+          "43) Der Düsseldorfer Flughafen möchte bald neue Flugziele anbieten.",
+          "44) Musiker gaben ein Konzert für einen guten Zweck.",
+          "45) Deutsche Wintersportler sind bei den Olympischen Spielen erfolgreich."
+
+        ]
+      },
+                              {
+        title: "Quiz 1 (Teil 1):",
+        correct: [1,2,4,5],
+        options: [
+          "41) Erdbeere.",
+          "42) Erdbeere.",
+          "43) ..........",
+          "44) Erdbeere",
+          "45) Erdbeere."
+
+        ]
+      },
+    ];
+
+    // --- quiz2 (6).html verileri (Teil 2) ---
+    // (Toplam 51 Test)
+    const tests2 = [
+      {
+        title: "Quiz 2 (Teil 2): ",
+        correct: [1,3,4,8,9,10], // 46=1, 47=2, 48=3, 49=4, 50=5, 51=6, 52=7, 53=8, 54=9, 55=10
+        options: [
+          "46. Der Berufseinstieg ist in anderen Ländern nicht leicht.",
+          "47. Carina ist ihr Beruf wichtiger als ihr Privatleben.",
+          "48. Carina hat sich der Agentur mit einem Film präsentiert.",
+          "49. Carina musste für einen Film ihr Gewicht stark verändern.",
+          "50. Carina macht lieber gefühlvolle Filme als Action-Filme.",
+          "51. Wegen der vielen Fehlstunden hatte Carina Probleme mit dem Direktor der Schule.",
+          "52. Carinas Eltern haben ihre Tochter von Anfang an unterstützt.",
+          "53. Carina finde den Wechsel zwischen Schule und Drehterminen nicht leicht.",
+          "54. Bei Dialogen darf man auch selbst etwas erfinden.",
+          "55. Carina empfiehlt, sich andere Schauspieler im Theater und in Filmen anzusehen."
+        ]
+      },
+      {
+        title: "Quiz 2 (Teil 2): ",
+        correct: [1,3,4,8,9,10], 
+        options: [
+          "46) Der Berufseinstieg ist in anderen Ländern nicht leicht.",
+          "47) Carina ist ihr Beruf wichtiger als ihr Privatleben.",
+          "48) Carina hat den Agentur mit einem Videofilm Interesse geweckt.",
+          "49) Carina hat für einen Film ein Dait gemacht.",
+          "50) Carina macht lieber gefühlvolle Filme als Action-Filme.",
+          "51) Wegen der vielen Fehlstunden hatte Carina Probleme mit dem Direktor der Schule.",
+          "52) Carinas Eltern haben ihre Tochter von Anfang an unterstützt.",
+          "53) Carina findet den Wechsel zwischen Schule und Drehterminen schwierig.",
+          "54) B  i Dialogen darf man auch selbst etwas erfinden.",
+          "55) Carina empfiehlt, sich andere Schauspieler im Theater und in Filmen anzuschauen."
+  ]
+},
+{
+        title: "Quiz 2 (Teil 2): ",
+        correct: [1,4,6,7,8], 
+        options: [
+         "46) Frau Schenk hat kurze blondierte Haar.",
+         "47) Angie ist der Künstlername von Frau Schenk.",
+         "48) Frau Schenk lebt seit etwas mehr als zwei Jahren in Bayer.",
+         "49) Der Interview hat keine guten Erinnerungen an seine Aufenthalte in Jugendherberge.",
+         "50) Auch in der modernen Jugendherberge von Frau Schenk gibt es Schlafraum mit mehr als zehn Bette.",
+         "51) Nur bei Schullassen achtet man auf Geschlechtertrennung in den Schlafräume.",
+         "52) Das Angebot an Speisen werden auf die Wünsche der Gäste zugeschnitten.",
+         "53) Schüler aus ländlichen Regionen sind meist unproblematische Gäste.",
+         "54) Das Reiten zählt zu dem Sportprogramm der Jugendherberge.",
+         "55) Frau Schenk muss für ihre Dienstwohnung 800€ bezahle."
+  ]
+},
+{
+        title: "Quiz 2 (Teil 2): ",
+        correct: [1,4,6,7,8], 
+        options: [
+         "46) Frau Schenk hat kurze blondierte Haar.",
+         "47) Angie ist der Künstlername von Frau Schenk.",
+         "48) Frau Schenk lebt seit etwas mehr als zwei Jahren in Bayer.",
+         "49) Der Interview hat keine guten Erinnerungen an seine Aufenthalte in Jugendherberge.",
+         "50) A uch in der modernen Jugendherberge von Frau Schenk gibt es Schlafraum mit mehr als zehn Bette.",
+         "51) Mädchen und jungen müssen in verschiedenen Schlafräumen schlafen.",
+         "52) In der Jugendherberge wird das Essen den Wünschen der Gästegruppen angepasst.",
+         "53) Schüler aus ländlichen Regionen sind in der Regel anständig.",
+         "54) Das Reiten zählt zu dem Sportprogramm der Jugendherberge.",
+        "55) Frau Schenk muss für ihre Dienstwohnung 800€ bezahle."
+  ]
+},
+
+      {
+  title: "Quiz 2 (Teil 2): ",
+  correct: [2,5,8,9,10], // doğru şıklar: 47,50,53,54,55 (senin sisteme göre)
+  options: [
+    "46- Herr Karimov hat vor sechs Jahren die Internetplattform ZEITPLAN gegründet.",
+    "47- Die Mitglieder bekommen für ihre Hilfe ein Stunden Guthaben.",
+    "48- Herr Karimov hatte ein eigenes Handwerksunternehmen.",
+    "49- Nach dem Umzug aufs Land, war er auf die Hilfe der Nachbarn angewiesen.",
+    "50- Manchmal erwarten Mitglieder keine Gegenleistung für ihre Arbeit.",
+    "51- Meistens brauchen alleinstehende Frauen Herrn Karimovs Hilfe.",
+    "52- Viele Menschen sehen im ZEITPLAN eine Konkurrenz zu Handwerksbetrieben.",
+    "53- Herr Karimov erledigt nicht so gerne Büroarbeit.",
+    "54- Wer sich bei der Nachbarschaftshilfe einbringen möchte, muss sich persönlich vorstellen.",
+    "55- Herr Karimov brauchte vorübergehend einen Chauffeur."
+  ]
+},
+{
+  title: "Quiz 2 (Teil 2): ",
+  correct: [2, 3, 5, 6, 8, 10],
+  options: [
+    "46 Nadine Wagner ist gerade erst von ihrer Weltreise zurückgekehrt.",
+    "47 Sie hatte vor der Weltreise einige Zweifel und Bedenken.",
+    "48 Die Journalistin ist während ihrer Reise auch geflogen.",
+    "49 Sie hat für dieses Abenteuer ihre Stelle gekündigt.",
+    "50 Ihre Freunde waren unterschiedlicher Meinung über ihre Vorhaben.",
+    "51 In Tadschikistan hat sie eine Zeit lang andere Motorradfahrer begleitet.",
+    "52 Sie hat auf der Reise ihr ganzes Erspartes aufgebraucht.",
+    "53 Nadine Wagner hat auf der Reise gelegentlich gearbeitet.",
+    "54 Sie hat am meisten ihre eigene Wohnung vermisst.",
+    "55 Nach ihrer Rückkehr musste sie nicht lange nach einer neuen Arbeit suchen."
+  ]
+},
+{
+  title: "Quiz 2 (Teil 2): ",
+  correct: [3, 4, 7],
+  options: [
+    "46 Die Zahl der deutschen Mallorca-Urlaub hat nur leicht abgenommen.",
+    "47 Nach Professor Kirsch achten die Deutschen bei der Wahl ihrer Urlaubsreisen nicht besonders auf die kosten.",
+    "48 Einige Einheimisch in Mallorca haben begonnen, sich gegen das Vordringen der deutschen Sprache zu wehren.",
+    "49 In Mallorca wird der Staat wegen der Umweltbelasungen zu Kasse bitten.",
+    "50 Viele Deutsche haben jetzt Rumänien und Ungarn als Reiseziel entdeckt.",
+    "51 Pfessor Kirsch weist auf günstige Angebote für Golfspieler am Plattensee hin.",
+    "52 Bulgarien hat sich als Urlaubsland sehr positiv entwickelt.",
+    "53 Viele Westdeutsche meiden Bulgarien, weil die Einreisemodalitäten abschreckend sind.",
+    "54 Seit Ende der neunziger Jahre geben die Deutschen mehr Geld für den Urlaub aus.",
+    "55 Durch die Vielzahl aktiver Senioren entsteht eine höhere Nachlrage nach Abenteuerreisen in ferne Länder."
+  ]
+},
+{
+  title: "Quiz 2 (Teil 2): ",
+  correct: [3, 4, 7],
+  options: [
+    "46 Die Zahl der deutschen Mallorca-Urlaub hat nur leicht abgenommen.",
+    "47 Nach Professor Kirsch achten die Deutschen bei der Wahl ihrer Urlaubsreisen nicht besonders auf die kosten.",
+    "48 Einige Einheimisch in Mallorca haben begonnen, sich gegen das Vordringen der deutschen Sprache zu wehren.",
+    "49 Für den Einbruch des Tourismus auf Mallorca sind verschiedene Faktoren verantwortlich.",
+    "50 Viele Deutsche haben jetzt Rumänien und Ungarn als Reiseziel entdeckt.",
+    "51 Pfessor Kirsch weist auf günstige Angebote für Golfspieler am Plattensee hin.",
+    "52 Bulgarien hat sich als Urlaubsland sehr positiv entwickelt.",
+    "53 Viele Westdeutsche meiden Bulgarien, weil die Einreisemodalitäten abschreckend sind.",
+    "54 Seit Ende der neunziger Jahre geben die Deutschen mehr Geld für den Urlaub aus.",
+    "55 Durch die Vielzahl aktiver Senioren entsteht eine höhere Nachlrage nach Abenteuerreisen in ferne Länder."
+  ]
+},
+
+{
+  title: "Quiz 2 (Teil 2): ",
+  correct: [1, 3, 4, 5, 8],
+  options: [
+    "46- Julia hatte an einem Schüleraustausch kein Interesse.",
+    "47- Die Lehrer in Julias Schule weigerten sich, mit dem Austauschschüler Englisch zu sprechen.",
+    "48- Frankreich ist als Aufenthaltsland bei Au-pairs nicht sehr gefragt.",
+    "49- Jula hatte auch darüber nachgedacht, in die Schweiz zu fahren.",
+    "50- Julia empfiehlt, mit der Gastfamilie einen Vertrag zu schließen.",
+    "51- Zu Beginn der Au-pair-Bewegung schickten Familien ihre Kinder zum Sprachunterricht in die Schweiz.",
+    "52- Julia ist der Meinung, dass die Vermittlungskosten zu hoch sind.",
+    "53- Julia verbrachte mit den Kindern auch Zeit in Paris.",
+    "54- Es gab am Anfang Momente, in denen sich Julia der Gastfamilie nicht zugehörig fühlte.",
+    "55- Julia lernt im Sprachkurs mehr Französisch als durch den Kontakt mit der Gastfamilie."
+  ]
+},
+{
+  title: "Quiz 2 (Teil 2): ",
+  correct: [2, 9, 10],
+  options: [
+    "46) Professor Steiner ist heute gar nicht mehr nervös, wenn er moderieren muss.",
+    "47) Steiner möchte, dass die Studierenden das Gelernte auch in der Praxis anwenden können.",
+    "48) Steiners Hobby ist es, experimentelle Filme zu machen.",
+    "49) Journalisten sollten heute auf einzelne Medien spezialisiert sein.",
+    "50) Nach Steiners Ansicht ist der Berufswunsch Sportjournalist heutzutage unrealistisch.",
+    "51) Journalisten sollten Lust haben, etwas zu entdecken.",
+    "52) Steiner musste wegen einer Verletzung mit dem Fußballspielen aufhören.",
+    "53) Steiner hat während seines Journalistik-Studiums für das ZDF Fußballspiele kommentiert.",
+    "54) Steiner ist wichtig, als Moderator den Sportlern gegenüber neutral zu bleiben.",
+    "55) Steiner rät Abiturienten dazu, verschiedene berufliche Möglichkeiten zu testen."
+  ]
+},
+
+      {
+  title: "Quiz 2 (Teil 2): ",
+  correct: [2, 9, 10],
+  options: [
+    "46) Professor Steiner ist heute gar nicht mehr nervös, wenn er moderieren muss.",
+    "47) Steiner vermittelt den Studierenden nicht nur theoretisches Wissen, sondern fordert auch, dass es praktisch angewendet wird.",
+    "48) Steiners Hobby ist es, experimentelle Filme zu machen.",
+    "49) Journalisten sollten heute auf einzelne Medien spezialisiert sein.",
+    "50) Sport-Journalist zu werden, ist nach Steiners Ansicht heute fast ausgeschlossen.",
+    "51) Journalisten sollten möglichst viele Informationen an die Öffentlichkeit weitergeben.",
+    "52) Steiner musste wegen einer Verletzung mit dem Fußballspielen aufhören.",
+    "53) Steiner hat während seines Journalistik-Studiums für das ZDF Fußballspiele moderiert.",
+    "54) Steiner ist es wichtig, als Moderator den Sportlern gegenüber neutral zu bleiben.",
+    "55) Steiner rät Abiturienten dazu, verschiedene berufliche Möglichkeiten zu testen." ]
+},
+
+            {
+  title: "Quiz 2 (Teil 2): ",
+  correct: [2, 3, 4, 6, 8, 10],
+  options: [
+          "46) Vanessa versucht, so viele Orte wie möglich zu besuchen..",
+          "47) Mit den Arbeitsbedingungen in der Werbeagentur war Vanessa unzufrieden.",
+          "48) Wenn Vanessa unter Menschen ist, schadet das manchmal ihrer Konzentration.",
+          "49) Die Sicherheit, die eine feste Stelle bietet, bedeutet Vanessa nicht viel.",
+          "50) Vanessa ist sich sicher, dass sie nie mehr als Angestellte arbeiten möchte.",
+          "51) Dass sie immer wieder neue Auftraggeber suchen muss, hat für Vanessa auch Vorteile.",
+          "52) Vanessas Eltern würden auch gerne öfter verreisen.",
+          "53) Es fiel Vanessa leicht, sich von persönlichen Gegenständen zu trennen.",
+          "54) Vanessa glaubt, dass man in Zukunft in mehr Berufen ortsunabhängig arbeiten kann.",
+          "55) Auch wer ortsunabhängig arbeitet, sollte nicht zu oft den Ort wechseln."
+
+
+  ]
+},
+
+
+{
+  title: "Quiz 2 (Teil 2): ",
+  correct: [1, 3, 4, 8],
+  options: [
+    "46- Für die Autorin Suza Hotop ist Schreiben Freude und Anstrengung zugleich.",
+    "47- Suza begann im Alter von zwölf jahren mit ihrem Buch Jenseits von Zaram.",
+    "48- Am Anfang dachte Suza nicht daran, ihre Geschichte zu veröffentlichen.",
+    "49- Zuerst Stellte Suza Auszüge ihrer Geschichte ins Internet.",
+    "50- Begeisterte Nutzer stellten den Kontakt zu einem Verlag her.",
+    "51- Suza beschreibt bewusst Personen aus ihrem eigenen Umfeld.",
+    "52- Die Autorin plant im Vorfeld genau, was in der Geschichte passieren wird.",
+    "53- Suza folgt beim Schreiben keinen besonderen Vorbildern.",
+    "54- Die junge Frau gab während des Radiointerviews eine Leseprobe.",
+    "55- Suza braucht immer Ruhe, um schreiben zu können."
+  ]
+},
+{
+  title: "Quiz 2 (Teil 2):",
+  correct: [1, 3, 4, 7, 8],
+  options: [
+    "46- ür die Autorin Suza Hotop ist Schreiben Freude und Anstrengung zugleich.",
+    "47- Suza begann im Alter von zwölf jahren mit ihrem Buch Jenseits von Zaram.",
+    "48- Am Anfang dachte Suza nicht daran, ihre Geschichte zu veröffentlichen.",
+    "49- Zuerst stellte Suza Auszüge ihrer Geschichte ins Internet.",
+    "50- Begeisterte Nutzer stellten den Kontakt zu einem Verlag her.",
+    "51- Suza beschreibt bewusst Personen aus ihrer meignen Umfeld.",
+    "52- Die Autorin plant nicht ganz genau, was in der Geschichte passieren wird.",
+    "53- Suza folgt beim Schreiben keinen besonderen Vorbildern.",
+    "54- Die junge Frau gab während des Radiointerviews eine Leseprobe.",
+    "55- Suza braucht immer Ruhe, um schreiben zu können."
+  ]
+},
+
+{
+  title: "Quiz 2 (Teil 2): ",
+  correct: [1, 3, 4, 8, 9],
+  options: [
+    "46- In dem Restaurant gab es einen Wasserschaden.",
+    "47- Anton Laurito ist bei seinen Großeltern aufgewachsen.",
+    "48- Im Haus der Großeltern lebten auch andere Kinder.",
+    "49- Der Stress störte den Studiogast während der Ausbildung nicht.",
+    "50- Bei neuen Mitarbeitern legt Anton Laurito am meisten Wert auf viel Erfahrung.",
+    "51- Aussehen und Geschmack der Speisen haben für den Koch den gleichen Stellenwert.",
+    "52- In der Essschule können Kinder kochen lernen.",
+    "53- Anton Laurito lehnt Fastfood nicht grundsätzlich ab.",
+    "54- Der Koch hat eine gesunde Einstellung zum Thema Wettbewerb.",
+    "55- Zuhause probiert er gerne komplizierte Gerichte aus."
+  ]
+},
+{
+  title: "Quiz 2 (Teil 2): ",
+  correct: [1, 4, 6, 7, 8],
+  options: [
+    "46- Frau Schenk hat kurze blondierte Haar.",
+    "47- Angie ist der Künstlername von Frau Schenk.",
+    "48- Frau Schenk lebt seit etwas mehr als zwei Jahren in Bayer.",
+    "49- Der Interview hat keine guten Erinnerungen an seine Aufenthalte in Jugendherberge.",
+    "50- Auch in der modernen Jugendherberge von Frau Schenk gibt es Schlafraum mit mehr als zehn Bette.",
+    "51- Nur bei Schullassen achtet man auf Geschlechtstrennung in den Schlafräume.",
+    "52- Das Angebot an Speisen werden auf die Wünsche der Gäste zugeschnitten.",
+    "53- Schüler aus ländlichen Regionen sind meist unproblematische Gäste.",
+    "54- Das Reiten zählt zu dem Sportprogramm der Jugendherberge.",
+    "55- Frau Schenk muss für ihre Dienstwohnung 800€ bezahle."
+  ]
+},
+{
+  title: "Quiz 2 (Teil 2): ",
+  correct: [3, 4, 8, 9, 10],
+  options: [
+    "46- Herr Gasser und Frau Janke haben zusammen Urlaub im Geiberg gemacht.",
+    "47- Josef Gasser ist ein gebürtiger Tiroler.",
+    "48- Die Bergbauern können kaum von verkauf ihrer Produkte leben.",
+    "49- Auch heute werden die steilen Hänge noch manuell bearbeitet.",
+    "50- Josef Gasser findet dass man die Bergkandschaft sich selbst über lassen sollte.",
+    "51- Eva Janke begeistert sich immer noch für Flugreisen.",
+    "52- Ihren ersten Einsatz auf der Alm hat.",
+    "53- für frau Janke ist der Erholungswert trotz der Anstrengung sehr hoch.",
+    "54- Alm helferinin und helfer können viel Fältige Aufgaben übernehmen.",
+    "55- über die Dauer des Aufenthalt kann man Frei entscheiden."
+  ]
+},
+{
+  "title": "Quiz 2 (Teil 2): ",
+  "correct": [2, 4, 5, 8, 10],
+  "options": [
+    "46 Markus ist schon während des Studiums an eine amerikanische Universität gegangen.",
+    "47 Markus wollte in einem besonders erfolgreichen Team mitarbeiten.",
+    "48 Um eine Stelle in einer amerikanischen Forschergruppe zu bekommen, muss man viel Glück haben.",
+    "49 Markus befindet sich zwischen Ausbildung und Beruf.",
+    "50 Das Studium in Bonn hat Markus sehr gut auf den Auslandsaufenthalt vorbereitet.",
+    "51 Markus hatte nach der Ankunft in den USA sehr viele Schwierigkeiten.",
+    "52 Markus ist nach wie vor sehr in der fremden Umgebung.",
+    "53 Markus ist mit den Arbeitsbedingungen zufrieden.",
+    "54 Markus befürwortet es nicht, dass sich Studenten in der USA früh auf ihre zukünftige Beruf festlegen müssen.",
+    "55 Für Markus ist Vorteil, dass er in Deutschland die Referat und Vortrag halten müsste."
+  ]
+},
+{
+  "title": "Quiz 2 (Teil 2): ",
+  "correct": [2, 4, 5, 8, 10],
+  "options": [
+    "46) Markus ist schon während des Studiums an eine amerikanische Universität gegangen.",
+    "47) Markus wollte in einem besonders erfolgreichen Team mitarbeiten.",
+    "48) Um eine Stelle in einer amerikanischen Forschergruppe zu bekommen, muss man viel Glück haben.",
+    "49) Markus befindet sich zwischen Ausbildung und Beruf.",
+    "50) Markus profitiert in Amerika von Erfahrung, die während Studium sammelt.",
+    "51) Markus hatte nach der Ankunft in den USA sehr viele Schwierigkeiten.",
+    "52) Markus ist immer noch sehr nervös in der fremden Umgebung.",
+    "53) Markus ist mit den Arbeitsbedingungen zufrieden.",
+    "54) Markus befürwortet es nicht, dass sich Studenten in der USA früh auf ihre zukünftige Berufe festlegen müssen.",
+    "55) Für Markus ist vorteil dass er in Deutschland viele Referate und Vorträge halten musste."
+  ]
+},
+
+{
+  title: "Quiz 2 (Teil 2): ",
+  correct: [2, 3, 5, 8, 9],
+  options: [
+    "46- Roland Wünschmann Spielt selbst bei Viktoria Köln Fußball.",
+    "47- Viktoria Köln spielt seit Beginn der Saison in einer höheren Liga.",
+    "48- Die meisten Spieler der Mannschaft haben schon in der letzten Saison bei Viktoria Köln gespielt.",
+    "49- Neuzugänge kommen bei Viktoria Köln meist aus ganz unterschiedlichen Mannschaften.",
+    "50- Die Mannschaft von Viktoria Köln möchte in dieser Saison neue Spieltaktiken ausprobieren.",
+    "51- Roland Wünschmann wagt die Prognose, dass in dieser Saison der 1. FC Mönchengladbach Meister wird.",
+    "52- Roland Wünschmann empfindet sein Ehrenamt oft als Bealstung.",
+    "53- Roland Wünschmann Frau engagiert sich für denselben Verein.",
+    "54- Herr Wünschmann und der Vereinsvorstand sind meisten einer Meinung.",
+    "55- Roland Wünschmann hofft auf Verbesserungen in der Nachwuchsförderung."
+  ]
+},
+{
+  title: "Quiz 2 (Teil 2): ",
+  correct: [2, 3, 4, 7, 9, 10],
+  options: [
+    "46- Roland wünschmann arbeitet Vollzeit als Fußballtrainer bei Viktoria Köln.",
+    "47- Viktoria Köln möchte nicht nur gegen Mannschaften aus der Verbandsliga spielen.",
+    "48- Zu Beginn dieser Saison hat ein Spieler Viktoria Köln verlassen.",
+    "49- Neue Spieler kommen bei Viktoria Köln immer aus der eigenen Jugendmannschaft.",
+    "50- Die Mannschaft von Viktoria Köln hat Schwächen in der Abwehr.",
+    "51- Roland wünschmann wagt die Prognose, dass dieser Saison der 1 FC Mönchengladbach Meister wird.",
+    "52- Roland wünschmann kann seinen Beruf und sein Ehrenamt als Fußballtrainer Problems miteinander vereinbaren.",
+    "53 Auch die Frau von Ronald wünschmann engagiert sich im Fußball.",
+    "54- Der vereinsvorstand schätzt Herrn wünschmann Arbeit.",
+    "55- Roland wünschmann ist mit bisherigen Nachwuchsförderung des Vereins zufrieden."
+  ]
+},
+{
+  title: "Quiz 2 (Teil 2): ",
+  correct: [3, 4, 7, 9],
+  options: [
+    "46- Roland wünschmann spielt selbst bei Viktoria Köln Fußball.",
+    "47- Viktoria Köln möchte am Ende der Spielsaison aufsteigen.",
+    "48- Zu Beginn dieser Saison hat ein Spieler Viktoria Köln verlassen.",
+    "49- Neue Spieler kommen bei Viktoria Köln immer aus der eigenen Jugendmannschaft.",
+    "50- Die Mannschaft von Viktoria Köln hat Schwächen in der Abwehr.",
+    "51- Roland wünschmann wagt die Prognose, dass dieser Saison der 1 FC Mönchengladbach Meister wird.",
+    "52- Roland wünschmann kann seinen Beruf und sein Ehrenamt als Fußballtrainer miteinander vereinbaren.",
+    "53- uch die Frau von Ronald wünschmann engagiert sich im Fußball.",
+    "54- Der vereinsvorstand schätzt Herrn wünschmann Arbeit.",
+    "55- Roland wünschmann ist mit bisherigen Nachwuchsförderung des Vereins noch nicht voll zufrieden."
+  ]
+},
+{
+  "title": "Quiz 2 (Teil 2): ",
+  "correct": [1, 6, 7, 8],
+  "options": [
+    "46) Der Hauptpreis des Gewinnspiels ist ein rund vierwöchiger Urlaub in Spanien.",
+    "47) Sie können in der Sendung auch schöne Bildbände über verschiedene Länder gewinnen.",
+    "48) Thomas Schilp vertritt einen großen Wohnmobilhändler.",
+    "49) Für das Wohnmobil Camper 500F benötigt man einen Zusatzführerschein.",
+    "50) Wohnmobile für Reisen in Europa sollte man erst am Urlaubsort mieten.",
+    "51) Reisende mit Wohnmobilen schätzen ihre Unabhängigkeit.",
+    "52) Auf Luxus muss man im Wohnwagen auch heute nicht verzichten.",
+    "53) Wer den Urlaub mit dem Wohnmobil erst einmal ausprobieren will, sollte ein gebrauchtes Fahrzeug kaufen.",
+    "54) Deutsche zahlen für ein Wohnmobil durchschnittlich 200.000 Euro.",
+    "55) Der Mietpreis für ein Wohnmobil hängt von der Jahreszeit ab."
+  ]
+},
+
+{
+  "title": "Quiz 2 (Teil 2): ",
+  "correct": [3, 4, 10],
+  "options": [
+    "46) Herr Scherer wird an seinem Arbeitsplatz interviewt.",
+    "47) Herr Scherer probt jede Woche zweimal mit dem Kirchenchor.",
+    "48) Herr Scherer hat wechselnde Arbeitszeiten.",
+    "49) Verspätungen gehen häufig auf das Konto undiszipliniert Fahrgäste.",
+    "50) Herr Scherer und seine Kollegen verkaufen keine Fahrscheine mehr.",
+    "51) Alkoholisierten Fahrgäste verursachen zunehmend Probleme.",
+    "52) Die Verkehrsbetriebe haben ein eigenes Schwimmbad.",
+    "53) Herr Scherer hat bei der Bundeswehr eine Ausbildung zum Automechaniker gemacht.",
+    "54) Herr Scherer hat bei der Post 15 Jahre in Nachtschicht gearbeitet.",
+    "55) Die Klimatisierung der Busse ist bei hohen Temperaturen nicht ausreichend."
+  ]
+},
+
+{
+  "title": "Quiz 2 (Teil 2):",
+  "correct": [1, 2, 3, 5, 6, 7, 9],
+  "options": [
+    "46) Frau Edler arbeitete früher für die Verkehrsbetriebe Leipzig.",
+    "47) Zum ersten Mal wurde sie in Frankfurt mit dem Problem der Straßenkinder konfrontiert.",
+    "48) Zu Anfang kümmerte sie sich um obdachlose Erwachsene.",
+    "49) Sie hat den Straßenkindern immer Geld gegeben.",
+    "50) Die Kinder (Kids) wollten, nach Meinung von Frau Edler, Zigaretten kaufen.",
+    "51) Sie hat mit den Kindern in leer stehenden Häusern übernachtet.",
+    "52) Die Kolleginnen hatten anfangs kein Verständnis für ihr Engagement.",
+    "53) Die Zahl der Kinder, die an den Weihnachtsfeiern teilnehmen, ist seit 1990 stark gesunken.",
+    "54) Sie sammelt noch heute bei den früheren Kollegen Geld für die Straßenkinder.",
+    "55) Mit einer Büchse herumzulaufen, ist ihr manchmal peinlich."
+  ]
+},
+
+{
+  "title": "Quiz 2 (Teil 2): ",
+  "correct": [1, 2, 5, 7, 10],
+  "options": [
+          "46) Mirjam Pressier freut sich, in Kürze die Doktorwürde der Universität Groningen zu erhalten.",
+          "47) Sie arbeitet auch als Übersetzerin.",
+          "48) Sie hat als Erste Anne Frank ins Deutsche übersetzt.",
+          "49) Sie macht jedes Jahr Urlaub in einem Ferienhaus bei Venedig.",
+          "50) Wenn Sie an ihre Kindheit denkt, denkt sie an den Krieg.",
+          "51) Der Kontakt zu ihren Pflegeeltern war sehr gut.",
+          "52) Ihre Werke haben oft biographische Züge.",
+          "53) Ihre erste Lektüre war ein Roman, der in Petersburg spielt.",
+          "54) Als Kind las sie immer im Keller des Hauses.",
+          "55) Ihre Pflegemutter wollte nicht, dass sie Tagebuch schreibt."
+
+  ]
+},
+      {
+  "title": "Quiz 2 (Teil 2): ",
+  "correct": [1, 2, 3, 5, 7, 10],
+  "options": [
+    "46) Mirjam Pressler freut sich, in Kürze die Doktorwürde der Universität Groningen zu erhalten.",
+    "47) Sie arbeitet auch als Übersetzerin.",
+    "48) Sie hat über Anne Frank gearbeitet.",
+    "49) Sie macht jedes Jahr Urlaub in einem Ferienhaus bei Venedig.",
+    "50) Wenn sie an ihre Kindheit denkt, denkt sie an den Krieg.",
+    "51) Der Kontakt zu ihren Pflegeeltern war sehr gut.",
+    "52) Ihre Werke haben oft biografische Züge.",
+    "53) Ihr erste Lektüre war ein Roman, der in Petersburg spielt.",
+    "54) Als Kind las sie immer im Keller des Hauses.",
+    "55) Ihre Pflegemutter wollte nicht, dass sie Tagebuch schreibt."
+  ]
+},
+
+{
+  "title": "Quiz 2 (Teil 2):",
+  "correct": [1, 2, 3, 4, 6, 8, 9],
+  "options": [
+    "46) Zu Beginn der Sendung hatte der Reporter ein exklusives Frühstücksrezept erwartet.",
+    "47) Ole hat sich vor 17 Jahren selbstständig gemacht.",
+    "48) Davor hatte er eine Lehre als Koch absolviert.",
+    "49) Er bevorzugt Gerichte ohne Fleisch.",
+    "50) Ole sieht wie ein Punker aus.",
+    "51) Er kocht für Musiker, die auf Tournee sind.",
+    "52) Zuletzt hat er für die Band „Die Prinzen“ gekocht.",
+    "53) Ole nimmt eine komplette Kücheneinrichtung mit auf Tournee.",
+    "54) Er macht sich über den Sender lustig, weil der Reporter bei englischen Wörtern nachfragt.",
+    "55) Die Musiker müssen immer essen, was auf den Tisch kommt."
+  ]
+},
+      {
+  "title": "Quiz 2 (Teil 2): ",
+  "correct": [3, 5, 7, 8, 10],
+  "options": [
+          "46) Die TU Dresden ist eine kleine Universität.",
+          "47) An der TU Dresden kann man nur technische Fächer studieren.",
+          "48) Ältere Studierende kümmern sich um neue Studierende.",
+          "49) Man erreicht die Neustadt nicht mit öffentlichen Verkehrsmitteln.",
+          "50) Jens ist nicht sicher, ob er nach dem Studium einen interessanten Job bekommt.",
+          "51) Studienanfänger können noch zwischen Bachelor und Diplom wählen.",
+          "52) Mit dem Semesterticket dürfen Studierende öffentliche Verkehrsmitteln in Dresden nützen.",
+          "53) Für Studienanfänger gibt es die Möglichkeit bestimmte Grundkenntnisse aufzufrischen.",
+          "54) Im Studium gibt es keine Gruppenarbeit.",
+          "55) An der TU Dresden kann man auch außergewöhnliche Sportarten treiben."
+
+  ]
+},
+
+{
+  "title": "Quiz 2 (Teil 2):",
+  "correct": [1, 2, 3, 6, 7, 8, 9, 10],
+  "options": [
+    "46) Fast 11500 Kinder leben nicht bei ihren leiblichen Eltern.",
+    "47) Früher wurden Fälle von Gewalt in der Familie oft nicht bekannt.",
+    "48) Kinder werden nicht sofort von ihren Familien getrennt.",
+    "49) Materielle Unterstützung wie Elektrogeräte kann keine Hilfe sein.",
+    "50) Die Nachmittagsbetreuung für die ältesten Kinder ist kostenlos.",
+    "51) In Skandinavien gibt es eine bessere Familienvorsorge.",
+    "52) Früher lernte man Erziehung an Modellsituationen in der Großfamilie.",
+    "53) Der Kontakt zwischen Kindern und leiblichen Eltern wird möglichst erhalten.",
+    "54) Es gibt spezielle WGs für Jugendliche, die nicht bei ihren Eltern leben.",
+    "55) Herr Blaschitz bittet die Hörer um Unterstützung."
+  ]
+},
+
+{
+  "title": "Quiz 2 (Teil 2):",
+  "correct": [3, 6, 9],
+  "options": [
+    "46) Das ist ein Interview mit dem Restaurant „Bicycle“.",
+    "47) Gert Kronheim ist der alleinige Gründer von Bicycle.",
+    "48) Bicycle bietet Arbeitsplätze für junge Leute, die schon länger arbeitslos sind.",
+    "49) Bicycle gibt es schon seit 1926.",
+    "50) Anlass für die Gründung von Bicycle war die steigende Arbeitslosigkeit Anfang der 80er Jahre.",
+    "51) Gert Kronheimer findet, dass das Fahrrad für junge Leute interessant ist.",
+    "52) Das Fahrrad ist heute leider sehr unpopulär geworden.",
+    "53) Bei Bicycle kann man nur Vollzeit arbeiten.",
+    "54) Bei Bicycle werden im Jahr ungefähr 10000 Fahrräder repariert.",
+    "55) Sibylle Hartung ist nur eine Assistentin und keine Expertin für technische Fragen."
+  ]
+},
+
+{
+  "title": "Quiz 2 (Teil 2): ",
+  "correct": [2, 4, 5, 8, 9],
+  "options": [
+    "46) Die Radiosendung stellt wöchentlich Leute aus ganz Deutschland vor.",
+    "47) Eva Küpper läuft im Training wenigstens einmal pro Woche auch über die Marathondistanz.",
+    "48) Ihren Job als Bankangestellte würde Eva Küpper gerne kündigen.",
+    "49) Nach der Ausbildung hat Eva Küpper ihren Lebensstil radikal verändert.",
+    "50) Eva Küpper kommt ursprünglich aus München.",
+    "51) Eva Küpper gefallen Dauerläufe in der Stadt genauso gut wie in den Bergen.",
+    "52) Während eines Ultramarathons wechselt Eva Küpper die Laufschuhe dreimal.",
+    "53) Die spezielle Uhr ist für Eva Küpper nicht nur im Training, sondern auch im Wettkampf wichtig.",
+    "54) Solange der Körper gesund ist, will Eva Küpper weiterhin Ultramarathons laufen.",
+    "55) Nach dem Berlin Marathon kann Eva Küpper dem Lauf-Club offiziell beitreten."
+  ]
+},
+
+{
+  "title": "Quiz 2 (Teil 2): ",
+  "correct": [3, 4, 5, 7, 8],
+  "options": [
+    "46) Weniger als zehn Prozent der Fehltage am Arbeitsplatz sind auf psychische Erkrankungen zurückzuführen.",
+    "47) Betroffene Arbeitnehmer sprechen relativ offen über ihre psychischen Probleme.",
+    "48) Auch Arbeitslosigkeit ist ein Risikofaktor für psychische Probleme.",
+    "49) Schlechte Stimmung am Arbeitsplatz ist die Hauptursache für psychische Erkrankungen.",
+    "50) Menschen, die zu wenig zu tun haben, versuchen, das nicht zu zeigen.",
+    "51) Menschen, die am Arbeitsplatz wenig zu tun haben, sind besonders zufrieden.",
+    "52) Internet und Smartphone können einen Einfluss auf die Psyche haben.",
+    "53) Wem seine Arbeit Spaß macht, der kann eher mehr leisten.",
+    "54) Bei Managern ist das Risiko für psychische Erkrankungen unter allen Berufsgruppen am höchsten.",
+    "55) Für die psychische Gesundheit ist es besser, arbeitslos zu sein, als eine nur durchschnittlich interessante Arbeit zu finden."
+  ]
+},
+
+
+{
+  "title": "Quiz 2 (Teil 2): ",
+  "correct": [3, 5, 9],
+  "options": [
+    "46) Die Deutschen machen zurzeit gerne bis zu drei Wochen oder mehr Urlaub.",
+    "47) Viele Wellness-Hotels befinden sich in Großstädten.",
+    "48) Wellness-Angebote gibt es vor allem in Hotels der gehobenen Kategorie.",
+    "49) Die von den Hotels angebotenen „Pakete“ enthalten in der Regel Vollpension.",
+    "50) In den Hotels kann man auch schwimmen und in die Sauna gehen.",
+    "51) Die Gäste nehmen die Sportangebote kaum wahr.",
+    "52) Oft bieten die Hotels auch kulturelle Rahmenprogramme wie Stadtführungen und Opernbesuche an.",
+    "53) Frauen kommen fast immer in Begleitung ihrer Ehemänner.",
+    "54) Die Hotels haben besondere Angebote für Männer.",
+    "55) Mitglieder von Krankenkassen können die Hotels kostenlos besuchen."
+  ]
+},
+      
+{
+  "title": "Quiz 2 (Teil 2):",
+  "correct": [1, 2, 4, 6, 8, 10],
+  "options": [
+          "46) Franz Schumacher handelt nicht nur mit Produkten aus eigenem Anbau.",
+          "47) Herr Schumacher lässt sich auch von anderen Bauern Produkte liefern.",
+          "48) Auf dem Markt sind schon viele Besucher unterwegs.",
+          "49) Die große Mehrheit der Kunden von Herrn Schumacher sind Stammkunden.",
+          "50) Herr Schumacher ist auf die Pfälzer Kartoffeln besonders stolz.",
+          "51) Franz Schumacher hat keine hohe Meinung vom „Fachhändlerverein vom Rathausplatz“.",
+          "52) Herr Schumacher kommt morgens sehr früh auf den Markt, um sich einen guten Platz für seinen Stand zu sichern.",
+          "53) Herr Schumacher hat seit über 20 Jahren einen Stand auf dem Landauer Markt.",
+          "54) Herr Schumacher trägt eine Mütze, um sich vor Kälte zu schützen.",
+          "55) Herr Schumacher möchte in Zukunft einen Verkaufsstand in einer Markthalle eröffnen."
+
+  ]
+},
+
+      {
+  "title": "Quiz 2 (Teil 2): ",
+  "correct": [1, 2, 3, 7, 10],
+  "options": [
+          "46) Frau Pesina ist die Chefin des Kosmos Kinos.",
+          "47) Von Hanau nach Frankfurt braucht man weniger als eine halbe Stunde.",
+          "48) Die Gründung des Kinos vor 100 Jahren war eher ein Zufall.",
+          "49) Der Großonkel baute sofort einen separaten Kinosaal.",
+          "50) Nach ihrem Großonkel leitete gleich Frau Pesina das Kino.",
+          "51) Manchmal denkt sie, es wäre besser gewesen, die sichere Stelle bei der Bank zu behalten.",
+          "52) In dem Kino gibt es heute außer der Schwägerin und den beiden Schwestern auch noch weitere Mitarbeiter.",
+          "53) Der Arbeitsalltag im Kino läuft immer völlig reibungslos ab.",
+          "54) Frau Pesina entscheidet immer allein, was im Kosmos Kino läuft.",
+          "55) Manchmal gibt es in dem Kino ein spezielles Programm für Frauen."
+
+
+  ]
+},
+            {
+  "title": "Quiz 2 (Teil 2): ",
+  "correct": [1, 4, 5, 7, 9, 10],
+  "options": [
+          "46) Auf dem Gipfel der Zugspitze liegt ungefähr ein Meter Schnee.",
+          "47) Man kann derzeit auf der Zugspitze Ski fahren.",
+          "48) Auch in Garmisch-Partenkirchen selbst hat es geschneit.",
+          "49) In der kommenden Woche erwartet man für die Zugspitzregion freundliches Wetter.",
+          "50) Am Sonntag wird ein Gottesdienst auf einer Bergstation abgehalten.",
+          "51) Die Zugspitze kann man momentan wegen des Nebels nicht erkennen.",
+          "52) Die Urlauber in Garmisch-Partenkirchen haben bei jedem Wetter genügend Möglichkeiten zur Freizeitgestaltung.",
+          "53) Herr Werner erwartet keine Wetterbesserung.",
+          "54) Auch in früheren Jahren hat es im Juni und August geschneit.",
+          "55) Herr Werner ist mit seinem Arbeitsplatz zufrieden."
+
+
+
+  ]
+},
+                  {
+  "title": "Quiz 2 (Teil 2):   ",
+  "correct": [1, 2, 5, 6, 8],
+  "options": [
+          "46) Am 24. April ist der Fashion Revolution Day.",
+          "47) Der Anlass für den Fashion Revolution Day ist der Einsturz des Fabrikgebäudes in Bangladesch.",
+          "48) Nur wenige Menschen wurden beim Einsturz schwer verletzt.",
+          "49) An diesem Tag wird nur schwarze Kleidung getragen.",
+          "50) Eine Näherin verdient dort ca. 20 Cent.",
+          "51) Die Clean Clothes Kampagne fordert bereits seit Jahren einen existenzsichernden Lohn.",
+          "52) Faire Mode ist im Geschäft teurer, weil größere Serien produziert werden.",
+          "53) Eine andere Attraktion ist das Filmscreening des Films Traceable.",
+          "54) Nach dem Film ist die Veranstaltung zu Ende.",
+          "55) Weitere Informationen können auf der Webseite traceable.org abgerufen werden."
+
+
+
+
+  ]
+},
+                        {
+  "title": "Quiz 2 (Teil 2): ",
+  "correct": [1, 3, 6, 7, 9, 10],
+  "options": [
+          "46) Herr Kemper arbeitet aus Dankbarkeit für die Hilfe, die er früher bekommen hat, ehrenamtlich.",
+          "47) Der Tierschutz hat für Herrn Kemper oberste Priorität.",
+          "48) Herr Kemper hat zuerst handwerkliche Arbeiten im Tierheim gemacht.",
+          "49) Herr Kemper hat es abgelehnt, Reinigungsarbeiten zu übernehmen.",
+          "50) Alle Helferinnen und Helfer arbeiten mehrmals in der Woche im Tierheim.",
+          "51) Greta hat angefangen, ehrenamtlich zu arbeiten, weil sie zu Hause Langeweile hatte.",
+          "52) Herr Kemper hat einer jungen Frau geholfen, ihren beruflichen Weg zu finden.",
+          "53) Herr Kemper findet, dass sich jeder Mensch ehrenamtlich engagieren sollte.",
+          "54) Herr Kemper hat auch Verständnis für Menschen, die sich nicht ehrenamtlich engagieren.",
+          "55) Herr Kemper wohnt in einem Haus, in dem Tierhaltung verboten ist."
+
+
+
+
+
+  ]
+},
+             {
+  "title": "Quiz 2 (Teil 2): ",
+  "correct": [2, 4, 6, 8, 10],
+  "options": [
+          "46) Der Journalist spricht mit einer Kundin im Kaufhaus.",
+          "47) Frau Hahn hat ihren Beruf im Kaufhaus Brock gelernt.",
+          "48) Frau Hahn wollte schon als Kind Verkäuferin im Kaufhaus Brock werden.",
+          "49) Frau Hahn fand es wichtig, nette Kollegen zu haben.",
+          "50) Frau Hahns Mann arbeitet jetzt im demselben Kaufhaus wie sie.",
+          "51) Der Mann von Frau Hahn hat als Schuhverkäufer gearbeitet.",
+          "52) Das Kaufhaus Brock wird nach der Schließung abgerissen.",
+          "53) Frau Hahn findet es wichtig, in einem schönen Haus zu arbeiten.",
+          "54) Die neuen Inhaber hätten das Kaufhaus gerne weitergeführt.",
+          "55) Frau Hahn will nicht in einem anderen Kaufhaus arbeiten."
+
+
+
+
+
+
+  ]
+},
+      
+  {
+  "title": "Quiz 2 (Teil 2):",
+  "correct": [2, 3, 4, 6, 8],
+  "options": [
+          "46) Lisa Eisenberg war beruflichen Gründen in den USA.",
+          "47) Während einer Reise entschied sich Lisa Eisenberg für einen beruflichen Neuanfang.",
+          "48) Lisa Eisenbergs Geschäftsidee stieß in ihrem Bekanntenkreis auf Skepsis.",
+          "49) Lisa Eisenberg hat sich auf regionale Speisen spezialisiert.",
+          "50) In der Mittagszeit erzielt Lisa Eisenberg den Großteil ihres Umsatzes.",
+          "51) Lisa Eisenberg muss nicht mehr aktiv nach Kunden suchen.",
+          "52) Lisa Eisenberg bietet für Firmen täglich auch abends Gerichte an.",
+          "53) Es ist für Lisa Eisenberg leicht, ein geeignetes Fahrzeug zu finden.",
+          "54) Lisa Eisenberg hat als Studentin nebenbei in der Gastronomie gearbeitet.",
+          "55) In den nächsten Monaten wird Lisa Eisenberg einen zweiten Wagen kaufen."
+
+
+
+  ]
+},
+
+        {
+  "title": "Quiz 2 (Teil 2):   ",
+  "correct": [5, 9, 10],
+  "options": [
+          "46) Meron Makeba hat schon in Ghana Leichtathletik gemacht.",
+          "47) Frau Makeba ist mit ihrem Ergebnis bei der WM sehr zufrieden.",
+          "48) Frau Makeba hat im vergangenen Jahr ihre Eltern in Ghana besucht.",
+          "49) Das Publikum hat bei der WM die Sportler aller Nationen unterstützt.",
+          "50) Frau Makeba trifft selten andere Sportler aus Ghana.",
+          "51) Für Frau Makeba ist Ghana noch immer ihre Heimat.",
+          "52) Wegen ihres Migrationshintergrundes hatte Frau Makeba keine Schwierigkeiten.",
+          "53) Anfangs war Frau Makeba in ihrem Verein die einzige Migrantin.",
+          "54) Frau Makeba glaubt nicht, dass man aufgrund der Herkunft in bestimmten Sportarten bevorzugt wird.",
+          "55) Frau Makebas Erfahrungen im privaten Bereich unterscheiden sich stark von denen im Sport."
+
+
+  ]
+},
+        {
+  "title": "Quiz 2 (Teil 2):  ",
+  "correct": [1, 3, 9],
+  "options": [
+          "46) Nach seinem Studium hat Thomas Hirschbaum zuerst im IT-Bereich gearbeitet.",
+          "47) Er hat den Managementbereich in seiner Firma gegründet.",
+          "48) Es hat ihm gefallen, Verantwortung für sein 50-köpfiges Team zu haben.",
+          "49) Seine Eltern haben erwartet, dass er einmal mehr Geld verdient als sie.",
+          "50) Seit seinem Start ins Berufsleben hatte er keine Freizeit mehr.",
+          "51) Er hat sich oft nicht gut gefühlt, wenn er an seine Familie dachte.",
+          "52) Nach seinem 40. Geburtstag hatte er den Wunsch, mal einen Monat Urlaub zu machen.",
+          "53) Sein Chef war sofort mit dem Vorschlag einverstanden, die Arbeit anders zu organisieren.",
+          "54) Wie sein Kollege arbeitet Thomas Hirschbaum jetzt halbtags.",
+          "55) Trotzdem steht die Arbeit für ihn an oberster Stelle."
+
+
+
+  ]
+},
+              {
+  "title": "Quiz 2 (Teil 2):   ",
+  "correct": [2, 3, 5, 9],
+  "options": [
+          "46) Astrid Nowak hat ihr ganzes Berufsleben in der Stadtbibliothek verbracht.",
+          "47) Die meisten Besucher/innen der Stadtbibliothek wollen Medien ausleihen.",
+          "48) Viele halten sich gern in den attraktiven Räumen der Bibliothek auf.",
+          "49) Die Bibliothek bietet ihre Dienstleistungen seit Jahren auch sonntags an.",
+          "50) Die vielfältigen Angebote der Bibliothek sind gratis nutzbar.",
+          "51) Ein Angebotsschwerpunkt sind Informationsmedien für jüngere Leute.",
+          "52) Man kann in der Bibliothek auch elektronische Geräte mieten.",
+          "53) Heute finden nur Kurse aus dem Bereich Medien und Technik statt.",
+          "54) Es gibt einen Raum, in dem man mit anderen zusammen moderne technische Werkzeuge ausprobieren kann.",
+          "55) Die Bibliotheken in Deutschland werden genauso häufig genutzt wie Kinos oder Museen."
+
+
+  ]
+},
+
+                    {
+  "title": "Quiz 2 (Teil 2):  ",
+  "correct": [3, 5, 6, 9, 10],
+  "options": [
+          "46) Mit der Gründung der Eisschwimmervereinigung wollte Elias Wunderlich dem Eisschwimmen unter anderem zu einem offiziellen Status verhelfen.",
+          "47) Das Eisschwimmen hat Elias Wunderlich durch den Austausch mit anderen Sportlern entdeckt.",
+          "48) Die Ärzte sind sich einig, dass Eisschwimmen die Gesundheit fördert.",
+          "49) Nur durchtrainierte Menschen sollten Eisschwimmen betreiben.",
+          "50) Für den Einstieg in den Eisschwimmsport ist der Winterbeginn der beste Zeitpunkt.",
+          "51) Elias Wunderlich hält sich strikt an seine eigenen Empfehlungen.",
+          "52) Warmhaltendes Fett wird auch durch die Reaktion des Körpers auf Kälte erzeugt.",
+          "53) Bei Wettbewerben ist schützende Ganzkörperbekleidung vorgesehen.",
+          "54) Elias Wunderlich nimmt an Wettbewerben teil, um zu siegen.",
+          "55) Laut Elias Wunderlich kann Eisschwimmen zur Abhängigkeit führen."
+
+
+
+  ]
+},
+
+                          {
+  "title": "Quiz 2 (Teil 2):  ",
+  "correct": [1, 2, 4, 6],
+  "options": [
+          "46) Beim Wettkampf auf Sylt gibt es mehr Zuschauer als bei anderen Surf-Wettkämpfen.",
+          "47) Die Wind-Bedingungen sind auf Sylt sehr unberechenbar.",
+          "48) Herr Dunderbeck ist noch immer so fit wie früher.",
+          "49) Im Freestyle hat er schon starke Gegner, die viel jünger sind als er.",
+          "50) Beim Slalom muss er auch mit starken Gegnern rechnen.",
+          "51) Sein Hobby ist, solche Strände zu suchen, wo sich im Windsurfen noch niemand ausprobiert hat.",
+          "52) Er hat ständig Angst vor den Haien.",
+          "53) Seine Kinder haben noch ein bisschen Angst vor dem Wasser, obwohl er sie schon aufs Brett gesetzt hatte.",
+          "54) Falls er auf Sylt siegen würde, würde er dies zuerst gerne mit seinen Freunden feiern.",
+          "55) Er hat zwei Kinder und sie gehen mit ihm auf Reisen."
+
+
+  ]
+},
+
+
+                          {
+  "title": "Quiz 2 (Teil 2):  ",
+  "correct": [1, 2, 4, 6],
+  "options": [
+          "46) Beim Wettkampf auf Sylt gibt es mehr Zuschauer als bei anderen Surf-Wettkämpfen.",
+          "47) Die Wind-Bedingungen sind auf Sylt sehr unberechenbar.",
+          "48) Herr Dunderbeck ist noch immer so fit wie früher.",
+          "49) Im Freestyle hat er schon starke Gegner, die viel jünger sind als er.",
+          "50) Beim Slalom muss er auch mit starken Gegnern rechnen.",
+          "51) Sein Hobby ist, solche Strände zu suchen, wo sich im Windsurfen noch niemand ausprobiert hat.",
+          "52) Er hat ständig Angst vor den Haien.",
+          "53) Seine Kinder haben noch ein bisschen Angst vor dem Wasser, obwohl er sie schon aufs Brett gesetzt hatte.",
+          "54) Falls er auf Sylt siegen würde, würde er dies zuerst gerne mit seinen Freunden feiern.",
+          "55) Er hat zwei Kinder und sie gehen mit ihm auf Reisen."
+
+
+  ]
+},
+                                {
+  "title": "Quiz 2 (Teil 2):  ",
+  "correct": [2, 3, 6, 7, 10],
+  "options": [
+          "46) Sie kommt aus Düsseldorf.",
+          "47) Sie lebt jetzt in Malta.",
+          "48) Sie ist effektiv und tätig in Malta.",
+          "49) Sie möchte zu Van... umziehen.",
+          "50) Sie genießt die ganze Jahr im Mittelmeer baden.",
+          "51) Der Moderator kennt die Temperatur des Mittelmeers im Winter nicht.",
+          "52) Der Moderator denkt, in Malta gibt es drei Amtssprachen.",
+          "53) Die Malteser waren konservativ und zurückhaltend.",
+          "54) Sie plante, die maltesische Sprache zu lernen.",
+          "55) Malteser kommen aus verschiedenen Religionen."
+
+
+
+  ]
+},
+
+                                      {
+  "title": "Quiz 2 (Teil 2): ",
+  "correct": [2, 4, 5, 8, 9],
+  "options": [
+          "46) Sie kommt aus Düsseldorf.",
+          "47) Sie lebt jetzt in Malta.",
+          "48) Sie ist effektiv und tätig in Malta.",
+          "49) Sie genießt die ganze Jahr im Mittelmeer baden.",
+          "50) Der Moderator kennt die Temperatur des Mittelmeers im Winter nicht.",
+          "51) Der Moderator denkt, in Malta gibt es drei Amtssprachen.",
+          "52) Die Malteser waren konservativ und zurückhaltend.",
+          "53) Malteser kommen aus verschiedenen Religionen.",
+          "54) Sie plante, die maltesische Sprache zu lernen.",
+          "55) Sie möchte zu Van... umziehen."
+
+  ]
+},
+
+                                            {
+  "title": "Quiz 2 (Teil 2):  ",
+  "correct": [2, 3, 6, 7, 9],
+  "options": [
+          "46) Frau Kiddar stammt aus Düsseldorf.",
+          "47) Sie lebt heute auf Malta.",
+          "48) Sie is auf Malta beruflich tätig.",
+          "49) Frau Kiddar möchte gerne bald nach Valletta ziehen.",
+          "50) Sie genießt es, das ganze Jahr über im Mittelmeer zu baden.",
+          "51) Der Moderator weiß nicht, wie viel Grad das Mittelmeer im Winter hat.",
+          "52) Frau Kiddar weist darauf hin, dass die Einwohner Maltas ursprünglich aus verschiedenen Regionen stammten.",
+          "53) Die Malteser haben sich ihr gegenüber aber zurückhaltend, ja misstrauisch verhalten.",
+          "54) Der Moderator denkt, dass es auf Malta drei Amtssprachen gibt.",
+          "55) Frau Kiddar plant, bald die maltesische Sprache zu lernen."
+
+
+  ]
+},
+
+                                                  {
+  "title": "Quiz 2 (Teil 2):   ",
+  "correct": [1, 2, 4, 6, 8, 10],
+  "options": [
+           "46) Viele befürchten, dass es durch das neue Gesetz zu weiteren Mittelkürzungen kommt.",
+          "47) In Zukunft werden weniger Erzieherinnen gebraucht als heute.",
+          "48) Künftig soll es mehr Krippenplätze für Kinder unter drei Jahren geben.",
+          "49) Der Besuch von Kindergärten soll kostenlos werden.",
+          "50) Die Mehrheit der Kleinkinder wird auch weiterhin zu Hause betreut werden.",
+          "51) Bei Bedarf setzt die Sprachförderung im vierten Lebensjahr ein.",
+          "52) Deutsche Kinder haben keinen Anspruch auf staatliche Sprachförderung.",
+          "53) Im Elternhaus wird die Sprachförderung der Kinder immer häufiger vernachlässigt.",
+          "54) Herr Teichmann sieht in Bezug auf Sprachförderung auch auf Seiten der Politik Handlungsbedarf.",
+          "55) Die Ausbildung der Erzieherinnen soll künftig an Hochschulen angesiedelt sein."
+
+
+
+  ]
+},
+    ];
+    
+    // --- quiz3 (7).html verileri (Teil 3) ---
+    // (Toplam 44 Test)
+    const tests3 = [
+      {
+  title: "Quiz 3 (Teil 3):",
+  correct: [1],
+  options: [
+    "56- Bei der Deutschen Telefon KG bekommen Sie nur Auskunft zu Telefonapparaten dieses Unternehmens.",
+    "57- Im Rahmen des „BR3 Aquarena Weekends“ in Starnberg können Sie jeden Abend ein Feuerwerk betrachten.",
+    "58- Die Trierer Domorganisten spielen am 6. Juli in Michelstadt.",
+    "59- Während des Musikfestivals „Sound of Frankfurt“ ist die Benutzung der U- und SBahnen gebührenfrei.",
+    "60- Sie haben eine ungültige Servicenrufnummer gewählt und werden daher automatisch weiterverbunden."
+  ]
+},
+
+{
+  title: "Quiz 3 (Teil 3): ",
+  correct: [1],
+  options: [
+    "56- Bei der Deutschen Telefon KG bekommen Sie nur Auskunft zu Telefonapparaten dieses Unternehmens.",
+    "57- Im Rahmen des „BR3 Aquarena Weekends“ in Starnberg können Sie jeden Abend ein Feuerwerk betrachten.",
+    "58- Die Trierer Domorganisten spielen am 6. Juli in Michelstadt.",
+    "59- Während des Musikfestivals „Sound of Frankfurt“ ist die Benutzung der U- und SBahnen gebührenfrei.",
+    "60- Sie haben eine ungültige Servicenrufnummer gewählt und werden daher automatisch weiterverbunden."
+  ]
+},
+
+{
+  "title": "Quiz 3 (Teil 3): ",
+  "correct": [2],
+  "options": [
+    "56) Nach einer Großdemonstration liegen in Frankfurt Gegenstände auf den Straßen.",
+    "57) Wer bei der Wanderung keinen Rucksack mitnehmen will, kann unterwegs etwas zu essen und zu trinken bekommen.",
+    "58) Bei der Volkshochschule Tübingen kann man sich für alle Kurse problemlos per E-Mail anmelden.",
+    "59) Im Klassikfunk kann man ab 20.15 Uhr CDs mit Musik von Verdi bestellen.",
+    "60) Kinder können während der Sommerferien im Römerkastell Saalburg übernachten."
+  ]
+},
+
+{
+  "title": "Quiz 3 (Teil 3):  ",
+  "correct": [2],
+  "options": [
+          "56) In Raum C23 trägt ein bekannter Schriftlicher etwas vor.",
+          "57) Wenn ihre Software nicht funktioniert, erhalten Sie über Internet Unterstützung.",
+          "58) In der Stadtbibliothek präsentiert heute eine Hochschule ihr Angebot vor allem für Berufstätige.",
+          "59) Im Internet finden Sie auch Angebot für spezielle Zielgruppen.",
+          "60) Wenn man Dienstag oder Donnerstag jemanden persönlich sprechen möchte, braucht man einen Termin."
+]
+},
+
+{
+  "title": "Quiz 3 (Teil 3):   ",
+  "correct": [2],
+  "options": [
+          "56) Das Restaurant hat bis 23 Uhr geöffnet.",
+          "57) Alle Flüge der Fluglinie AirMer sind für heute und morgen gestrichen.",
+          "58) Auf alle Möbel gibt es heute und morgen einen Preisnachlass von bis zu 70%.",
+          "59) Der Schickmarkt hat ab Freitagvormittag geöffnet.",
+          "60) Der Intercity nach Bregenz fällt aufgrund eines technischen Gebrechens aus."
+
+  ]
+},
+
+
+
+{
+  "title": "Quiz 3 (Teil 3): ",
+  "correct": [5],
+  "options": [
+    "56) Die Literaturmesse für Kleinverleger findet zum ersten Mal statt.",
+    "57) Bei dem Wettkampf machte Saskia Winzer alles richtig.",
+    "58) Am Samstag ist den ganzen Tag mit Sonne zu rechnen.",
+    "59) Das Theaterstück wird zum ersten Mal am Stadttheater aufgeführt.",
+    "60) Während des Unterhaltungsprogramms gibt es auch Kinderbetreuung."
+  ]
+},
+
+{
+  title: "Quiz 3 (Teil 3):  ",
+  correct: [1, 2],
+  options: [
+
+  "56) Die Übertragung des Fußballspiels im Ostpark findet bei jedem Wetter statt.",
+  "57) Wer sich für den Newsletter registriert, kann jeden Monat etwas gewinnen.",
+  "58) Alle Besucher des Schwimmbads dürfen heute im Restaurant kostenlos etwas trinken.",
+  "59) Wegen einer technischen Störung ist der Onlineshop weder telefonisch noch per E-Mail erreichbar.",
+  "60) Am Familien­sonntag dürfen Kinder kostenlos ins Museum."
+
+
+  ]
+},
+
+
+{
+  title: "Quiz 3 (Teil 3): ",
+  correct: [1, 3],
+  options: [
+    "56) Besuchendes Reitturnier sollten möglichst Parkplätze außerhalb des Turniergelätes nutzen.",
+    "57) Das Open-Air-Gospelkonzert wird live im Radio übertragen.",
+    "58) Bei der Berliner Museumsnacht können Sie mit einer Sonderbuslinie bequem erreichen.",
+    "59) Wegen Glätte ist die A5 zwischen Mannheim und Frankfurt in beide Richtungen voll gesperrt.",
+    "60) Hotelreservierungen in Dresden sind ausschließlich telefonisch möglich."
+  ]
+},
+
+{
+  title: "Quiz 3 (Teil 3): ",
+  correct: [1, 3],
+  options: [
+    '56- Während des Musikfestivals "Sound of Frankfurt" gibt es verbilligte Fahrkarten für alle öffentlichen Verkehrsmittel.',
+    '57- Sie gehen am 3. Juli ins Konzert, weil Sie die beiden Leipziger Klavier Virtuosen hören möchten.',
+    '58- Am Wochenende können Sie sich Nürnberg über die Bekämpfung von Krankheiten bei Apfelbäumen informieren.',
+    '59- Im Handwerksmuseum werden Kleidungsstücke ausgestellt.',
+    '60- Die Autobahn "AS" ist zwischen Baden-Baden und Rastatt in beiden Richtungen gesperrt.'
+  ]
+},
+
+{
+  "title": "Quiz 3 (Teil 3): ",
+  "correct": [1, 3],
+  "options": [
+    "56) Am Donnerstag ist in der Uckermark mit Birkenpollen zu rechnen.",
+    "57) Die Führung durch Frankfurts Hochhäuser beginnt am Messeturm.",
+    "58) Am 8. und 9.Juli kann man den Opel-Zoo nachts besuchen.",
+    "59) Für die Wanderung zur Ronneburg sollte man unbedingt genügend Verpflegung mitnehmen.",
+    "60) Auf der A7 Ulm - Füssen ist der linke Fahrstreifen gesperrt."
+  ]
+},
+{
+  "title": "Quiz 3 (Teil 3): ",
+  "correct": [1, 3],
+  "options": [
+           "56) Geschäftsreisende werden gebeten, Mietwagen unter der Nummer 3223 zu buchen.",
+          "57) Sie gehen am 3. Juli ins Konzert, weil Sie die beiden Leipziger Klaviervirtuosen hören möchten.",
+          "58) Am Wochenende können Sie sich in Naumburg über die Bekämpfung von Krankheiten bei Apfelbäumen informieren.",
+          "59) Im Handwerksmuseum werden Kleidungsstücke ausgestellt.",
+          "60) Die Autobahn A5 ist zwischen Baden-Baden und Rastatt in beiden Richtungen gesperrt."
+]
+},
+  {
+  "title": "Quiz 3 (Teil 3):  ",
+  "correct": [1, 3],
+  "options": [
+  "56)Für ein Konzert morgen Abend kann man noch im Internet Karten kaufen.",
+  "57)Heute ist das Busfahren in der ganzen Stadt umsonst.",
+  "58)Bei dem Filmfestival werden internationale Kinderfilme gezeigt.",
+  "59)Das Busunternehmen Schneider kündigt neue Fernbusverbindungen an.",
+  "60)Man kann eine kostenlose Probestunde vereinbaren."
+
+]
+},
+                        {
+  "title": "Quiz 3 (Teil 3):  ",
+  "correct": [1, 3],
+  "options": [
+  "56)Beim Klassik-Radio kann man Karten für ein Konzert in Frankfurt gewinnen.",
+  "57)Für den Engelberg-Lauf in Miltenberg ist eine frühzeitige Anmeldung erforderlich.",
+  "58)Der Radiosender Bayern 1 informiert auf seiner Website über das Sommernachtsfest.",
+  "59)Auf der A3 hat es in der Nähe von Erlangen einen Unfall gegeben.",
+  "60)Funk-Mobil bietet Dienstleistungen für Autofahrer an."
+
+]
+},
+
+{
+  title: "Quiz 3 (Teil 3): ",
+  correct: [1, 4],
+  options: [
+    "56- Bei der Fahrschule kann man sich über das Internet anmelden.",
+    "57- Die Anruferin ist im Hinblick auf die Abfahrtszeit flexibel.",
+    "58- Für den Halb-Marathon kann man sich noch am Sonntag registrieren lassen.",
+    "59- Bei dem Flug nach Mallorca ändert sich die Abflugzeit.",
+    "60- In Halle D wird aus E-Books vorgelesen."
+  ]
+},
+{
+  title: "Quiz 3 (Teil 3): ",
+  correct: [1, 4],
+  options: [
+    "56- Im Süden Deutschlands wird es nachmittags regnen.",
+    "57- Die Busse verkehren zu anderen Zeiten als die Regionalzüge.",
+    "58- Auf der A3 von Würzburg nach Frankfurt gibt es aufgrund eines Unfalls eine Vollsperrung.",
+    "59- Wenn Sie über Ihre Autoversicherung sprechen wollen, müssen Sie die 1 wählen.",
+    "60- Ihr Bekannter ist jederzeit telefonisch erreichbar."
+  ]
+},
+
+
+{
+  "title": "Quiz 3 (Teil 3): ",
+  "correct": [1, 4],
+  "options": [
+    "56) Die Gruppe „Die Prinzen“ tritt am 23.Juni in Kiel auf.",
+    "57) Der Frankfurter JPMorgan Chase Corporate Challenge Lauf beginnt zwei Straßen von der Alten Oper entfernt.",
+    "58) Die Prager Nacht findet nur im Regensburger Dom statt.",
+    "59) Auf der A3 Frankfurt Richtung Würzburg ist zwischen Offenbach und Seligenstadt ein Stau.",
+    "60) Der Anbieter „Call a Call“ verbindet Sie kostenlos mit Ihrem Gesprächspartner."
+  ]
+},
+
+
+{
+  title: "Quiz 3 (Teil 3): ",
+  correct: [1, 5],
+  options: [
+    "56- Morgen muss man im Süden Deutschlands mit Schnee rechnen.",
+    "57- Die zwei Jungen sind von zu Hause weggelaufen.",
+    "58- Am Samstag können Sie einen Mitarbeiter der Firma anrufen.",
+    "59- Wegen einer Demonstration ist es verboten, in die Nürnberger Altstadt zu fahren.",
+    "60- Die historische elektrische Eisenbahn wird im Dezember wie gewohnt fahren."
+  ]
+},
+
+{
+  "title": "Quiz 3 (Teil 3): ",
+  "correct": [1, 5],
+  "options": [
+    "56) Das Geschäft für österreichische Spezialitäten befindet sich in Check-in-2.",
+    "57) Fortgeschrittene Schüler, Studenten, Profis und Lehrkräfte haben die Möglichkeit zu unterrichten.",
+    "58) Interessenten können auf der Messe nur Bestellungen aufgeben.",
+    "59) Alle Studierenden müssen ab dem Wintersemester Studiengebühren bezahlen.",
+    "60) Der Bürgermeister eröffnet das Fest."
+  ]
+},
+
+{
+  title: "Quiz 3 (Teil 3): ",
+  correct: [1, 5],
+  options: [
+    "56- Sie können im Internet prüfen, ob Ihre aktuelle Bestellung schon unterwegs ist.",
+    "57- Man kann für die Nacht Veranstaltung noch karten im Internet kaufen.",
+    "58- Die Teilnahme an der party im Burghof kostet nichts.",
+    "59- In Bamberg kann man in der nächsten Woche besonders günstig Mitglied in einem Sportver werden.",
+    "60- Wer ein wichtiges Anliegen hat, soll eine andere Nummer wählen."
+  ]
+},
+{
+  title: "Quiz 3 (Teil 3): ",
+  correct: [1, 5],
+  options: [
+    "56- Man kann am 'Tag des Ehrenamts' probeweise mithelfen.",
+    "57- Die Skateboard-Vorführung fällt dieses mal aus.",
+    "58- Vor Passwort-Programmen wird gewarnt.",
+    "59- Es wird empfohlen, mit dem Fahrrad zum Volkspark zu fahren.",
+    "60- Wenn man das Training ausprobieren möchte, muss man vorher Bescheid sagen."
+  ]
+},
+{
+  title: "Quiz 3 (Teil 3): ",
+  correct: [1, 5],
+  options: [
+    "56- Man kann am 'Tag des Ehrenamts' probeweise mithelfen.",
+    "57- Die Skateboard-Vorführung fällt dieses mal aus.",
+    "58- Vor Passwort-Programmen wird gewarnt.",
+    "59- Es wird empfohlen, Fahrräder direkt am Volkspark zu parken.",
+    "60- Wenn man das Training ausprobieren möchte, sollte man vorher Bescheid sagen."
+  ]
+},
+
+      {
+  "title": "Quiz 3 (Teil 3): ",
+  "correct": [1, 5],
+  "options": [
+
+  "56)Im Frankfurter Zoo kann man Großkatzen in einer naturnahen Umgebung erleben.",
+  "57)Bei dem deutsch-französischen Fest werden Gaumenfreuden aus Deutschland und Frankreich geboten.",
+  "58)Auf der Autobahn A7 zwischen Hamburg und Flensburg ist ein Stau wegen mehrerer Unfälle.",
+  "59)Wer anruft, kann über die Vergabe des Preises mitentscheiden.",
+  "60)Telefonische Beratungen werden an allen Werktagen auch nachmittags angeboten."
+
+
+  ]
+},
+{
+  "title": "Quiz 3 (Teil 3): ",
+  "correct": [1, 5],
+  "options": [
+  "56)Sie hören den Anrufbeantworter einer Buchhandlung.",
+  "57)Beim Jubiläumstest im Schloss kann man selbst Musik machen.",
+  "58)Wer gerne und lange tanzt, sollte in Kulmbach vorbeischauen.",
+  "59)Sie können sich für alle Kurse auch über das Internet registrieren.",
+  "60)Internationale Künstler treten an verschiedenen Plätzen in Esens auf."
+  ]
+},
+
+{
+  "title": "Quiz 3 (Teil 3): ",
+  "correct": [1, 5],
+  "options": [
+    "56) Die Fahrradtouren von „Berlin auf zwei Rädern“ können nicht nur privat, sondern auch im beruflichen Kontext gebucht werden.",
+    "57) Straßen in Passau sind durch das starke Unwetter heute noch bis vier Uhr blockiert.",
+    "58) Sitzplatzreservierungen im ICE sind wegen technischer Probleme in den Wagen 24-38 ungültig.",
+    "59) Selma schlägt vor, die Verabredung auf Samstag zu verschieben.",
+    "60) Die lange Nacht der Architektur ist kostenlos, wenn man sich vorher online anmeldet."
+  ]
+},
+
+      {
+  title: "Quiz 3 (Teil 3):   ",
+  correct: [2, 3],
+  options: [
+  "56)Der IC 865 fährt heute nicht nach Hamburg, sondern nur bis Bonn.",
+  "57)Ein Teil der kostenlosen Veranstaltungen beim Literaturfest findet an spannenden Orten in der Stadt statt.",
+  "58)Die Firma Sanitätsbedarf Frieder & Hansen ist sechs Tage die Woche für Anfragen erreichbar.",
+  "59)Bewohner des Musikerviertels müssen am Donnerstagnachmittag für zwei Stunden zu Hause bleiben.",
+  "60)Zum Valentinstag gibt es heute eine spezielle Beratung für Schmuck und Kosmetikartikel."
+  ]
+},
+
+{
+  title: "Quiz 3 (Teil 3):  ",
+  correct: [2, 4],
+  options: [
+  "56)Für ein Konzert Morgen Abend kann man noch im Internet Karten kaufen.",
+  "57)Man kann mit dem Bus gratis zum Fest fahren.",
+  "58)Bei dem Filmfestival werden internationale Kinderfilme gezeigt.",
+  "59)Das Busunternehmen Schneider kündigt neue Fernbusverbindungen an.",
+  "60)Man kann sich für eine kostenlose Probestunde anmelden."
+  ]
+},
+
+{
+  title: "Quiz 3 (Teil 3):  ",
+  correct: [2, 4],
+  options: [
+  "56)Für ein Konzert Morgen Abend kann man noch im Internet Karten kaufen.",
+  "57)Man kann mit dem Bus gratis zum Fest fahren.",
+  "58)Bei dem Filmfestival werden internationale Kinderfilme gezeigt.",
+  "59)Das Busunternehmen Schneider kündigt neue Fernbusverbindungen an.",
+  "60)Man kann sich für eine kostenlose Probestunde anmelden."
+  ]
+},
+
+
+
+{
+  title: "Quiz 3 (Teil 3): ",
+  correct: [2, 5],
+  options: [
+    "56- Die Demonstration findet in Frankfurt vor der Alten Oper statt.",
+    "57- In der kommenden Saison wird eine Symphonie von Mahler aufgeführt.",
+    "58- Die Weltmeisterschaften im Eiskunstlauf finden in der Dortmunder Helmut Körnig Halle statt.",
+    "59- Man darf die A980 nur mit Schneeketten befahren.",
+    "60- Für die Vermittlung einer Mitfahrgelegenheit E-Mail erhebt 'fahre mit' keine Gebühren."
+  ]
+},
+{
+  "title": "Quiz 3 (Teil 3): ",
+  "correct": [2, 5],
+  "options": [
+    "56) Der Regionalzug nach Bruck an der Mur um 7:15 Uhr wird nicht fahren.",
+    "57) Man kann ein Auto gewinnen, wenn man alle 9 Gewinnzahlen sammelt.",
+    "58) Nächste Woche gibt es Äpfel zum Preis von unter 1€.",
+    "59) Der Intercity nach München fährt immer von Bahnsteig 2.",
+    "60) Der Eintritt ins Kunterbunt-Kindermuseum ist am Eröffnungstag gratis."
+  ]
+},
+
+{
+  title: "Quiz 3 (Teil 3): ",
+  correct: [3, 4],
+  options: [
+    "56- Im August gibt es jeden Tag eine Aufführung.",
+    "57- Zur Station Grünberg kommen Sie mit der U-Bahn-Linie 68.",
+    "58- In weniger dringlichen Fällen soll man eine Nachricht hinterlassen.",
+    "59- Am Mittwoch und Donnerstag können Sie Sachspenden vorbeibringen.",
+    "60- Nur an den Nachmittagen wird eine hohe Verkehrsdichte erwartet."
+  ]
+},
+
+{
+  title: "Quiz 3 (Teil 3): ",
+  correct: [3, 4],
+  options: [
+    "56- Im August gibt es jeden Tag eine Aufführung.",
+    "57- Zur Station Grünberg kommen Sie mit der U-Bahn-Linie 68.",
+    "58- In weniger dringlichen Fällen soll man eine Nachricht hinterlassen.",
+    "59- Am Mittwoch und Donnerstag können Sie Sachspenden vorbeibringen.",
+    "60- Nur an den Nachmittagen wird eine hohe Verkehrsdichte erwartet."
+  ]
+},
+      {
+  title: "Quiz 3 (Teil 3): ",
+  correct: [3, 4],
+  options: [
+
+  "56)Die nächtlichen Temperaturen gehen in der ganzen Region auf null Grad zurück.",
+  "57)An der Abendkasse sind die Karten für das Konzert der Gruppe Sing Slow günstiger als im Vorverkauf.",
+  "58)Auf der Viktoriabrücke kann wegen Bauarbeiten stadteinwärts nur eine Fahrbahn genutzt werden.",
+  "59)Wenn man den Eindruck hat, man hat zu viel für den Strom bezahlt, wählt man die 2.",
+  "60)Beim Fest in Bergheim finden Darbietungen von internationalen Theatergruppen statt."
+
+  ]
+},
+
+      {
+  title: "Quiz 3 (Teil 3):  ",
+  correct: [3, 5],
+  options: [
+          "56) Der Software-Service von Macrohard steht rund um die Uhr zur Verfügung.",
+          "57) Für das Konzert mit Romano Castelli gibt es noch Karten ab 200 Euro.",
+          "58) Über den neuen Tarif von T-Upline können Sie sich im Internet informieren.",
+          "59) Weil das Schwerpunktthema „Japan“ lautet, treten im Park des Museums für Völkerkunde in diesem Jahr nur japanische Musiker auf.",
+          "60) Bei dem Festival gibt es nicht nur folkloristische Unterhaltung, sondern auch kulinarische Spezialitäten aus dem In- und Ausland."
+
+  ]
+},
+
+      
+{
+  title: "Quiz 3 (Teil 3): ",
+  correct: [1, 2, 3],
+  options: [
+    "56- Am wochenanfang soll man eine Aufenthalt im Freien vermeiden.",
+    "57- Abends ist das Risiko, einen Wildunfall zu haben, am größten.",
+    "58- Man kann bei dem fest an verschiedenen Orten Musik hören.",
+    "59- In dringenden Fällen können Sie die firma ab Montag erreichen.",
+    "60- Am Abend werden Verkehrsbehinderungen erwartet."
+  ]
+},
+
+{
+  title: "Quiz 3 (Teil 3): ",
+  correct: [1, 2, 3],
+  options: [
+    "56- Am wochenanfang soll man eine Aufenthalt im Freien vermeiden.",
+    "57- Abends ist das Risiko, einen Wildunfall zu haben, am größten.",
+    "58- Man kann bei dem fest an verschiedenen Orten Musik hören.",
+    "59- In dringenden Fällen können Sie die firma ab Montag erreichen.",
+    "60- Am Abend werden Verkehrsbehinderungen erwartet."
+  ]
+},
+
+
+      {
+  title: "Quiz 3 (Teil 3): ",
+  correct: [1, 2, 3],
+  options: [
+          "56) Sie müssen spätestens in Hannover in den hinteren Zugteil umsteigen.",
+          "57) Wenn Sie für das Radio eine Geschichte über Ihren eigenen 18. Geburtstag schreiben, müssen Sie bei der Party keinen Eintritt bezahlen.",
+          "58) Ihrer Freundin geht es nicht gut.",
+          "59) Auf dem Festival wird auch Musik von Beethoven gespielt.",
+          "60) Sie können das Eisbärbaby jederzeit im Freien beobachten."
+
+  ]
+},
+{
+  title: "Quiz 3 (Teil 3): ",
+  correct: [1, 2, 5],
+  options: [
+    "56- Sie müssen nicht persönlich beim fundbüro nachfragen.",
+    "57- Die wettervorhersage können Sie nach den Mittagsnachrichten hören.",
+    "58- Sie dürfen ihr Rad spontan im zug mitnehmen.",
+    "59- Am Donnerstag sehen Sie das deutsch Team in halbfinale.",
+    "60- während der Sperrung kann man die üblichen bushaltestellen benutzen."
+  ]
+},
+
+      {
+  title: "Quiz 3 (Teil 3): ",
+  correct: [1, 2, 5],
+  options: [
+
+  "56)Das Treffen ist am Donnerstag.",
+  "57)Das Wetter bleibt schlecht und regnerisch; am Sonntagnachmittag leichte Wetterbesserung.",
+  "58)Die Firma ist direkt an der S-Bahn-Station.",
+  "59)Das Restaurant bietet Kaffee für 2 Euro 50 und Kuchen für 2 Euro.",
+  "60)prachprogramme für Deutsch gibt es in derselben Abteilung wie Computerspiele."
+
+
+  ]
+},
+            {
+  title: "Quiz 3 (Teil 3): ",
+  correct: [1, 2, 5],
+  options: [
+          "56) In der Bäckerstraße dürfen Sie nicht fahren.",
+          "57) Sie können sich am Sonntag um ein Uhr bewerben.",
+          "58) Bei der Service-Nummer bekommen Sie Karten für eine Führung.",
+          "59) Um die zuständige Abteilung zu erreichen, müssen Sie die 3 wählen.",
+          "60) Sie sollen zum Ausgang 26 kommen."
+
+  ]
+},
+
+            {
+  title: "Quiz 3 (Teil 3): ",
+  correct: [1, 2, 5],
+  options: [
+          "56) In der Bäckerstraße dürfen Sie nicht fahren.",
+          "57) Sie können sich am Sonntag um ein Uhr bewerben.",
+          "58) Bei der Service-Nummer bekommen Sie Karten für eine Führung.",
+          "59) Um die zuständige Abteilung zu erreichen, müssen Sie die 3 wählen.",
+          "60) Sie sollen zum Ausgang 26 kommen."
+
+  ]
+},
+
+                  {
+  title: "Quiz 3 (Teil 3):",
+  correct: [1, 3, 5],
+  options: [
+  "56)Heute kann man vormittags das Fest besuchen.",
+  "57)Der Verkauf beginnt um 9 Uhr morgens.",
+  "58)£ 13,50 kosten Jugendliche Eintrittskarten für.",
+  "59)Die Fahrkarte ist in bestimmten Zügen gültig.",
+  "60)Am Sonntag können Kinder ein Theaterstück anschauen."
+
+  ]
+},
+
+                        {
+  title: "Quiz 3 (Teil 3): ",
+  correct: [1, 3, 5],
+  options: [
+  "56)Heute kann man vormittags das Fest besuchen.",
+  "57)Die Wiese beginnt um 8 Uhr.",
+  "58)Eintrittskarten für Jugendliche kosten 13,50 €.",
+  "59)Die Fahrkarte ist in bestimmten Zügen gültig.",
+  "60)Am Sonntag können Kinder ein Theaterstück anschauen."
+  ]
+},
+{
+  title: "Quiz 3 (Teil 3): ",
+  correct: [1, 4, 5],
+  options: [
+    "56- Sie Sollen zum Ausgang 26 kommen.",
+    "57- Um die zuständige Abteilung zu erreichen, müssen Sie die 3 wählen.",
+    "58- Bei der Service - Nummer bekommen Sie Karten für eine Führung.",
+    "59- Sie können sich am Sonntag um ein Uhr bewerben.",
+    "60- In der Bäckerstraße dürfen Sie nicht fahren."
+  ]
+},
+
+{
+  "title": "Quiz 3 (Teil 3): ",
+  "correct": [1, 4, 5],
+  "options": [
+  "56)Die Buchpräsentation beginnt laut Programm in 30 Minuten.",
+  "57)Patienten, die zu einer Nachbehandlung kommen, werden zu Schalter 3 gebeten.",
+  "58)Dienstags gibt es für einen Friseurbesuch zu Hause ein Sonderangebot.",
+  "59)Die Führungen im Tierpark beginnen in der Kassazone.",
+  "60)Die Besucher werden zum Mitmachen eingeladen."
+  ]
+},
+
+{
+  "title": "Quiz 3 (Teil 3): ",
+  "correct": [1, 4, 5],
+  "options": [
+  "56)Die Buchpräsentation beginnt laut Programm in 30 Minuten.",
+  "57)Patienten, die zu einer Nachbehandlung kommen, werden zu Schalter 3 gebeten.",
+  "58)Dienstags gibt es für einen Friseurbesuch zu Hause ein Sonderangebot.",
+  "59)Die Führungen im Tierpark beginnen in der Kassazone.",
+  "60)Die Besucher werden zum Mitmachen eingeladen."
+  ]
+},
+
+{
+  "title": "Quiz 3 (Teil 3): der Telekom",
+  "correct": [1, 4, 5],
+  "options": [
+    "56) Beim Informationsdienst der Telekom können Sie sich auch über Aktienkurse informieren.",
+    "57) In Hanau findet am Nachmittag ein Kindermaskenball statt.",
+    "58) Sie erfahren ausschließlich im Internet, ob Sie gewonnen haben.",
+    "59) Am Freitag müsse Sie in den Mittelgebirgen mit vielen Pollen rechnen.",
+    "60) Bayern Radio hat computergestützte Fahrschulprogramme getestet."
+  ]
+},
+
+
+{
+  "title": "Quiz 3 (Teil 3): ",
+  "correct": [2, 3, 4],
+  "options": [
+    "56) Die Parade der Kulturen wird mit einem Feuerwerk eröffnet.",
+    "57) Zum Skateboard-Treffen am 31.Oktober soll man verkleidet erscheinen.",
+    "58) Bei der Gartenausstellung KöGa kann man Gartenzwerge kaufen.",
+    "59) Die Autobahn A2 Richtung Hannover ist zwischen Rheda-Wiedenbrück und Oelde gesperrt.",
+    "60) Für handvermittelte Telefongespräche ins Ausland müssen Sie die 613 30 30 30 wählen."
+  ]
+},
+
+
+{
+  title: "Quiz 3 (Teil 3):",
+  correct: [2, 3, 4],
+  options: [
+    "56- Bis 14 Uhr können Sie Delikatessen aus verschiedenen Ländern kaufen.",
+    "57- Bis zum Start können Sie mit Ihrem Handy telefonieren.",
+    "58- Vorführungen mit Tieren werden nicht geboten.",
+    "59- Am Wochenende können Sie Musik im Schloss Mirabell hören.",
+    "60- Sie können Frau Dr. Schneider am Samstagabend anrufen."
+  ]
+},
+
+{
+  title: "Quiz 3 (Teil 3):",
+  correct: [2, 3, 4],
+  options: [
+    "56- Bis 14 Uhr können Sie Delikatessen aus verschiedenen Ländern kaufen.",
+    "57- Bis zum Start können Sie mit Ihrem Handy telefonieren.",
+    "58- Vorführungen mit Tieren werden nicht geboten.",
+    "59- Am Wochenende können Sie Musik im Schloss Mirabell hören.",
+    "60- Sie können Frau Dr. Schneider am Samstagabend anrufen."
+  ]
+},
+
+{
+  "title": "Quiz 3 (Teil 3): ",
+  "correct": [1, 2, 4, 5],
+  "options": [
+    "56) Der Christkindlesmarkt in Nürnberg hat einen speziellen Geschenk-Dienst für Kinder im Programm.",
+    "57) Auf dem deutsch-französischen Bauernmarkt in Hochspeyer gibt es ökologische Projekte.",
+    "58) In Heilsheim gibt es heute Abend einen Jodelkurs.",
+    "59) Auf der A5 gibt es hinter Karlsruhe mehrere Behinderungen.",
+    "60) Ihr Computer fährt nicht mehr hoch. Sie müssen die 70 17 17 wählen, um bei Computer World Hilfe zu bekommen."
+  ]
+},
+
+{
+  title: "Quiz 3 (Teil 3): ",
+  correct: [1, 3, 4, 5],
+  options: [
+    "56- Ihre Tochter kann am Freitag verschiedene Sportarten testen.",
+    "57- Sie konnen sich im Internet zum Blutspenden anmelden.",
+    "58- Heute müssen Sie auf den Bus ausweichen.",
+    "59- Sie müssen das Bad früher verlassen.",
+    "60- Für einen Termin müssen Sie anrufen."
+  ]
+}
+    ];
+
+
+    // --- YENİ KARMA MANTIĞI ---
+
+    // Üç test grubunun uzunluğunun maksimumunu alır.
+    const maxGroups = Math.max(tests1.length, tests2.length, tests3.length);
+
+    // Rastgele sıralanmış ana indeks listesi (0'dan maxGroups-1'e kadar)
+    let groupIndices = [];
+
+    // Fisher-Yates (Knuth) Algoritması ile diziyi karıştırma
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    // Başlangıçta indeksleri oluştur ve karıştır
+    function initializeGroups() {
+        // 0'dan en yüksek test sayısına (maxGroups) kadar bir dizi oluştur
+        groupIndices = Array.from({length: maxGroups}, (v, i) => i);
+        // Bu ana diziyi karıştır. Bu, sayfaların (grupların) hangi sırayla geleceğini belirler.
+        shuffleArray(groupIndices);
+    }
+    
+    // İstatistik ve Test Görünümü Fonksiyonları
+    function updateStatsBox() {
+        document.getElementById("correctCount").innerText = totalCorrect;
+        document.getElementById("wrongCount").innerText = totalWrong;
+        const totalAttempts = totalCorrect + totalWrong;
+        if (totalAttempts > 0) {
+            const correctPercent = Math.round((totalCorrect / totalAttempts) * 100);
+            const wrongPercent = 100 - correctPercent;
+            document.getElementById("correctPercent").innerText = correctPercent;
+            document.getElementById("wrongPercent").innerText = wrongPercent;
+        } else {
+            document.getElementById("correctPercent").innerText = 0;
+            document.getElementById("wrongPercent").innerText = 0;
+        }
+    }
+
+    // Her bir testi/alıştırmayı render eden yardımcı fonksiyon
+    // actualIndex parametresi, benzersiz ID'ler oluşturmak için eklendi
+    function renderSingleTest(test, parentElement, groupIndex, actualIndex) {
+        const testGroupDiv = document.createElement("div");
+        testGroupDiv.className = "test-group";
+        
+        const titleDiv = document.createElement("div");
+        titleDiv.className = "test-title";
+        titleDiv.innerText = test.title;
+        testGroupDiv.appendChild(titleDiv);
+        
+        const codeBoxDiv = document.createElement("div");
+        codeBoxDiv.className = "code-box";
+        // Kod kutusu ID'sini her bir quiz grubu için benzersiz hale getirme
+        codeBoxDiv.id = `codeBox-${groupIndex}-${actualIndex}`; 
+        codeBoxDiv.innerText = ""; // Başlangıçta boş
+        testGroupDiv.appendChild(codeBoxDiv);
+        
+        const optionsDiv = document.createElement("div");
+        optionsDiv.id = `options-${groupIndex}-${actualIndex}`;
+        testGroupDiv.appendChild(optionsDiv);
+
+        // Seçenek durumu, her bir quiz/grup için ayrı ayrı saklanır
+        let lockedOptions = Array(test.options.length).fill(false);
+        let selected = [];
+
+        test.options.forEach((option, idx) => {
+            const optionDiv = document.createElement("div");
+            optionDiv.className = "option";
+            
+            // Seçenek metnini ve numarasını ayıkla (e.g., "41) ...", "1. ...")
+            const match = option.match(/^(?:(\d+)[.)-]?\s*)/);
+            let displayIndex = `${idx + 1}.`;
+            let displayText = option;
+
+            if (match) {
+                // Eğer metin "41) ..." gibi bir numarayla başlıyorsa, o numarayı kullan
+                displayIndex = `${match[1]}.`;
+                displayText = option.substring(match[0].length).trim();
+            } else {
+                // Değilse, standart 1'den başlayan index'i kullan
+                displayIndex = `${idx + 1}.`
+                displayText = option;
+            }
+            
+            optionDiv.innerHTML = `<span class="option-number">${displayIndex}</span> <span>${displayText}</span>`;
+
+            
+            // Tıklama Olayı
+            optionDiv.onclick = () => {
+                if (lockedOptions[idx]) return;
+
+                const isCorrect = test.correct.includes(idx + 1);
+
+                // Görünümü güncelle
+                optionDiv.classList.add("selected");
+                optionDiv.classList.add(isCorrect ? "correct" : "incorrect");
+
+                if (isCorrect) {
+                    dogruSes.currentTime = 0;
+                    dogruSes.play().catch(e => console.log("Doğru ses çalma hatası:", e));
+                    selected.push(idx + 1);
+                    totalCorrect++;
+                } else {
+                    yanlisSes.currentTime = 0;
+                    yanlisSes.play().catch(e => console.log("Yanlış ses çalma hatası:", e));
+                    totalWrong++;
+                }
+                lockedOptions[idx] = true; 
+                updateStatsBox();
+
+                // Tüm doğru cevaplar seçildiyse kodu göster
+                const sortedSel = selected.slice().sort((a,b) => a-b);
+                const sortedCor = test.correct.slice().sort((a,b) => a-b);
+                
+                if (sortedSel.length === sortedCor.length && sortedSel.every((v,i) => v===sortedCor[i])) {
+                    // quiz2'deki (Teil 2) 10=0 kuralını uygula
+                    const codeText = test.title.includes("Quiz 2 (Teil 2)") 
+                        ? sortedSel.map(x => x === 10 ? 0 : x).join("")
+                        : sortedSel.join("");
+
+                    codeBoxDiv.innerText = codeText;
+                    Array.from(optionsDiv.children).forEach((optDiv, i) => {
+                        lockedOptions[i] = true;
+                    });
+                }
+            };
+            
+            optionsDiv.appendChild(optionDiv);
+        });
+
+        parentElement.appendChild(testGroupDiv);
+    }
+
+    function renderGroup() {
+        const testContainer = document.getElementById("testContainer");
+        testContainer.innerHTML = '';
+        
+        // Hangi *ana* indeksi kullanacağımızı bul (0'dan 50'ye kadar, örn: 42)
+        const actualIndex = groupIndices[currentGroup]; 
+        
+        document.getElementById("pageNumber").innerText = `${currentGroup + 1} / ${maxGroups}`; // Sayfa numarasını total ile göster
+
+        // --- YENİ EŞLEŞTİRME VE DÖNGÜ MANTIĞI (MODULO) ---
+        // Her liste için gösterilecek indeksi, ana indeksi kendi uzunluğuna bölerek buluruz.
+        // Örn: actualIndex = 50 ise;
+        // Test 1 (uzunluk 47): 50 % 47 = 3.  (tests1[3]'ü gösterir - başa döner)
+        // Test 2 (uzunluk 51): 50 % 51 = 50. (tests2[50]'yi gösterir)
+        // Test 3 (uzunluk 44): 50 % 44 = 6.  (tests3[6]'yı gösterir - başa döner)
+        
+        const test1ToShow = tests1[actualIndex % tests1.length];
+        const test2ToShow = tests2[actualIndex % tests2.length];
+        const test3ToShow = tests3[actualIndex % tests3.length];
+
+        // 1. Alıştırma Grubu (Teil 1)
+        renderSingleTest(test1ToShow, testContainer, 1, actualIndex);
+        
+        // 2. Alıştırma Grubu (Teil 2)
+        renderSingleTest(test2ToShow, testContainer, 2, actualIndex);
+
+        // 3. Alıştırma Grubu (Teil 3)
+        renderSingleTest(test3ToShow, testContainer, 3, actualIndex);
+        
+        
+        // Navigasyon butonlarının durumunu güncelle
+        document.getElementById("prevBtn").disabled = currentGroup === 0;
+        document.getElementById("nextBtn").disabled = currentGroup === (maxGroups - 1);
+        
+        // Sayfanın başına scroll et
+        document.querySelector('.container').scrollTop = 0;
+    }
+
+    // Navigasyon
+    document.getElementById("prevBtn").onclick = () => {
+        if (currentGroup > 0) {
+            currentGroup--;
+            renderGroup();
+        }
+    };
+    document.getElementById("nextBtn").onclick = () => {
+        if (currentGroup < maxGroups - 1) {
+            currentGroup++;
+            renderGroup();
+        }
+    };
+
+    // İlk grubu yükle (Rastgele sırayı başlat ve yükle)
+    initializeGroups(); 
+    renderGroup();
+    updateStatsBox();
+  </script>
+</body>
+</html>
