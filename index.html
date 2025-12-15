@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>ANA SAYFA</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #FFF8E1;
+      width: 100vw;
+      height: 100vh;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .welcome {
+      font-size: 8rem;
+      font-weight: bold;
+      letter-spacing: 6px;
+      color: #b98d00;
+      text-align: center;
+      margin-bottom: 60px;
+      margin-top: 0;
+    }
+    .b2-prufung {
+      font-size: 4rem;
+      font-weight: bold;
+      color: hsl(51, 91%, 31%);
+      letter-spacing: 3px;
+      text-align: center;
+      margin-bottom: 40px;
+      text-transform: uppercase;
+    }
+    .main-rows {
+      width: 90vw;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: -25px;
+    }
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+    .btn-group.left {
+      align-items: flex-start;
+    }
+    .btn-group.right {
+      align-items: flex-end;
+    }
+    .btn-group.center {
+      align-items: center;
+    }
+    .btn-custom {
+      font-size: 1.3rem;
+      padding: 20px 48px;
+      border-radius: 18px;
+      border: none;
+      background: #ffd400;
+      color: #543c00;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #0002;
+      transition: background 0.25s;
+      letter-spacing: 1.5px;
+      min-width: 320px;
+      text-align: center;
+    }
+    .btn-custom:hover {
+      background: #ffe055;
+    }
+    #sifreEkrani {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #fff8e1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    #icerik {
+      display: none;
+    }
+    input[type="password"] {
+      font-size: 1.2rem;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #999;
+      margin-top: 10px;
+      text-align: center;
+    }
+    button#girisBtn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 8px;
+      background-color: #ffd400;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    @media (max-width: 900px) {
+      .welcome { font-size: 3rem; }
+      .b2-prufung { font-size: 2rem; }
+      .btn-custom { min-width: 90vw; font-size: 1rem; }
+      .main-rows { flex-direction: column; align-items: center; }
+      .btn-group { align-items: center !important; }
+    }
+  </style>
+  <script>
+    // =========================
+    // 1) AYARLAR
+    // =========================
+    const SIFRELER = ["zelal", "Bahtar"];     // kullanıcı şifreleri
+    const ADMIN_SIFRE = "ADMIN-2121";        // 🔴 bunu mutlaka değiştir (admin reset şifresi)
+
+    // =========================
+    // 2) CİHAZ KİLİDİ (Device Lock)
+    // =========================
+    const DEVICE_ID_KEY = "device_lock_id_v1";
+    const BIND_PREFIX   = "device_bind_v1_"; // her şifre için ayrı bağ
+
+    function getDeviceId() {
+      let id = localStorage.getItem(DEVICE_ID_KEY);
+      if (!id) {
+        id = (window.crypto && crypto.randomUUID)
+          ? crypto.randomUUID()
+          : ("dev_" + Math.random().toString(16).slice(2) + Date.now());
+        localStorage.setItem(DEVICE_ID_KEY, id);
+      }
+      return id;
+    }
+
+    function bindKeyForPassword(pw) {
+      // localStorage key güvenli olsun diye encode ediyoruz
+      try {
+        return BIND_PREFIX + btoa(unescape(encodeURIComponent(pw))).replace(/=+$/,"");
+      } catch (e) {
+        return BIND_PREFIX + pw.replace(/[^a-z0-9]/gi, "_");
+      }
+    }
+
+    function isDeviceAllowedForPassword(pw) {
+      const deviceId = getDeviceId();
+      const k = bindKeyForPassword(pw);
+      const bound = localStorage.getItem(k);
+
+      // İlk kez: bu şifreyi bu cihaza bağla
+      if (!bound) {
+        localStorage.setItem(k, deviceId);
+        return true;
+      }
+      // Sonraki girişler: aynı cihaz mı?
+      return bound === deviceId;
+    }
+
+    // =========================
+    // 3) OTURUM KONTROLÜ
+    // =========================
+    window.onload = function() {
+      if (sessionStorage.getItem("girisYapildi") === "evet") {
+        document.getElementById("sifreEkrani").style.display = "none";
+        document.getElementById("icerik").style.display = "block";
+      }
+    };
+
+    function kontrolEt() {
+      const sifre = (document.getElementById("sifre").value || "").trim();
+
+      if (!SIFRELER.includes(sifre)) {
+        alert("❌ Yanlış şifre!");
+        return;
+      }
+
+      // Şifre doğru ama başka cihazdan deneniyorsa engelle
+      if (!isDeviceAllowedForPassword(sifre)) {
+        alert("⛔ Bu şifre sadece daha önce tanımlanan cihazda çalışır.\n\nNot: Tarayıcı verileri silinirse cihaz tekrar 'yeni' görünür.");
+        return;
+      }
+
+      sessionStorage.setItem("girisYapildi", "evet");
+      document.getElementById("sifreEkrani").style.display = "none";
+      document.getElementById("icerik").style.display = "block";
+    }
+
+    // =========================
+    // 4) ADMIN RESET (Cihaz kilidini kaldır)
+    // =========================
+    function adminReset() {
+      const pw = prompt("Admin şifresini gir:");
+      if (pw !== ADMIN_SIFRE) {
+        alert("❌ Admin şifresi yanlış!");
+        return;
+      }
+
+      // Tüm şifre bağlarını temizle (yeni cihaz tanımlamayı mümkün kılar)
+      Object.keys(localStorage).forEach(k => {
+        if (k.startsWith(BIND_PREFIX)) localStorage.removeItem(k);
+      });
+
+      // Oturumu da sıfırla
+      sessionStorage.removeItem("girisYapildi");
+
+      alert("✅ Cihaz kilidi sıfırlandı.\nŞimdi hangi cihazdan giriş yapılırsa o cihaza yeniden bağlanır.");
+      location.reload();
+    }
+</script>
+</head>
+<body>
+
+<div id="sifreEkrani">
+  <h2>🔒 Sayfa Korumalı</h2>
+  <p>Lütfen şifreyi girin:</p>
+  <input type="password" id="sifre" placeholder="Şifre girin">
+  <button id="girisBtn" onclick="kontrolEt()">Giriş</button>
+  <button class="btn-custom" onclick="adminReset()" style="background:#444; margin-top:10px;">🔁 Cihaz Kilidini Sıfırla (Admin)</button>
+
+</div>
+
+<div id="icerik">
+  <div class="welcome">HOŞ GELDİNİZ</div>
+  <div class="b2-prufung">B2 PRÜFUNG</div>
+  <div class="main-rows">
+    <div class="btn-group left">
+      <button class="btn-custom" onclick="window.location.href='lese1.html'">Leseverstehen Teil 1</button>
+      <button class="btn-custom" onclick="window.location.href='lese2.html'">Leseverstehen Teil 2</button>
+      <button class="btn-custom" onclick="window.location.href='lese3.html'">Leseverstehen Teil 3</button>
+      <button class="btn-custom" onclick="window.location.href='günlük konuşma.html'">Günlük Konuşma</button>
+      <button class="btn-custom" onclick="window.location.href='lese0.html'">Leseverstehen Teil 11</button>
+       <button class="btn-custom" onclick="window.location.href='sunum en son.html'">Sunum</button>
+    </div>
+    <div class="btn-group center">
+      <button class="btn-custom" onclick="window.location.href='sprach1.html'">Sprachbausteine Teil 1</button>
+      <button class="btn-custom" onclick="window.location.href='sprach2.html'">Sprachbausteine Teil 2</button>
+      <button class="btn-custom" onclick="window.location.href='wortschatz.html'">Wortschatz</button>
+      <button class="btn-custom" onclick="window.location.href='wortschatz cep.html'">wortschatz cep.html</button>
+    </div>
+    <div class="btn-group right">
+      <button class="btn-custom" onclick="window.location.href='quiz.html'">Hörverstehen Teil 1</button>
+      <button class="btn-custom" onclick="window.location.href='quiz2.html'">Hörverstehen Teil 2</button>
+      <button class="btn-custom" onclick="window.location.href='quiz3.html'">Hörverstehen Teil 3</button>
+       <button class="btn-custom" onclick="window.location.href='quiz4.html'">Hörverstehen Karma</button>
+        <button class="btn-custom" onclick="window.location.href='quiz5.html'">Karma</button>
+       <button class="btn-custom" onclick="window.location.href='lösung.html'">Etwas Planen</button>
+    
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
