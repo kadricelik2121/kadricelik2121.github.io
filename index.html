@@ -117,6 +117,93 @@
   </style>
 <script>
 
+  (() => {
+  const WORKER_URL = "https://nameless-resonance-c9ce.kc-kadricelik.workers.dev";
+
+  function showAdminPanel() {
+    const wrap = document.createElement("div");
+    wrap.style.cssText = `
+      position: fixed; inset: 0; background: rgba(0,0,0,.55);
+      display:flex; align-items:center; justify-content:center; z-index:99999;
+      font-family: Arial, sans-serif;
+    `;
+    wrap.innerHTML = `
+      <div style="width:min(520px,92vw); background:#fff; border-radius:14px; padding:18px; box-shadow:0 10px 30px rgba(0,0,0,.25);">
+        <div style="font-size:18px; font-weight:700; margin-bottom:10px;">Admin Sıfırlama</div>
+
+        <div style="font-size:13px; color:#444; margin-bottom:10px;">
+          Buradan bir şifreyi (örn: <b>zelal</b>) veya <b>ALL</b> yazarak hepsini sıfırlayabilirsin.
+        </div>
+
+        <label style="font-size:12px; color:#666;">ADMIN TOKEN</label>
+        <input id="admTok" type="password" autocomplete="off"
+               style="width:100%; padding:10px; border:1px solid #ccc; border-radius:10px; margin:6px 0 12px;" />
+
+        <label style="font-size:12px; color:#666;">Sıfırlanacak şifre (örn: zelal) veya ALL</label>
+        <input id="admPw" type="text" autocomplete="off"
+               style="width:100%; padding:10px; border:1px solid #ccc; border-radius:10px; margin:6px 0 12px;" />
+
+        <div style="display:flex; gap:10px; justify-content:flex-end;">
+          <button id="admClose" style="padding:10px 14px; border:1px solid #ccc; background:#fff; border-radius:10px; cursor:pointer;">Kapat</button>
+          <button id="admDo" style="padding:10px 14px; border:none; background:#0b57d0; color:#fff; border-radius:10px; cursor:pointer;">Sıfırla</button>
+        </div>
+
+        <div id="admMsg" style="margin-top:12px; font-size:13px;"></div>
+      </div>
+    `;
+
+    document.body.appendChild(wrap);
+
+    const msg = wrap.querySelector("#admMsg");
+    wrap.querySelector("#admClose").onclick = () => {
+      wrap.remove();
+      if (location.hash === "#admin") history.replaceState(null, "", location.pathname + location.search);
+    };
+    wrap.onclick = (e) => { if (e.target === wrap) wrap.querySelector("#admClose").click(); };
+
+    wrap.querySelector("#admDo").onclick = async () => {
+      msg.textContent = "İşlem yapılıyor...";
+      msg.style.color = "#333";
+
+      const adminToken = wrap.querySelector("#admTok").value.trim();
+      const targetPassword = wrap.querySelector("#admPw").value.trim();
+
+      if (!adminToken || !targetPassword) {
+        msg.textContent = "Token ve şifre/ALL boş olamaz.";
+        msg.style.color = "crimson";
+        return;
+      }
+
+      try {
+        const r = await fetch(WORKER_URL + "/admin/reset", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({ adminToken, targetPassword })
+        });
+        const data = await r.json().catch(() => ({}));
+
+        if (r.ok && data.ok) {
+          msg.textContent = "✅ Sıfırlandı. Artık o şifre yeni cihazda ilk giriş yapan kişiye bağlanacak.";
+          msg.style.color = "green";
+        } else {
+          msg.textContent = "❌ Başarısız. Token yanlış olabilir. (" + (data.reason || r.status) + ")";
+          msg.style.color = "crimson";
+        }
+      } catch (e) {
+        msg.textContent = "❌ Bağlantı hatası: " + (e?.message || e);
+        msg.style.color = "crimson";
+      }
+    };
+  }
+
+  function maybeOpenAdmin() {
+    if (location.hash === "#admin") showAdminPanel();
+  }
+
+  window.addEventListener("hashchange", maybeOpenAdmin);
+  maybeOpenAdmin();
+})();
+
   // ====== Ayarlar ======
   const VALID_PASSWORDS = ["zelal", "Bahtar", "2005"];   // izin verdiğin şifreler
   const DEVICE_ID_KEY = "device_id_v1";          // bu tarayıcıya ait sabit cihaz id
