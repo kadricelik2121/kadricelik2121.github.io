@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>ANA SAYFA</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #FFF8E1;
+      width: 100vw;
+      height: 100vh;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .welcome {
+      font-size: 8rem;
+      font-weight: bold;
+      letter-spacing: 6px;
+      color: #b98d00;
+      text-align: center;
+      margin-bottom: 60px;
+      margin-top: 0;
+    }
+    .b2-prufung {
+      font-size: 4rem;
+      font-weight: bold;
+      color: hsl(51, 91%, 31%);
+      letter-spacing: 3px;
+      text-align: center;
+      margin-bottom: 40px;
+      text-transform: uppercase;
+    }
+    .main-rows {
+      width: 90vw;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: -25px;
+    }
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+    .btn-group.left {
+      align-items: flex-start;
+    }
+    .btn-group.right {
+      align-items: flex-end;
+    }
+    .btn-group.center {
+      align-items: center;
+    }
+    .btn-custom {
+      font-size: 1.3rem;
+      padding: 20px 48px;
+      border-radius: 18px;
+      border: none;
+      background: #ffd400;
+      color: #543c00;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #0002;
+      transition: background 0.25s;
+      letter-spacing: 1.5px;
+      min-width: 320px;
+      text-align: center;
+    }
+    .btn-custom:hover {
+      background: #ffe055;
+    }
+    #sifreEkrani {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #fff8e1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    #icerik {
+      display: none;
+    }
+    input[type="password"] {
+      font-size: 1.2rem;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #999;
+      margin-top: 10px;
+      text-align: center;
+    }
+    button#girisBtn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 8px;
+      background-color: #ffd400;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    @media (max-width: 900px) {
+      .welcome { font-size: 3rem; }
+      .b2-prufung { font-size: 2rem; }
+      .btn-custom { min-width: 90vw; font-size: 1rem; }
+      .main-rows { flex-direction: column; align-items: center; }
+      .btn-group { align-items: center !important; }
+    }
+  </style>
+<script>
+
+  // ====== Ayarlar ======
+  const VALID_PASSWORDS = ["zelal", "Bahtar", "2005"];   // izin verdiğin şifreler
+  const DEVICE_ID_KEY = "device_id_v1";          // bu tarayıcıya ait sabit cihaz id
+  const SESSION_OK_KEY = "girisYapildi";         // sessionStorage anahtarı
+  const SESSION_PW_HASH_KEY = "pwHash";          // sessionStorage: hangi şifre ile giriş yapıldı (hash)
+  const WORKER_URL = "https://nameless-resonance-c9ce.kc-kadricelik.workers.dev";
+
+  // Bu tarayıcıda tekil bir cihaz kimliği üret (ilk kez) ve sakla
+  function getDeviceId() {
+    let id = localStorage.getItem(DEVICE_ID_KEY);
+    if (!id) {
+      id = (crypto.randomUUID ? crypto.randomUUID() : (Date.now() + "-" + Math.random()));
+      localStorage.setItem(DEVICE_ID_KEY, id);
+    }
+    return id;
+  }
+
+  // Şifreyi localStorage anahtarı olarak saklamamak için SHA-256 hash üret
+  async function sha256(text) {
+    const enc = new TextEncoder().encode(text);
+    const buf = await crypto.subtle.digest("SHA-256", enc);
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+  }
+
+  async function showContentIfSessionValid() {
+    if (sessionStorage.getItem(SESSION_OK_KEY) !== "evet") return;
+    // Sekme açıkken tekrar şifre sormadan içeriği göster
+    document.getElementById("sifreEkrani").style.display = "none";
+    document.getElementById("icerik").style.display = "block";
+  }
+
+  window.addEventListener("load", () => {
+    // Güvenlik: içerik her zaman kapalı başlar, sadece kontrol sonrası açılır
+    document.getElementById("sifreEkrani").style.display = "flex";
+    document.getElementById("icerik").style.display = "none";
+    showContentIfSessionValid();
+  });
+
+  async function kontrolEt() {
+    const sifre = document.getElementById("sifre").value.trim();
+    if (!sifre) {
+      alert("Şifre giriniz.");
+      return;
+    }
+
+    try {
+      const r = await fetch(WORKER_URL + "/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: sifre, deviceId: getDeviceId() })
+      });
+
+      const data = await r.json().catch(() => ({}));
+
+      if (!r.ok) {
+        if (r.status === 401) {
+          alert("❌ Yanlış şifre!");
+          return;
+        }
+        if (r.status === 403 && data && data.reason === "device_mismatch") {
+          alert("⛔ Bu şifre başka bir cihaza bağlı. Bu cihazdan giriş yapılamaz.");
+          return;
+        }
+        alert("❌ Giriş yapılamadı. (Worker hata)");
+        return;
+      }
+
+      // Oturum (sekme kapatılınca biter)
+      const pwHash = await sha256(sifre);
+      sessionStorage.setItem(SESSION_OK_KEY, "evet");
+      sessionStorage.setItem(SESSION_PW_HASH_KEY, pwHash);
+
+      document.getElementById("sifreEkrani").style.display = "none";
+      document.getElementById("icerik").style.display = "block";
+    } catch (e) {
+      alert("❌ Bağlantı hatası. Worker URL doğru mu?");
+    }
+  }
+
+
+  // ====== ADMIN SIFIRLAMA (Çözüm 2) ======
+  // Kullanım:
+  // 1) Önce normal şifre ile giriş yap (icerik açılsın)
+  // 2) Adrese #admin ekle: https://.../index.html#admin
+  // 3) Açılan pencerede ADMIN TOKEN (Cloudflare Secret: ADMIN_TOKEN) ve hedef şifreyi yaz.
+  //
+  // Not: Admin paneli sadece giriş yapıldıysa açılır.
+  function showAdminPanel() {
+    // Zaten açıksa tekrar açma
+    if (document.getElementById("adminWrap")) return;
+
+    const wrap = document.createElement("div");
+    wrap.id = "adminWrap";
+    wrap.style.cssText = `
+      position: fixed; inset: 0; background: rgba(0,0,0,.55);
+      display:flex; align-items:center; justify-content:center; z-index: 100000;
+      font-family: Arial, sans-serif;
+    `;
+
+    wrap.innerHTML = `
+      <div style="width:min(560px,92vw); background:#fff; border-radius:14px; padding:18px; box-shadow:0 10px 30px rgba(0,0,0,.25);">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+          <div style="font-size:18px; font-weight:700;">Admin Şifre Sıfırlama</div>
+          <button id="admClose" style="padding:8px 10px; border:1px solid #ccc; background:#fff; border-radius:10px; cursor:pointer;">Kapat ✕</button>
+        </div>
+
+        <div style="margin-top:10px; font-size:13px; color:#444;">
+          Buradan <b>tek bir şifreyi</b> (örn: <b>zelal</b>) veya <b>ALL</b> yazarak <b>tüm şifre kilitlerini</b> sıfırlayabilirsin.
+        </div>
+
+        <div style="margin-top:12px;">
+          <label style="font-size:12px; color:#666;">ADMIN TOKEN</label>
+          <input id="admTok" type="password" autocomplete="off"
+                 style="width:100%; padding:10px; border:1px solid #ccc; border-radius:10px; margin-top:6px;" />
+        </div>
+
+        <div style="margin-top:12px;">
+          <label style="font-size:12px; color:#666;">Sıfırlanacak şifre (örn: zelal) veya ALL</label>
+          <input id="admPw" type="text" autocomplete="off" placeholder="zelal / Bahtar / 2005 / ALL"
+                 style="width:100%; padding:10px; border:1px solid #ccc; border-radius:10px; margin-top:6px;" />
+        </div>
+
+        <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:14px;">
+          <button id="admDo" style="padding:10px 14px; border:none; background:#0b57d0; color:#fff; border-radius:10px; cursor:pointer; font-weight:700;">
+            Sıfırla
+          </button>
+        </div>
+
+        <div id="admMsg" style="margin-top:12px; font-size:13px;"></div>
+      </div>
+    `;
+
+    document.body.appendChild(wrap);
+
+    const close = () => {
+      const el = document.getElementById("adminWrap");
+      if (el) el.remove();
+      if (location.hash === "#admin") history.replaceState(null, "", location.pathname + location.search);
+    };
+
+    wrap.addEventListener("click", (e) => { if (e.target === wrap) close(); });
+    wrap.querySelector("#admClose").addEventListener("click", close);
+
+    const msg = wrap.querySelector("#admMsg");
+    wrap.querySelector("#admDo").addEventListener("click", async () => {
+      msg.textContent = "İşlem yapılıyor...";
+      msg.style.color = "#333";
+
+      const adminToken = wrap.querySelector("#admTok").value.trim();
+      const targetPassword = wrap.querySelector("#admPw").value.trim();
+
+      if (!adminToken || !targetPassword) {
+        msg.textContent = "Token ve şifre/ALL boş olamaz.";
+        msg.style.color = "crimson";
+        return;
+      }
+
+      try {
+        const r = await fetch(WORKER_URL + "/admin/reset", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ adminToken, targetPassword })
+        });
+
+        const data = await r.json().catch(() => ({}));
+
+        if (r.ok && data && data.ok) {
+          msg.textContent = "✅ Sıfırlandı. Artık bu şifre yeni cihazda ilk giriş yapan kişiye bağlanacak.";
+          msg.style.color = "green";
+        } else {
+          msg.textContent = "❌ Başarısız. Token yanlış olabilir veya hedef şifre hatalı. (" + ((data && data.reason) ? data.reason : r.status) + ")";
+          msg.style.color = "crimson";
+        }
+      } catch (e) {
+        msg.textContent = "❌ Bağlantı hatası: " + (e?.message || e);
+        msg.style.color = "crimson";
+      }
+    });
+  }
+
+  function maybeOpenAdmin() {
+    // Admin panel sadece #admin varsa ve giriş yapılmışsa açılsın
+    if (location.hash !== "#admin") return;
+
+    if (sessionStorage.getItem(SESSION_OK_KEY) !== "evet") {
+      alert("Admin paneli için önce giriş yapmalısın.");
+      // hash'i temizle
+      history.replaceState(null, "", location.pathname + location.search);
+      return;
+    }
+    showAdminPanel();
+  }
+
+  window.addEventListener("hashchange", maybeOpenAdmin);
+  // Sayfa açılışında da kontrol et
+  window.addEventListener("load", maybeOpenAdmin);
+
+</script>
+</head>
+<body>
+
+<div id="sifreEkrani">
+  <h2>🔒 Sayfa Korumalı</h2>
+  <p>Lütfen şifreyi girin:</p>
+  <input type="password" id="sifre" placeholder="Şifre girin">
+  <button id="girisBtn" onclick="kontrolEt()">Giriş</button>
+</div>
+
+<div id="icerik">
+  <div class="welcome">HOŞ GELDİNİZ</div>
+  <div class="b2-prufung">B2 PRÜFUNG</div>
+  <div class="main-rows">
+    <div class="btn-group left">
+      <button class="btn-custom" onclick="window.location.href='lese1.html'">Leseverstehen Teil 1</button>
+      <button class="btn-custom" onclick="window.location.href='lese2.html'">Leseverstehen Teil 2</button>
+      <button class="btn-custom" onclick="window.location.href='lese3.html'">Leseverstehen Teil 3</button>
+      <button class="btn-custom" onclick="window.location.href='günlük konuşma.html'">Günlük Konuşma</button>
+      <button class="btn-custom" onclick="window.location.href='lese0.html'">Leseverstehen Teil 11</button>
+       <button class="btn-custom" onclick="window.location.href='sunum en son.html'">Sunum</button>
+    </div>
+    <div class="btn-group center">
+      <button class="btn-custom" onclick="window.location.href='sprach1.html'">Sprachbausteine Teil 1</button>
+      <button class="btn-custom" onclick="window.location.href='sprach2.html'">Sprachbausteine Teil 2</button>
+      <button class="btn-custom" onclick="window.location.href='wortschatz.html'">Wortschatz</button>
+      <button class="btn-custom" onclick="window.location.href='wortschatz cep.html'">wortschatz cep.html</button>
+    </div>
+    <div class="btn-group right">
+      <button class="btn-custom" onclick="window.location.href='quiz.html'">Hörverstehen Teil 1</button>
+      <button class="btn-custom" onclick="window.location.href='quiz2.html'">Hörverstehen Teil 2</button>
+      <button class="btn-custom" onclick="window.location.href='quiz3.html'">Hörverstehen Teil 3</button>
+       <button class="btn-custom" onclick="window.location.href='quiz4.html'">Hörverstehen Karma</button>
+        <button class="btn-custom" onclick="window.location.href='quiz5.html'">Karma</button>
+       <button class="btn-custom" onclick="window.location.href='lösung.html'">Etwas Planen</button>
+    
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
