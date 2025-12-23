@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Almanca Diyalog – Durum 1</title>
+  <style>
+    :root{
+      --bg:#0b1220; --text:#e9eefc; --muted:#b7c2e3;
+      --accent:#22c55e; --accent2:#60a5fa;
+      --shadow: 0 14px 40px rgba(0,0,0,.35);
+      --radius: 16px; --max: 980px;
+      --lineBorder: rgba(255,255,255,.10);
+      --lineBg: rgba(255,255,255,.04);
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 20% 10%, rgba(34,197,94,.18), transparent 60%),
+                  radial-gradient(900px 650px at 85% 15%, rgba(96,165,250,.18), transparent 55%),
+                  var(--bg);
+      color: var(--text);
+      line-height:1.6;
+    }
+    .wrap{ max-width: var(--max); margin: 0 auto; padding: 15px; }
+    
+    .topbar{
+      position: sticky; top:0; z-index: 50;
+      background: rgba(11,18,32,0.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    h1{ font-size: 1.2rem; margin:0 0 12px 0; text-align: center; }
+    
+    .pillrow{ 
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 8px; 
+    }
+    
+    button, .pill-input-wrapper {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 48px; 
+      padding: 0 10px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      border: 1px solid rgba(255,255,255,.12);
+      color: var(--text);
+      cursor: pointer;
+      background: rgba(255,255,255,.08);
+      white-space: nowrap;
+    }
+
+    .pill-input-wrapper { grid-column: span 1; font-size: 12px; gap: 5px; }
+    input[type="number"] {
+      width: 45px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff; border-radius: 6px; text-align: center; font-size: 14px; outline: none;
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.10); border-radius: var(--radius);
+      margin-top: 15px;
+    }
+    .cardhead{
+      padding: 12px; background: rgba(255,255,255,.03);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      text-align: center; font-weight: bold;
+    }
+
+    .line{
+      margin: 10px 0; padding: 12px; border-radius: 12px;
+      border: 1px solid var(--lineBorder); background: var(--lineBg);
+      font-size: 18px; transition: all 0.3s;
+    }
+    .line.active-line{ background: rgba(34,197,94,0.2); border-color: var(--accent); font-weight: 700; }
+    
+    .word{ cursor:pointer; color: #ffffff; border-bottom: 1px dotted #ff4444; }
+
+    .toast{
+      position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%);
+      z-index: 1000; display:none; padding: 12px 20px; width: 85%; max-width: 400px;
+      border-radius: 12px; background: #1e293b; text-align: center;
+      border: 2px solid #00ffff; color: #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+
+    @media (max-width: 480px) {
+      .line { font-size: 17px; }
+      h1 { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <h1>🏠 EV HALİ – Durum 1</h1>
+    <div class="pillrow">
+      <button style="background:rgba(96,165,250,.2)" data-action="tts">🗣️ Taslak Ses</button>
+      <button style="background:rgba(34,197,94,.2)" data-action="polly">🎧 Polly MP3</button>
+      <button id="globalToggle" style="background:rgba(239,68,68,.2)" data-action="toggle">⏸ Durdur</button>
+      
+      <div class="pill-input-wrapper">
+        <span>Hız:</span>
+        <input id="speechRate" type="number" step="0.1" min="0.5" max="2.0" value="1.0">
+      </div>
+      
+      <div class="pill-input-wrapper" style="grid-column: span 2;">
+        <span>Oto Devam:</span>
+        <input id="resumeSec" type="number" step="0.5" value="2.5">
+        <span>sn bekle</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <section class="card" id="mainCard">
+    <div class="cardhead">Diyalog 1 – Samimi</div>
+    <div class="cardbody" style="padding: 10px;">
+      <audio id="mainAudio" crossorigin="anonymous"><source src="dialog1_samimi.mp3" type="audio/mpeg"></audio>
+      <div class="lines">
+        <div class="line">Guten Morgen, ihr zwei. Steht bitte auf, es ist schon <span class="word" data-tr="geç">spät</span>.</div>
+        <div class="line">Mama, ich bin noch <span class="word" data-tr="yorgun">müde</span>. Ich habe <span class="word" data-tr="kötü">schlecht</span> geschlafen.</div>
+        <div class="line">Ich weiß, aber ihr <span class="word" data-tr="zorundasınız">müsst</span> jetzt aufstehen. Der Bus <span class="word" data-tr="geliyor">kommt</span> gleich.</div>
+        <div class="line">Gestern <span class="word" data-tr="idi / oldu">war</span> ich auch müde, und ich <span class="word" data-tr="vardı / sahipti">hatte</span> Kopfschmerzen.</div>
+        <div class="line">Das stimmt, aber heute <span class="word" data-tr="olacak">wird</span> es besser. Komm, ich <span class="word" data-tr="hazırlıyorum / yapıyorum">mache</span> euch Frühstück.</div>
+        <div class="line">Ja, bitte. Es <span class="word" data-tr="soğuk olacak">wird kalt sein</span>.</div>
+        <div class="line">Guten Morgen. Die <span class="word" data-tr="çocuklar">Kinder</span> <span class="word" data-tr="henüz değil">sind noch nicht</span> fertig.</div>
+        <div class="line">Ich weiß. Sie <span class="word" data-tr="daha uzun süreye ihtiyaç duydular">haben länger gebraucht</span>, weil sie müde <span class="word" data-tr="idiler">waren</span>.</div>
+        <div class="line">Hast du gesehen? Ronya <span class="word" data-tr="unuttu">hat vergessen</span>, ihr Heft mitzunehmen.</div>
+        <div class="line">Ja, das <span class="word" data-tr="fark ettim">ist mir aufgefallen</span>. Ich <span class="word" data-tr="çoktan paketledim / yerleştirdim">habe es schon eingepackt</span>.</div>
+        <div class="line">Perfekt. Then <span class="word" data-tr="sonra alışverişe gideceğim">werde ich später einkaufen gehen</span>.</div>
+        <div class="line">Die Kinder <span class="word" data-tr="bugün sabah ... idiler">waren heute Morgen</span> sehr langsam.</div>
+        <div class="line">Ja, das <span class="word" data-tr="ben de fark ettim">habe ich auch bemerkt</span>. Sie <span class="word" data-tr="çok az uyku aldılar">hatten zu wenig Schlaf</span>.</div>
+        <div class="line">Gestern <span class="word" data-tr="zorunda kaldılar">mussten</span> sie ihre Hausaufgaben spät machen.</div>
+        <div class="line">Deshalb <span class="word" data-tr="bugün daha erken başlayacağız">werden wir heute früher anfangen</span>.</div>
+        <div class="line">Außerdem <span class="word" data-tr="bu akşam onunla konuşacağım">werde ich heute Abend mit ihnen darüber sprechen</span>.</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const state = { mode: null, audio: document.getElementById("mainAudio"), index: 0, paused: false, manualPaused: false };
+  let resumeTimer = null;
+  let voices = [];
+
+  function loadVoices() {
+    const all = window.speechSynthesis.getVoices().filter(v => v.lang.startsWith("de"));
+    
+    // iPhone (iOS) Tercihleri: Petra (Kadın), Viktor (Erkek)
+    // Petra yüksek kalite veya normal ara
+    let female = all.find(v => v.name.includes("Petra") && v.name.includes("Gelişmiş")) || 
+                 all.find(v => v.name.includes("Petra")) ||
+                 all.find(v => v.name.toLowerCase().includes("female")) || 
+                 all[0];
+
+    // Viktor gelişmiş veya normal ara
+    let male = all.find(v => v.name.includes("Viktor") && v.name.includes("Gelişmiş")) || 
+               all.find(v => v.name.includes("Viktor")) ||
+               all.find(v => v.name.toLowerCase().includes("male")) || 
+               all[1] || all[0];
+
+    voices = [female, male];
+  }
+
+  // Tarayıcı hazır olduğunda sesleri yükle
+  loadVoices();
+  if (window.speechSynthesis.onvoiceschanged !== undefined) {
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+  }
+
+  function showToast(txt, ms) {
+    const t = document.getElementById("toast");
+    t.innerHTML = txt; t.style.display = "block";
+    setTimeout(() => t.style.display = "none", ms);
+  }
+
+  function hardStop() {
+    clearTimeout(resumeTimer);
+    window.speechSynthesis.cancel();
+    state.audio.pause();
+    document.querySelectorAll(".line").forEach(l => l.classList.remove("active-line"));
+    state.paused = false; state.manualPaused = false;
+    document.getElementById("globalToggle").textContent = "⏸ Durdur";
+  }
+
+  function speakCurrentLine() {
+    if (state.mode !== "tts" || state.paused) return;
+    const lines = document.querySelectorAll(".line");
+    if (state.index >= lines.length) return hardStop();
+
+    lines.forEach(l => l.classList.remove("active-line"));
+    const currentLine = lines[state.index];
+    currentLine.classList.add("active-line");
+    currentLine.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    const utterance = new SpeechSynthesisUtterance(currentLine.innerText);
+    utterance.lang = "de-DE";
+    utterance.rate = parseFloat(document.getElementById("speechRate").value) || 1.0;
+
+    // Satır sırasına göre ses seçimi (Çift satırlar Petra, Tek satırlar Viktor)
+    const isMale = (state.index % 2 !== 0);
+    
+    // Eğer sistemde iki farklı ses varsa ata, yoksa tek sesi pitch ile simüle et
+    if (voices[0] && voices[1] && voices[0] !== voices[1]) {
+      utterance.voice = isMale ? voices[1] : voices[0];
+    } else {
+      utterance.pitch = isMale ? 0.7 : 1.2;
+    }
+
+    utterance.onend = () => { if (!state.paused) { state.index++; speakCurrentLine(); } };
+    window.speechSynthesis.speak(utterance);
+  }
+
+  document.querySelector('[data-action="tts"]').onclick = () => { hardStop(); state.mode = "tts"; state.index = 0; speakCurrentLine(); };
+  document.querySelector('[data-action="polly"]').onclick = () => { 
+    hardStop(); state.mode = "mp3"; 
+    state.audio.playbackRate = parseFloat(document.getElementById("speechRate").value) || 1.0;
+    state.audio.play(); 
+  };
+
+  document.getElementById("globalToggle").onclick = () => {
+    if (!state.mode) return;
+    state.manualPaused = !state.manualPaused;
+    state.paused = state.manualPaused;
+    if (state.paused) {
+      window.speechSynthesis.cancel(); state.audio.pause();
+      document.getElementById("globalToggle").textContent = "▶ Devam Et";
+    } else {
+      document.getElementById("globalToggle").textContent = "⏸ Durdur";
+      state.mode === "tts" ? speakCurrentLine() : state.audio.play();
+    }
+  };
+
+  document.addEventListener("click", (e) => {
+    const w = e.target.closest(".word");
+    if (!w) return;
+    const wait = parseFloat(document.getElementById("resumeSec").value) * 1000;
+    showToast(`<b>TR:</b> ${w.dataset.tr}`, wait);
+    
+    if (!state.mode || state.manualPaused) return;
+    state.paused = true;
+    window.speechSynthesis.cancel(); state.audio.pause();
+    clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(() => {
+      if (!state.manualPaused) {
+        state.paused = false;
+        state.mode === "tts" ? speakCurrentLine() : state.audio.play();
+      }
+    }, wait);
+  });
+</script>
+</body>
+</html>
