@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Almanca Diyalog – Durum 1</title>
+  <style>
+    :root{
+      --bg:#0b1220; --text:#e9eefc; --muted:#b7c2e3;
+      --accent:#22c55e; --accent2:#60a5fa;
+      --shadow: 0 14px 40px rgba(0,0,0,.35);
+      --radius: 16px; --max: 980px;
+      --lineBorder: rgba(255,255,255,.10);
+      --lineBg: rgba(255,255,255,.04);
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 20% 10%, rgba(34,197,94,.18), transparent 60%),
+                  radial-gradient(900px 650px at 85% 15%, rgba(96,165,250,.18), transparent 55%),
+                  var(--bg);
+      color: var(--text);
+      line-height:1.6;
+    }
+    .wrap{ max-width: var(--max); margin: 0 auto; padding: 18px; }
+    .topbar{
+      position: sticky; top:0; z-index: 50;
+      background: rgba(11,18,32,.74);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .topbar .wrap{ padding: 14px 18px; }
+    h1{ font-size: 18px; margin:0; margin-bottom: 15px; }
+    
+    .pillrow{ display:flex; gap:10px; flex-wrap:wrap; align-items: center; }
+
+    button, .pill-input-wrapper {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 52px; 
+      padding: 0 20px;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 800;
+      border: 1px solid rgba(255,255,255,.12);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      white-space: nowrap;
+      background: rgba(255,255,255,.08);
+    }
+
+    #globalToggle.pause-state {
+      background: rgba(239, 68, 68, 0.3) !important;
+      border-color: rgba(239, 68, 68, 0.5) !important;
+    }
+    #globalToggle.resume-state {
+      background: rgba(34, 197, 94, 0.3) !important;
+      border-color: rgba(34, 197, 94, 0.5) !important;
+    }
+
+    .pill-input-wrapper {
+      cursor: default;
+      background: rgba(255, 255, 255, 0.05);
+      gap: 10px;
+    }
+    input[type="number"] {
+      width: 55px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 900;
+      outline: none;
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      margin-top: 20px;
+    }
+    .cardhead{
+      padding: 14px;
+      background: rgba(255,255,255,.03);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      display:flex; justify-content:space-between; gap:10px; align-items:center;
+    }
+    .badge{
+      display:inline-flex; align-items:center; gap:8px; font-size: 12px; color: var(--muted);
+      padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(255,255,255,.12);
+    }
+    .dot{ width:8px; height:8px; border-radius:999px; background: rgba(255,255,255,.25); }
+    .card.playing .dot{ background: var(--accent); }
+
+    .line{
+      position: relative;
+      margin: 10px 0; padding: 12px; border-radius: 14px;
+      border: 1px solid var(--lineBorder); background: var(--lineBg);
+      font-size: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .line-text { flex: 1; }
+    
+    .line.active-line{
+      background: rgba(34,197,94,0.2); border-color: var(--accent);
+      color: #fff; font-weight: 900;
+    }
+    .word{
+      cursor:pointer; font-weight: normal; color: #ff4444;
+      border-bottom: 2px dotted rgba(255, 68, 68, 0.4);
+      padding: 0 2px;
+    }
+
+    .inline-tr {
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--accent);
+      background: rgba(34, 197, 94, 0.1);
+      padding: 4px 10px;
+      border-radius: 8px;
+      margin-left: 15px;
+      white-space: nowrap;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+  </style>
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="wrap">
+      <h1>🏠 EV HALİ – Durum 1</h1>
+      <div class="pillrow">
+        <button style="background:rgba(96,165,250,.2)" data-action="tts">🗣️ Taslak Ses</button>
+        <button style="background:rgba(34,197,94,.2)" data-action="polly">🎧 Polly MP3</button>
+        <button id="globalToggle" class="pause-state" data-action="toggle">⏸ Durdur</button>
+        
+        <div class="pill-input-wrapper">
+          <span>Oto Devam:</span>
+          <input id="resumeSec" type="number" step="0.5" value="2.5">
+          <span>sn</span>
+        </div>
+
+        <div class="pill-input-wrapper">
+          <span>Hız:</span>
+          <input id="speechRate" type="number" step="0.1" min="0.5" max="2.0" value="1.0">
+          <span>x</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap content">
+    <div class="grid">
+      <section class="card" id="mainCard">
+        <div class="cardhead">
+          <div><b>Diyalog 1 – Samimi</b></div>
+          <div class="badge"><span class="dot"></span><span class="status">Hazır</span></div>
+        </div>
+        <div class="cardbody" style="padding: 15px;">
+          <audio id="mainAudio" crossorigin="anonymous"><source src="dialog1_samimi.mp3" type="audio/mpeg"></audio>
+          <div class="lines">
+            <div class="line"><div class="line-text">Guten Morgen, ihr zwei. Steht bitte auf, es ist schon <span class="word" data-tr="geç">spät</span>.</div></div>
+            <div class="line"><div class="line-text">Mama, ich bin noch <span class="word" data-tr="yorgun">müde</span>. Ich habe <span class="word" data-tr="kötü">schlecht</span> geschlafen.</div></div>
+            <div class="line"><div class="line-text">Ich weiß, aber ihr <span class="word" data-tr="zorundasınız">müsst</span> jetzt aufstehen. Der Bus <span class="word" data-tr="geliyor">kommt</span> gleich.</div></div>
+            <div class="line"><div class="line-text">Gestern <span class="word" data-tr="idi / oldu">war</span> ich auch müde, und ich <span class="word" data-tr="vardı / sahipti">hatte</span> Kopfschmerzen.</div></div>
+            <div class="line"><div class="line-text">Das stimmt, aber heute <span class="word" data-tr="olacak">wird</span> es besser. Komm, ich <span class="word" data-tr="hazırlıyorum / yapıyorum">mache</span> euch Frühstück.</div></div>
+            <div class="line"><div class="line-text">Ja, bitte. Es <span class="word" data-tr="soğuk olacak">wird kalt sein</span>.</div></div>
+            <div class="line"><div class="line-text">Guten Morgen. Die <span class="word" data-tr="çocuklar">Kinder</span> <span class="word" data-tr="henüz değil">sind noch nicht</span> fertig.</div></div>
+            <div class="line"><div class="line-text">Ich weiß. Sie <span class="word" data-tr="daha uzun süreye ihtiyaç duydular">haben länger gebraucht</span>, weil sie müde <span class="word" data-tr="idiler">waren</span>.</div></div>
+            <div class="line"><div class="line-text">Hast du gesehen? Ronya <span class="word" data-tr="unuttu">hat vergessen</span>, ihr Heft mitzunehmen.</div></div>
+            <div class="line"><div class="line-text">Ja, das <span class="word" data-tr="fark ettim">ist mir aufgefallen</span>. Ich <span class="word" data-tr="çoktan paketledim / yerleştirdim">habe es schon eingepackt</span>.</div></div>
+            <div class="line"><div class="line-text">Perfekt. Dann <span class="word" data-tr="sonra alışverişe gideceğim">werde ich später einkaufen gehen</span>.</div></div>
+            <div class="line"><div class="line-text">Die <span class="word" data-tr="çocuklar">Kinder</span> <span class="word" data-tr="bugün sabah ... idiler">waren heute Morgen</span> sehr langsam.</div></div>
+            <div class="line"><div class="line-text">Ja, das <span class="word" data-tr="ben de fark ettim">habe ich auch bemerkt</span>. Sie <span class="word" data-tr="çok az uyku aldılar">hatten zu wenig Schlaf</span>.</div></div>
+            <div class="line"><div class="line-text">Gestern <span class="word" data-tr="zorunda kaldılar">mussten</span> sie ihre Hausaufgaben spät machen.</div></div>
+            <div class="line"><div class="line-text">Deshalb <span class="word" data-tr="bugün daha erken başlayacağız">werden wir heute früher anfangen</span>.</div></div>
+            <div class="line"><div class="line-text">Außerdem <span class="word" data-tr="bu akşam onunla konuşacağım">werde ich heute Abend mit ihnen darüber sprechen</span>.</div></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const state = { mode: null, card: document.getElementById("mainCard"), audio: document.getElementById("mainAudio"), index: 0, paused: false, manualPaused: false };
+    let resumeTimer = null;
+    let voices = [];
+
+    // SESLERİ YÜKLE
+    function loadVoices() {
+      voices = window.speechSynthesis.getVoices().filter(v => v.lang.startsWith("de"));
+    }
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+
+    function hardStop() {
+        clearTimeout(resumeTimer);
+        window.speechSynthesis.cancel();
+        state.audio.pause();
+        state.card.classList.remove("playing");
+        document.querySelectorAll(".line").forEach(l => l.classList.remove("active-line"));
+        document.querySelectorAll(".inline-tr").forEach(tr => tr.remove());
+        state.paused = false; state.manualPaused = false;
+        updateToggleButton(false);
+    }
+
+    function updateToggleButton(isPaused) {
+        const btn = document.getElementById("globalToggle");
+        btn.textContent = isPaused ? "▶ Devam Et" : "⏸ Durdur";
+        btn.className = isPaused ? "resume-state" : "pause-state";
+    }
+
+    function speakCurrentLine() {
+        if (state.mode !== "tts" || state.paused) return;
+        const lines = state.card.querySelectorAll(".line");
+        if (state.index >= lines.length) return hardStop();
+
+        lines.forEach(l => l.classList.remove("active-line"));
+        const currentLine = lines[state.index];
+        currentLine.classList.add("active-line");
+        currentLine.scrollIntoView({ behavior: "smooth", block: "center" });
+
+        const utterance = new SpeechSynthesisUtterance(currentLine.querySelector(".line-text").innerText);
+        utterance.lang = "de-DE";
+        utterance.rate = parseFloat(document.getElementById("speechRate").value) || 1.0;
+
+        // FARKLI KİŞİ SİMÜLASYONU
+        if (voices.length >= 2) {
+            // Cihazda 2+ ses varsa onları kullan
+            utterance.voice = (state.index % 2 === 0) ? voices[0] : voices[1];
+        } else if (voices.length === 1) {
+            // Tek ses varsa Tonu (Pitch) değiştirerek farklı kişi yap
+            utterance.voice = voices[0];
+            utterance.pitch = (state.index % 2 === 0) ? 0.8 : 1.3; // Biri kalın diğeri ince ses
+        }
+
+        utterance.onend = () => { if (!state.paused) { state.index++; speakCurrentLine(); } };
+        window.speechSynthesis.speak(utterance);
+    }
+
+    document.querySelector('[data-action="tts"]').onclick = () => {
+        hardStop(); state.mode = "tts"; state.index = 0;
+        state.card.classList.add("playing");
+        speakCurrentLine();
+    };
+
+    document.querySelector('[data-action="polly"]').onclick = () => {
+        hardStop(); state.mode = "mp3";
+        state.card.classList.add("playing");
+        state.audio.playbackRate = parseFloat(document.getElementById("speechRate").value) || 1.0;
+        state.audio.play();
+    };
+
+    document.getElementById("globalToggle").onclick = () => {
+        if (!state.mode) return;
+        state.manualPaused = !state.manualPaused;
+        state.paused = state.manualPaused;
+        updateToggleButton(state.paused);
+        if (state.paused) {
+            window.speechSynthesis.cancel(); state.audio.pause();
+        } else {
+            state.mode === "tts" ? speakCurrentLine() : state.audio.play();
+        }
+    };
+
+    document.addEventListener("click", (e) => {
+        const w = e.target.closest(".word");
+        if (!w) return;
+        const line = w.closest(".line");
+        line.querySelectorAll(".inline-tr").forEach(t => t.remove());
+        const trSpan = document.createElement("span");
+        trSpan.className = "inline-tr";
+        trSpan.innerHTML = `TR: ${w.dataset.tr}`;
+        line.appendChild(trSpan);
+        
+        const wait = parseFloat(document.getElementById("resumeSec").value) * 1000;
+        setTimeout(() => trSpan.remove(), wait);
+        
+        if (!state.mode || state.manualPaused) return;
+        state.paused = true;
+        window.speechSynthesis.cancel(); state.audio.pause();
+        clearTimeout(resumeTimer);
+        resumeTimer = setTimeout(() => {
+            if (!state.manualPaused) {
+                state.paused = false;
+                state.mode === "tts" ? speakCurrentLine() : state.audio.play();
+            }
+        }, wait);
+    });
+  </script>
+</body>
+</html>
