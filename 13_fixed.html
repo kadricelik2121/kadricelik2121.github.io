@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deutsch Lernen Pro</title>
+  <style>
+    :root{
+      --bg1:#0d47c9;
+      --bg2:#1db7e8;
+      --glass:rgba(255,255,255,.12);
+      --glass-2:rgba(255,255,255,.18);
+      --white:#fff;
+      --text:#eef5ff;
+      --dark:#12223f;
+      --shadow:0 18px 45px rgba(0,0,0,.22);
+      --shadow-soft:0 10px 24px rgba(0,0,0,.16);
+      --green1:#8be23f;
+      --green2:#2eb248;
+      --orange1:#ffb100;
+      --orange2:#ff6200;
+      --blue1:#44c7ff;
+      --blue2:#1159ff;
+      --purple1:#c86dff;
+      --purple2:#6529ff;
+      --red1:#ff6f88;
+      --red2:#d92b46;
+      --wood1:#a66a2d;
+      --wood2:#7a4415;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.16), transparent 18%),
+        radial-gradient(circle at 80% 30%, rgba(255,255,255,.14), transparent 20%),
+        radial-gradient(circle at 70% 80%, rgba(255,255,255,.10), transparent 15%),
+        linear-gradient(180deg, #0d43b9 0%, #1769dd 35%, #2cc6ee 100%);
+      color:var(--text);
+      overflow-x:hidden;
+    }
+
+    .app-shell{
+      min-height:100%;
+      padding:20px;
+      position:relative;
+    }
+
+    .btn-blue{
+  background:linear-gradient(180deg, #4facfe, #007bff);
+  color:#fff;
+}
+
+    .screen{
+      display:none;
+      min-height:calc(100vh - 40px);
+      max-width:1200px;
+      margin:0 auto;
+      position:relative;
+    }
+    .screen.active{display:block}
+
+    .top-back{
+      position:absolute;
+      top:10px;
+      left:10px;
+      z-index:20;
+      width:66px;
+      height:66px;
+      border:none;
+      border-radius:22px;
+      color:#fff;
+      font-size:30px;
+      font-weight:700;
+      cursor:pointer;
+      background:linear-gradient(180deg, #61caff, #1569ff);
+      box-shadow:
+        inset 0 3px 0 rgba(255,255,255,.35),
+        inset 0 -4px 0 rgba(0,0,0,.18),
+        0 12px 24px rgba(0,0,0,.2);
+      transition:.18s transform;
+    }
+    .top-back:hover{transform:translateY(-2px)}
+    .top-back.hidden{display:none}
+
+    .hero-wrap{
+      min-height:calc(100vh - 40px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .hero-card{
+      width:min(960px, 100%);
+      padding:38px 26px 42px;
+      border-radius:38px;
+      background:linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.08));
+      border:1px solid rgba(255,255,255,.24);
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(10px);
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .hero-card::before{
+      content:"";
+      position:absolute;
+      inset:-80px auto auto -120px;
+      width:260px;
+      height:260px;
+      background:radial-gradient(circle, rgba(255,255,255,.25), transparent 70%);
+      pointer-events:none;
+    }
+
+    .hero-top-icons{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:18px;
+      margin-bottom:10px;
+      font-size:54px;
+      filter:drop-shadow(0 8px 14px rgba(0,0,0,.18));
+    }
+
+    .app-title{
+      margin:0;
+      font-size:clamp(44px, 7vw, 84px);
+      line-height:.95;
+      letter-spacing:-1.5px;
+      font-weight:900;
+      color:#fff;
+      text-shadow:
+        0 6px 0 rgba(18,34,63,.35),
+        0 16px 30px rgba(0,0,0,.2);
+    }
+
+    .app-subtitle{
+      margin:14px auto 34px;
+      max-width:760px;
+      font-size:clamp(16px, 2.2vw, 22px);
+      color:rgba(255,255,255,.9);
+      text-shadow:0 2px 10px rgba(0,0,0,.18);
+    }
+
+    .menu-buttons{
+      display:grid;
+      gap:24px;
+      max-width:760px;
+      margin:0 auto;
+    }
+
+    .menu-btn{
+      position:relative;
+      border:none;
+      border-radius:999px;
+      min-height:94px;
+      padding:18px 34px;
+      color:#fff;
+      font-size:clamp(28px, 3.2vw, 42px);
+      font-weight:900;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:20px;
+      box-shadow:
+        inset 0 4px 0 rgba(255,255,255,.35),
+        inset 0 -8px 0 rgba(0,0,0,.2),
+        0 18px 28px rgba(0,0,0,.18);
+      transition:.18s transform, .18s filter;
+      text-shadow:0 3px 10px rgba(0,0,0,.3);
+    }
+    .menu-btn:hover{transform:translateY(-3px); filter:brightness(1.03)}
+    .menu-btn .icon{font-size:42px}
+
+    .btn-orange{background:linear-gradient(180deg, var(--orange1), var(--orange2))}
+    .btn-blue{background:linear-gradient(180deg, var(--blue1), var(--blue2))}
+    .btn-purple{background:linear-gradient(180deg, var(--purple1), var(--purple2))}
+    .btn-green{background:linear-gradient(180deg, var(--green1), var(--green2))}
+    .btn-red{background:linear-gradient(180deg, var(--red1), var(--red2))}
+
+    .game-frame{
+      padding-top:86px;
+      min-height:calc(100vh - 40px);
+    }
+
+ .wood-bar{
+  background:linear-gradient(180deg, #c58945, #8d5420);
+  border-radius:12px;
+  padding:4px 10px;
+  width:fit-content;
+  margin:-60px auto 0px;
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.22),
+    inset 0 -3px 0 rgba(0,0,0,.14),
+    var(--shadow-soft);
+  color:#fff;
+}
+
+.wood-inner{
+  background:linear-gradient(180deg, rgba(69,34,6,.45), rgba(45,22,4,.65));
+  border-radius:12px;
+  padding:4px 10px;
+  min-height:34px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:wrap;
+  font-weight:900;
+  font-size:13px;
+  text-shadow:0 2px 8px rgba(0,0,0,.35);
+}
+
+.wood-inner span{
+  font-size:13px;
+}
+
+    .mode-title{
+      font-size:clamp(30px, 4vw, 46px);
+      font-weight:900;
+      text-align:center;
+      margin:8px 0 18px;
+      text-shadow:0 4px 18px rgba(0,0,0,.18);
+    }
+
+    .glass-card{
+      background:linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.10));
+      border:1px solid rgba(255,255,255,.22);
+      border-radius:30px;
+      box-shadow:var(--shadow-soft);
+      backdrop-filter: blur(10px);
+    }
+
+    .match-layout{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:24px;
+    }
+
+    .panel{
+      padding:22px;
+      min-height:540px;
+    }
+
+    .panel-title{
+      text-align:center;
+      font-size:34px;
+      font-weight:900;
+      margin:0 0 20px;
+      color:#fff;
+      text-shadow:0 3px 12px rgba(0,0,0,.2);
+    }
+
+    .verb-item,
+    .meaning-drop{
+      width:100%;
+      min-height:78px;
+      border:none;
+      border-radius:24px;
+      margin-bottom:14px;
+      font-size:30px;
+      font-weight:900;
+      cursor:pointer;
+      box-shadow:
+        inset 0 3px 0 rgba(255,255,255,.35),
+        inset 0 -6px 0 rgba(0,0,0,.18),
+        0 12px 18px rgba(0,0,0,.13);
+      text-shadow:0 2px 6px rgba(0,0,0,.15);
+      transition:.16s transform, .16s filter;
+      padding:16px 22px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      user-select:none;
+    }
+
+    .verb-item{
+      color:#fff;
+      background:linear-gradient(180deg, #ffb100, #ff5d00);
+    }
+
+    .meaning-drop{
+      color:#fff;
+      background:linear-gradient(180deg, #44c7ff, #1159ff);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .meaning-drop:hover,
+    .verb-item:hover{transform:translateY(-2px)}
+
+    .verb-item.selected{
+      outline:4px solid rgba(255,255,255,.7);
+      filter:brightness(1.06);
+    }
+
+    .meaning-drop.correct{
+      background:linear-gradient(180deg, #8be23f, #2eb248);
+    }
+
+    .meaning-drop.wrong-flash{
+      animation:wrongFlash .45s ease;
+    }
+
+    @keyframes wrongFlash{
+      0%{transform:scale(1); filter:none}
+      35%{transform:scale(1.02); filter:brightness(1.05)}
+      100%{transform:scale(1)}
+    }
+
+    .meaning-main{
+      font-size:30px;
+      font-weight:900;
+      line-height:1.1;
+    }
+
+    .meaning-meta{
+      display:none;
+      font-size:18px;
+      margin-top:6px;
+      line-height:1.25;
+      text-align:center;
+      max-width:95%;
+    }
+
+    .meaning-drop.correct .meaning-main{
+      font-size:24px;
+    }
+
+    .meaning-drop.correct .meaning-meta{
+      display:block;
+    }
+
+    .sentence-layout{
+      display:grid;
+      gap:28px;
+    }
+
+.speech-bubble{
+  padding:30px 32px;
+  border-radius:34px;
+  min-height:190px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  position:relative;
+}
+
+    .speech-bubble::after{
+      content:"";
+      position:absolute;
+      left:34px;
+      bottom:-20px;
+      width:0;height:0;
+      border-left:18px solid transparent;
+      border-right:18px solid transparent;
+      border-top:22px solid rgba(94,188,255,.85);
+      filter:drop-shadow(0 8px 10px rgba(0,0,0,.15));
+    }
+
+.sentence-text{
+  font-size:clamp(32px, 4vw, 52px);
+  font-weight:900;
+  line-height:1.5;
+  color:#fff;
+  text-shadow:0 4px 16px rgba(0,0,0,.25);
+  text-align:center;
+  word-break:normal;
+  overflow-wrap:break-word;
+}
+
+.blank-chip{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:150px;
+  padding:6px 18px;
+  margin:0 10px;
+  border-radius:999px;
+  background:linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.10));
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.35);
+  color:#b9faff;
+  border:3px dashed rgba(185,250,255,.9);
+  vertical-align:middle;
+}
+
+.filled-chip{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:150px;
+  padding:6px 18px;
+  margin:0 10px;
+  border-radius:999px;
+  background:linear-gradient(180deg, #8be23f, #2eb248);
+  box-shadow:
+    inset 0 3px 0 rgba(255,255,255,.35),
+    inset 0 -6px 0 rgba(0,0,0,.18),
+    0 12px 18px rgba(0,0,0,.14);
+  color:#fff9d6;
+  vertical-align:middle;
+}
+    .option-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:20px;
+    }
+
+.option-btn{
+  min-height:110px;
+  border:none;
+  border-radius:26px;
+  color:#fff;
+  font-size:38px;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:
+    inset 0 3px 0 rgba(255,255,255,.35),
+    inset 0 -8px 0 rgba(0,0,0,.18),
+    0 16px 24px rgba(0,0,0,.14);
+  transition:.16s transform, .16s filter;
+  text-shadow:0 2px 8px rgba(0,0,0,.24);
+  padding:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+
+    .option-btn:hover{transform:translateY(-2px)}
+    .option-btn.orange{background:linear-gradient(180deg, #ffb100, #ff6200)}
+    .option-btn.blue{background:linear-gradient(180deg, #44c7ff, #1159ff)}
+    .option-btn.green{background:linear-gradient(180deg, #8be23f, #2eb248)}
+    .option-btn.red{background:linear-gradient(180deg, #ff7d8c, #d92b46)}
+    .option-btn[disabled]{opacity:.92; cursor:default}
+
+    .dict-home-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:28px;
+      margin-top:28px;
+    }
+
+    .dict-card{
+      min-height:240px;
+      border:none;
+      border-radius:34px;
+      color:#fff;
+      font-size:clamp(30px, 3vw, 42px);
+      font-weight:900;
+      cursor:pointer;
+      box-shadow:
+        inset 0 3px 0 rgba(255,255,255,.35),
+        inset 0 -8px 0 rgba(0,0,0,.18),
+        0 18px 28px rgba(0,0,0,.16);
+      text-shadow:0 3px 10px rgba(0,0,0,.26);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:18px;
+      padding:24px;
+      transition:.16s transform;
+    }
+    .dict-card:hover{transform:translateY(-3px)}
+    .dict-card .big-icon{font-size:58px}
+
+.dict-layout{
+  display:grid;
+  gap:14px;
+}
+
+.dict-controls{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:14px;
+  flex-wrap:wrap;
+  margin-bottom:8px;
+}
+
+    .mini-btn{
+      border:none;
+      min-height:62px;
+      min-width:180px;
+      border-radius:999px;
+      color:#fff;
+      font-size:26px;
+      font-weight:900;
+      cursor:pointer;
+      box-shadow:
+        inset 0 3px 0 rgba(255,255,255,.35),
+        inset 0 -6px 0 rgba(0,0,0,.18),
+        0 12px 18px rgba(0,0,0,.13);
+      text-shadow:0 2px 8px rgba(0,0,0,.22);
+      padding:10px 22px;
+    }
+
+.dict-subtitle-row{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin:-4px 0 10px;
+}
+
+.dict-subtitle-text{
+  font-size:clamp(20px, 2.6vw, 30px);
+  font-weight:800;
+  color:#eef6ff;
+  text-shadow:0 2px 10px rgba(0,0,0,.22);
+  text-align:center;
+}
+
+.dict-status-inline{
+  min-height:unset;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 10px;
+  font-size:clamp(15px, 1.8vw, 20px);
+  font-weight:800;
+  color:#ffe07a;
+  text-shadow:0 2px 8px rgba(0,0,0,.2);
+  white-space:nowrap;
+}
+
+.dict-input{
+  width:100%;
+  min-height:82px;
+  border:none;
+  border-radius:24px;
+  padding:18px 22px;
+  font-size:34px;
+  font-weight:800;
+  color:#15284d;
+  background:linear-gradient(180deg, #fff, #eef6ff);
+  box-shadow:
+    inset 0 3px 0 rgba(255,255,255,.95),
+    inset 0 -6px 0 rgba(0,0,0,.08),
+    0 14px 22px rgba(0,0,0,.12);
+  outline:none;
+}
+    .dict-input.correct{
+      background:linear-gradient(180deg, #f1ffe9, #d9ffd0);
+      box-shadow:
+        inset 0 3px 0 rgba(255,255,255,.95),
+        inset 0 -6px 0 rgba(0,0,0,.08),
+        0 0 0 4px rgba(98,216,95,.55),
+        0 14px 22px rgba(0,0,0,.12);
+    }
+    .dict-input.wrong{
+      background:linear-gradient(180deg, #fff1f3, #ffe0e5);
+      box-shadow:
+        inset 0 3px 0 rgba(255,255,255,.95),
+        inset 0 -6px 0 rgba(0,0,0,.08),
+        0 0 0 4px rgba(255,86,118,.4),
+        0 14px 22px rgba(0,0,0,.12);
+    }
+
+.dict-feedback{
+  display:none;        /* EN ÖNEMLİ SATIR */
+  padding:14px 18px;
+  border-radius:20px;
+  font-size:24px;
+  font-weight:800;
+  line-height:1.35;
+  word-break:break-word;
+}
+
+.dict-answer{
+  display:none;
+  padding:14px 18px;
+  border-radius:20px;
+  font-size:22px;
+  font-weight:800;
+}
+
+    .char-correct{color:#1ba24d}
+    .char-wrong{color:#d92b46; background:rgba(255,109,136,.14); border-radius:6px; padding:0 2px}
+    .char-missing{color:#d92b46; text-decoration:underline}
+
+.big-overlay{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:flex-start;
+  justify-content:center;
+  padding:110px 24px 24px;
+  background:rgba(0,0,0,.28);
+  z-index:100;
+  pointer-events:none;
+}
+
+    .big-overlay.show{display:flex}
+
+.big-overlay-card{
+  width:min(760px, 88vw);
+  min-height:110px;
+  padding:20px 26px;
+  border-radius:30px;
+  background:linear-gradient(180deg, rgba(18,34,63,.92), rgba(14,25,49,.88));
+  border:1px solid rgba(255,255,255,.12);
+  color:#fff;
+  font-size:clamp(28px, 3.2vw, 40px);
+  font-weight:900;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  box-shadow:0 28px 60px rgba(0,0,0,.35);
+  text-shadow:0 3px 14px rgba(0,0,0,.35);
+}
+
+    .hl-verb{
+      color:#ffec80;
+      font-weight:900;
+    }
+
+    .hidden{display:none !important}
+
+    @media (max-width: 980px){
+      .match-layout,
+      .dict-home-grid{
+        grid-template-columns:1fr;
+      }
+      .option-grid{
+        grid-template-columns:1fr;
+      }
+      .wood-inner{font-size:18px}
+      .panel-title{font-size:28px}
+      .verb-item,.meaning-drop{font-size:24px; min-height:72px}
+      .option-btn{font-size:30px; min-height:92px}
+      .dict-input{font-size:28px}
+      .dict-feedback{font-size:22px}
+    }
+
+    @media (max-width: 640px){
+      .app-shell{padding:14px}
+      .top-back{width:58px;height:58px;border-radius:18px}
+      .hero-card{padding:30px 18px 34px}
+      .menu-btn{min-height:84px;font-size:28px}
+      .panel{padding:16px}
+      .sentence-text{font-size:28px}
+      .dict-prompt-title{font-size:24px}
+      .dict-controls{gap:12px}
+      .mini-btn{min-width:150px;font-size:22px}
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <button id="backBtn" class="top-back hidden" aria-label="Geri">←</button>
+
+    <!-- ANA MENÜ -->
+    <section id="menuScreen" class="screen active">
+      <div class="hero-wrap">
+        <div class="hero-card">
+          <div class="hero-top-icons">🇩🇪 📘 🏛️</div>
+          <h1 class="app-title">Deutsch<br>Lernen</h1>
+          <div class="app-subtitle">Günlük konuşma için tasarlanmış profesyonel Almanca çalışma oyunları</div>
+
+          <div class="menu-buttons">
+            <button id="menuMatchBtn" class="menu-btn btn-orange"><span class="icon">🧩</span> Fiil Eşleştirme</button>
+            <button id="menuSentenceBtn" class="menu-btn btn-blue"><span class="icon">💬</span> Cümle Modu</button>
+            <button id="menuDictationBtn" class="menu-btn btn-purple"><span class="icon">🎙️</span> Dikte Modu</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FİİL EŞLEŞTİRME -->
+    <section id="matchScreen" class="screen">
+      <div class="game-frame">
+        <div class="wood-bar">
+          <div class="wood-inner">
+            <span id="matchProgress">1 / 5</span>
+            <span>✅ <span id="matchCorrectCount">0</span></span>
+            <span>❌ <span id="matchWrongCount">0</span></span>
+            <span>Toplam Fiil: <span id="verbTotalCount">0</span></span>
+          </div>
+        </div>
+
+        <div class="mode-title">Fiil Eşleştirme</div>
+
+        <div class="match-layout">
+          <div class="glass-card panel">
+            <div class="panel-title">Almanca Fiiller</div>
+            <div id="verbsColumn"></div>
+          </div>
+
+          <div class="glass-card panel">
+            <div class="panel-title">Türkçe Anlamlar</div>
+            <div id="meaningsColumn"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CÜMLE MODU -->
+    <section id="sentenceScreen" class="screen">
+      <div class="game-frame">
+        <div class="wood-bar">
+          <div class="wood-inner">
+            <span id="sentenceRound">1 / 10</span>
+            <span>✅ <span id="sentenceCorrectCount">0</span></span>
+            <span>❌ <span id="sentenceWrongCount">0</span></span>
+            <button id="sentenceNextBtn" class="mini-btn btn-blue">Next</button>
+          </div>
+        </div>
+
+        <div class="mode-title">Cümlede Fiili Bul</div>
+
+        <div class="sentence-layout">
+          <div class="glass-card speech-bubble">
+            <div id="sentenceQuestionText" class="sentence-text"></div>
+          </div>
+
+          <div id="sentenceOptions" class="option-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DİKTE MENÜ -->
+    <section id="dictMenuScreen" class="screen">
+      <div class="game-frame">
+        <div class="mode-title" style="margin-top:24px;">Dikte Modu</div>
+        <div class="dict-home-grid">
+          <button id="dictWordBtn" class="dict-card btn-purple">
+            <span class="big-icon">🎙️</span>
+            <span>Kelime / Fiil Dikte</span>
+          </button>
+          <button id="dictSentenceBtn" class="dict-card btn-blue">
+            <span class="big-icon">📝</span>
+            <span>Cümle Dikte</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- DİKTE OYUN -->
+    <section id="dictGameScreen" class="screen">
+      <div class="game-frame">
+        <div class="wood-bar">
+          <div class="wood-inner">
+            <span id="dictModeTitleBar">Kelime Dikte</span>
+            <span>Tur: <span id="dictRound">1</span></span>
+            <span>✅ <span id="dictCorrectCount">0</span></span>
+            <span>❌ <span id="dictWrongCount">0</span></span>
+          </div>
+        </div>
+
+        <div id="dictModeTitle" class="mode-title">Kelime / Fiilde Dikte</div>
+
+        <div class="dict-layout">
+<div class="dict-subtitle-row">
+  <div id="dictPromptTitle" class="dict-subtitle-text">Dinle ve yaz.</div>
+</div>
+
+<div class="dict-controls">
+  <button id="dictReplayBtn" class="mini-btn btn-purple">🔊 Tekrar Dinle</button>
+  <button id="dictCheckBtn" class="mini-btn btn-orange">Kontrol Et</button>
+ <button id="dictNextBtn" class="mini-btn btn-blue" onclick="loadNextDictationItem()">Next</button>
+  <div id="dictStatus" class="dict-status-inline">Kalan deneme hakkı: 3</div>
+</div>
+
+<div id="dictFeedback" class="glass-card dict-feedback"></div>
+<div id="dictAnswerBox" class="dict-answer"></div>
+
+<textarea id="dictInput" class="dict-input"></textarea>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="bigOverlay" class="big-overlay">
+    <div id="bigOverlayText" class="big-overlay-card"></div>
+  </div>
+
+  <script>
+    const DICTATION_NEXT_DELAY_CORRECT = 2000;
+    const DICTATION_NEXT_DELAY_WRONG = 8000;
+    const SENTENCE_MODE_AUTO_NEXT_DELAY = 200;
+    const MATCH_SET_SIZE = 5;
+    const SENTENCE_OPTION_COUNT = 4;
+
+    const sampleVerbs = [
+      { verb: "gehen", meaning: "gitmek", sentence: "Ich gehe jeden Tag zur Arbeit.", hiddenSentence: "Ich ___ jeden Tag zur Arbeit.", sentenceForm: "gehe" },
+      { verb: "kommen", meaning: "gelmek", sentence: "Meine Freundin kommt heute zu Besuch.", hiddenSentence: "Meine Freundin ___ heute zu Besuch.", sentenceForm: "kommt" },
+      { verb: "sehen", meaning: "görmek", sentence: "Ich sehe den Bus dort.", hiddenSentence: "Ich ___ den Bus dort.", sentenceForm: "sehe" },
+      { verb: "finden", meaning: "bulmak", sentence: "Ich kann meine Schlüssel nicht finden.", hiddenSentence: "Ich kann meine Schlüssel nicht ___.", sentenceForm: "finden" },
+      { verb: "bleiben", meaning: "kalmak", sentence: "Ich bleibe heute zu Hause.", hiddenSentence: "Ich ___ heute zu Hause.", sentenceForm: "bleibe" },
+      { verb: "beginnen", meaning: "başlamak", sentence: "Der Unterricht beginnt um acht Uhr.", hiddenSentence: "Der Unterricht ___ um acht Uhr.", sentenceForm: "beginnt" },
+      { verb: "verstehen", meaning: "anlamak", sentence: "Ich verstehe diese Aufgabe.", hiddenSentence: "Ich ___ diese Aufgabe.", sentenceForm: "verstehe" },
+      { verb: "helfen", meaning: "yardım etmek", sentence: "Ich helfe meiner Mutter.", hiddenSentence: "Ich ___ meiner Mutter.", sentenceForm: "helfe" },
+      { verb: "erzählen", meaning: "anlatmak", sentence: "Der Lehrer erzählt eine Geschichte.", hiddenSentence: "Der Lehrer ___ eine Geschichte.", sentenceForm: "erzählt" },
+      { verb: "vergessen", meaning: "unutmak", sentence: "Ich vergesse oft meinen Schlüssel.", hiddenSentence: "Ich ___ oft meinen Schlüssel.", sentenceForm: "vergesse" },
+      { verb: "tragen", meaning: "taşımak", sentence: "Sie trägt die Kisten allein.", hiddenSentence: "Sie ___ die Kisten allein.", sentenceForm: "trägt" },
+      { verb: "nehmen", meaning: "almak", sentence: "Ich nehme heute den Bus.", hiddenSentence: "Ich ___ heute den Bus.", sentenceForm: "nehme" },
+      { verb: "bringen", meaning: "getirmek", sentence: "Kannst du bitte Wasser bringen?", hiddenSentence: "Kannst du bitte Wasser ___?", sentenceForm: "bringen" },
+      { verb: "lernen", meaning: "öğrenmek", sentence: "Wir lernen jeden Abend neue Wörter.", hiddenSentence: "Wir ___ jeden Abend neue Wörter.", sentenceForm: "lernen" },
+      { verb: "üben", meaning: "alıştırma yapmak", sentence: "Er übt jeden Tag Deutsch.", hiddenSentence: "Er ___ jeden Tag Deutsch.", sentenceForm: "übt" },
+      { verb: "entscheiden", meaning: "karar vermek", sentence: "Ich kann mich nicht schnell entscheiden.", hiddenSentence: "Ich kann mich nicht schnell ___.", sentenceForm: "entscheiden" },
+      { verb: "warten", meaning: "beklemek", sentence: "Wir warten vor dem Kino.", hiddenSentence: "Wir ___ vor dem Kino.", sentenceForm: "warten" },
+      { verb: "erklären", meaning: "açıklamak", sentence: "Die Lehrerin erklärt die Grammatik.", hiddenSentence: "Die Lehrerin ___ die Grammatik.", sentenceForm: "erklärt" },
+      { verb: "verkaufen", meaning: "satmak", sentence: "Mein Nachbar verkauft sein Auto.", hiddenSentence: "Mein Nachbar ___ sein Auto.", sentenceForm: "verkauft" },
+      { verb: "kaufen", meaning: "satın almak", sentence: "Ich kaufe frisches Brot.", hiddenSentence: "Ich ___ frisches Brot.", sentenceForm: "kaufe" }
+    ];
+
+    const allVerbs = Array.isArray(globalThis.allVerbs) && globalThis.allVerbs.length
+      ? globalThis.allVerbs
+      : sampleVerbs;
+
+    const STORAGE_KEY = "deutsch_lernen_pro_v1";
+
+    function getDefaultProgress() {
+      const progress = {};
+      for (const item of allVerbs) {
+        progress[item.verb] = {
+          correctCount: 0,
+          wrongCount: 0,
+          streak: 0,
+          score: 0,
+          lastSeen: 0,
+          seenCount: 0
+        };
+      }
+      return progress;
+    }
+
+    function loadProgress() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return getDefaultProgress();
+        const parsed = JSON.parse(raw);
+        const defaults = getDefaultProgress();
+        for (const verb of Object.keys(defaults)) {
+          if (!parsed[verb]) parsed[verb] = defaults[verb];
+        }
+        return parsed;
+      } catch {
+        return getDefaultProgress();
+      }
+    }
+
+    function saveProgress() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    }
+
+    const progress = loadProgress();
+
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function getDifficultyWeight(item) {
+      const p = progress[item.verb];
+      const hardness =
+        (p.wrongCount * 3) +
+        Math.max(0, 4 - p.streak) +
+        Math.max(0, 3 - p.score) +
+        Math.max(0, p.seenCount === 0 ? 4 : 0);
+
+      const freshnessPenalty = Math.min(p.lastSeen, 3);
+      return Math.max(1, hardness - freshnessPenalty);
+    }
+
+    function weightedPick(pool, count) {
+      const selected = [];
+      const working = [...pool];
+      while (selected.length < count && working.length > 0) {
+        const weights = working.map(getDifficultyWeight);
+        const total = weights.reduce((a, b) => a + b, 0);
+        let rand = Math.random() * total;
+        let index = 0;
+        for (let i = 0; i < working.length; i++) {
+          rand -= weights[i];
+          if (rand <= 0) {
+            index = i;
+            break;
+          }
+        }
+        selected.push(working[index]);
+        working.splice(index, 1);
+      }
+      return selected;
+    }
+
+    function selectSmartSet(count = 5) {
+      return shuffleArray(weightedPick(allVerbs, count));
+    }
+
+    function markSeen(setItems) {
+      for (const item of setItems) {
+        progress[item.verb].lastSeen = 3;
+        progress[item.verb].seenCount += 1;
+      }
+      for (const item of allVerbs) {
+        if (!setItems.find(x => x.verb === item.verb)) {
+          progress[item.verb].lastSeen = Math.max(0, progress[item.verb].lastSeen - 1);
+        }
+      }
+      saveProgress();
+    }
+
+    function registerCorrect(item) {
+      const p = progress[item.verb];
+      p.correctCount += 1;
+      p.streak += 1;
+      p.score = Math.min(6, p.score + (p.streak >= 2 ? 2 : 1));
+      saveProgress();
+    }
+
+    function registerWrong(item) {
+      const p = progress[item.verb];
+      p.wrongCount += 1;
+      p.streak = 0;
+      p.score = Math.max(0, p.score - 2);
+      saveProgress();
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;");
+    }
+
+    function highlightSentence(sentence, form) {
+      const escaped = form.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const regex = new RegExp(`\\b(${escaped})\\b`, "i");
+      return sentence.replace(regex, '<span class="hl-verb">$1</span>');
+    }
+
+    const screens = {
+      menu: document.getElementById("menuScreen"),
+      match: document.getElementById("matchScreen"),
+      sentence: document.getElementById("sentenceScreen"),
+      dictMenu: document.getElementById("dictMenuScreen"),
+      dictGame: document.getElementById("dictGameScreen")
+    };
+
+    const backBtn = document.getElementById("backBtn");
+    const bigOverlay = document.getElementById("bigOverlay");
+    const bigOverlayText = document.getElementById("bigOverlayText");
+
+    function hideAllScreens() {
+      Object.values(screens).forEach(el => el.classList.remove("active"));
+    }
+
+    function showScreen(name, showBack = true) {
+      hideAllScreens();
+      screens[name].classList.add("active");
+      backBtn.classList.toggle("hidden", !showBack);
+    }
+
+    function showOverlay(html) {
+      bigOverlayText.innerHTML = html;
+      bigOverlay.classList.add("show");
+    }
+
+    function hideOverlay() {
+      bigOverlay.classList.remove("show");
+    }
+
+    function speakText(text, showBigOverlay = false, overlayHTML = null, onEndCallback = null) {
+      if (!("speechSynthesis" in window)) {
+        if (onEndCallback) onEndCallback();
+        return;
+      }
+
+      window.speechSynthesis.cancel();
+
+      if (showBigOverlay) {
+        showOverlay(overlayHTML || escapeHtml(text));
+      }
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "de-DE";
+      utterance.rate = 0.9;
+      utterance.pitch = 1;
+
+      utterance.onend = () => {
+        if (showBigOverlay) {
+          setTimeout(hideOverlay, 350);
+        }
+        if (onEndCallback) onEndCallback();
+      };
+
+      utterance.onerror = () => {
+        if (showBigOverlay) {
+          setTimeout(hideOverlay, 350);
+        }
+        if (onEndCallback) onEndCallback();
+      };
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    /* ---------- MATCH MODE ---------- */
+    const verbsColumn = document.getElementById("verbsColumn");
+    const meaningsColumn = document.getElementById("meaningsColumn");
+    const matchProgress = document.getElementById("matchProgress");
+    const matchCorrectCount = document.getElementById("matchCorrectCount");
+    const matchWrongCount = document.getElementById("matchWrongCount");
+    const verbTotalCount = document.getElementById("verbTotalCount");
+
+    let matchSet = [];
+    let selectedVerb = null;
+    let matchCorrect = 0;
+    let matchWrong = 0;
+
+    verbTotalCount.textContent = allVerbs.length;
+
+    function startMatchMode() {
+      showScreen("match", true);
+      resetMatchMode();
+    }
+
+    function resetMatchMode() {
+      matchSet = selectSmartSet(MATCH_SET_SIZE);
+      markSeen(matchSet);
+      selectedVerb = null;
+      matchCorrect = 0;
+      matchWrong = 0;
+      matchProgress.textContent = `1 / ${MATCH_SET_SIZE}`;
+      matchCorrectCount.textContent = "0";
+      matchWrongCount.textContent = "0";
+      renderMatchMode();
+    }
+
+    function renderMatchMode() {
+      verbsColumn.innerHTML = "";
+      meaningsColumn.innerHTML = "";
+
+      matchSet.forEach((item, index) => {
+        const btn = document.createElement("button");
+        btn.className = "verb-item";
+        btn.textContent = item.verb;
+        btn.dataset.verb = item.verb;
+        btn.dataset.index = index;
+        btn.addEventListener("click", () => selectVerbItem(btn, item));
+        verbsColumn.appendChild(btn);
+      });
+
+      shuffleArray(matchSet).forEach(item => {
+        const drop = document.createElement("button");
+        drop.className = "meaning-drop";
+        drop.innerHTML = `
+          <div>
+            <div class="meaning-main">${escapeHtml(item.meaning)}</div>
+            <div class="meaning-meta"></div>
+          </div>
+        `;
+        drop.addEventListener("click", () => tryMatch(item, drop));
+        meaningsColumn.appendChild(drop);
+      });
+    }
+
+    function selectVerbItem(button, item) {
+      const allBtns = verbsColumn.querySelectorAll(".verb-item");
+      allBtns.forEach(b => b.classList.remove("selected"));
+      if (button.disabled) return;
+      button.classList.add("selected");
+      selectedVerb = { button, item };
+    }
+
+    function tryMatch(targetMeaningItem, targetDrop) {
+      if (!selectedVerb || targetDrop.classList.contains("correct")) return;
+
+      const { button, item } = selectedVerb;
+
+      if (item.verb === targetMeaningItem.verb) {
+        targetDrop.classList.add("correct");
+        const main = targetDrop.querySelector(".meaning-main");
+        const meta = targetDrop.querySelector(".meaning-meta");
+        main.textContent = `${item.verb} = ${item.meaning}`;
+        meta.innerHTML = highlightSentence(item.sentence, item.sentenceForm);
+
+        button.disabled = true;
+        button.style.visibility = "hidden";
+        button.classList.remove("selected");
+        selectedVerb = null;
+
+        registerCorrect(item);
+        matchCorrect++;
+        matchCorrectCount.textContent = matchCorrect;
+        matchProgress.textContent = `${Math.min(matchCorrect + matchWrong + 1, MATCH_SET_SIZE)} / ${MATCH_SET_SIZE}`;
+
+        speakText(item.sentence, true, highlightSentence(item.sentence, item.sentenceForm));
+
+        if (matchCorrect === MATCH_SET_SIZE) {
+          setTimeout(resetMatchMode, 800);
+        }
+      } else {
+        registerWrong(item);
+        matchWrong++;
+        matchWrongCount.textContent = matchWrong;
+        targetDrop.classList.add("wrong-flash");
+        setTimeout(() => targetDrop.classList.remove("wrong-flash"), 450);
+      }
+    }
+
+    /* ---------- SENTENCE MODE ---------- */
+    const sentenceRound = document.getElementById("sentenceRound");
+    const sentenceCorrectCount = document.getElementById("sentenceCorrectCount");
+    const sentenceWrongCount = document.getElementById("sentenceWrongCount");
+    const sentenceQuestionText = document.getElementById("sentenceQuestionText");
+    const sentenceOptions = document.getElementById("sentenceOptions");
+    const sentenceNextBtn = document.getElementById("sentenceNextBtn");
+
+    let sentenceCurrent = null;
+    let sentenceAnswered = false;
+    let sentenceRoundNum = 1;
+    let sentenceCorrect = 0;
+    let sentenceWrong = 0;
+    let sentenceAutoNextTimeout = null;
+
+    function buildSentenceOptions(correctItem) {
+      const pool = allVerbs.filter(v =>
+        v.verb !== correctItem.verb &&
+        v.sentenceForm !== correctItem.sentenceForm &&
+        v.meaning !== correctItem.meaning
+      );
+      const distractors = shuffleArray(pool).slice(0, SENTENCE_OPTION_COUNT - 1);
+      return shuffleArray([correctItem, ...distractors]);
+    }
+
+    function startSentenceMode() {
+      showScreen("sentence", true);
+      sentenceRoundNum = 1;
+      sentenceCorrect = 0;
+      sentenceWrong = 0;
+      sentenceCorrectCount.textContent = "0";
+      sentenceWrongCount.textContent = "0";
+      renderSentenceQuestion();
+    }
+
+    function renderSentenceQuestion() {
+      clearTimeout(sentenceAutoNextTimeout);
+      sentenceCurrent = selectSmartSet(1)[0];
+      markSeen([sentenceCurrent]);
+      sentenceAnswered = false;
+      sentenceRound.textContent = `${sentenceRoundNum} / 10`;
+ sentenceQuestionText.innerHTML = sentenceCurrent.hiddenSentence.replace(
+  "___",
+  ' <span class="blank-chip">______</span> '
+);
+      sentenceOptions.innerHTML = "";
+
+      const options = buildSentenceOptions(sentenceCurrent);
+      const colorClasses = shuffleArray(["orange", "green", "orange", "blue"]);
+
+      options.forEach((item, i) => {
+        const btn = document.createElement("button");
+        btn.className = `option-btn ${colorClasses[i] || "blue"}`;
+        btn.textContent = item.sentenceForm;
+        btn.addEventListener("click", () => handleSentenceAnswer(item, btn));
+        sentenceOptions.appendChild(btn);
+      });
+    }
+
+    function handleSentenceAnswer(item, btn) {
+      if (sentenceAnswered) return;
+      const isCorrect = item.verb === sentenceCurrent.verb;
+
+      if (isCorrect) {
+        sentenceAnswered = true;
+        btn.classList.remove("orange", "blue", "red");
+        btn.classList.add("green");
+        sentenceCorrect++;
+        sentenceCorrectCount.textContent = String(sentenceCorrect);
+        registerCorrect(sentenceCurrent);
+
+        sentenceQuestionText.innerHTML = highlightSentence(sentenceCurrent.sentence, sentenceCurrent.sentenceForm);
+
+        speakText(
+          sentenceCurrent.sentence,
+          false,
+          null,
+          () => {
+            sentenceAutoNextTimeout = setTimeout(() => {
+              sentenceRoundNum++;
+              renderSentenceQuestion();
+            }, SENTENCE_MODE_AUTO_NEXT_DELAY);
+          }
+        );
+      } else {
+        btn.classList.remove("orange", "green", "blue");
+        btn.classList.add("red");
+        btn.disabled = true;
+        sentenceWrong++;
+        sentenceWrongCount.textContent = String(sentenceWrong);
+        registerWrong(sentenceCurrent);
+      }
+    }
+
+    sentenceNextBtn.addEventListener("click", () => {
+      sentenceRoundNum++;
+      renderSentenceQuestion();
+    });
+
+    /* ---------- DICTATION MENU + GAME ---------- */
+    const dictModeTitleBar = document.getElementById("dictModeTitleBar");
+    const dictModeTitle = document.getElementById("dictModeTitle");
+    const dictPromptTitle = document.getElementById("dictPromptTitle");
+    const dictRound = document.getElementById("dictRound");
+    const dictCorrectCount = document.getElementById("dictCorrectCount");
+    const dictWrongCount = document.getElementById("dictWrongCount");
+    const dictReplayBtn = document.getElementById("dictReplayBtn");
+    const dictCheckBtn = document.getElementById("dictCheckBtn");
+    const dictInput = document.getElementById("dictInput");
+    const dictStatus = document.getElementById("dictStatus");
+    const dictFeedback = document.getElementById("dictFeedback");
+    const dictAnswerBox = document.getElementById("dictAnswerBox");
+    let dictMode = "word"; // word | sentence
+    let dictCurrent = null;
+    let dictAttempts = 0;
+    let dictLocked = false;
+    let dictRoundNum = 1;
+    let dictCorrect = 0;
+    let dictWrong = 0;
+
+    function startDictMenu() {
+      showScreen("dictMenu", true);
+    }
+
+    function startDictGame(mode) {
+      dictMode = mode;
+      dictRoundNum = 1;
+      dictCorrect = 0;
+      dictWrong = 0;
+      dictCorrectCount.textContent = "0";
+      dictWrongCount.textContent = "0";
+      showScreen("dictGame", true);
+      loadNextDictationItem();
+    }
+
+function loadNextDictationItem() {
+  hideOverlay();
+  window.speechSynthesis.cancel();
+
+  dictCurrent = selectSmartSet(1)[0];
+  markSeen([dictCurrent]);
+
+  dictLocked = false;
+  dictAttempts = 0;
+  dictInput.value = "";
+  dictInput.disabled = false;
+  dictCheckBtn.disabled = false;
+  dictInput.classList.remove("correct", "wrong");
+
+  dictFeedback.innerHTML = "";
+  dictFeedback.style.display = "none";
+
+  dictAnswerBox.innerHTML = "";
+  dictAnswerBox.style.display = "none";
+
+  dictStatus.textContent = "Kalan deneme hakkı: 3";
+  dictRound.textContent = String(dictRoundNum);
+
+  if (dictMode === "word") {
+    dictModeTitleBar.textContent = "Kelime Dikte";
+    dictModeTitle.textContent = "Kelime / Fiilde Dikte";
+    dictPromptTitle.textContent = "Dinle ve fiili / kelimeyi yaz.";
+  } else {
+    dictModeTitleBar.textContent = "Cümle Dikte";
+    dictModeTitle.textContent = "Cümlede Dikte";
+    dictPromptTitle.textContent = "Dinle ve cümleyi yaz.";
+  }
+
+  dictInput.focus();
+  speakDictationPrompt();
+}
+    function speakDictationPrompt() {
+      if (!dictCurrent) return;
+      const text = dictMode === "word" ? dictCurrent.verb : dictCurrent.sentence;
+      speakText(text, false);
+    }
+
+    function compareDetailed(user, correct) {
+      const maxLen = Math.max(user.length, correct.length);
+      let html = "";
+      for (let i = 0; i < maxLen; i++) {
+        const u = user[i];
+        const c = correct[i];
+        if (u === undefined && c !== undefined) {
+          html += `<span class="char-missing">${escapeHtml(c)}</span>`;
+        } else if (u !== undefined && c === undefined) {
+          html += `<span class="char-wrong">${escapeHtml(u)}</span>`;
+        } else if (u === c) {
+          html += `<span class="char-correct">${escapeHtml(u)}</span>`;
+        } else {
+          html += `<span class="char-wrong">${escapeHtml(u)}</span>`;
+        }
+      }
+      return html || '<span class="char-wrong">(boş)</span>';
+    }
+
+    function showCorrectAnswerAndMoveOn(userAnswer, correctAnswer) {
+      dictInput.classList.remove("correct");
+      dictInput.classList.add("wrong");
+      dictInput.disabled = true;
+      dictCheckBtn.disabled = true;
+
+      dictFeedback.style.display = "block";
+      dictFeedback.innerHTML = compareDetailed(userAnswer, correctAnswer);
+
+      let extra = "";
+      if (dictMode === "word") {
+        extra = `<div style="margin-top:10px;"><strong>Örnek:</strong> ${escapeHtml(dictCurrent.sentence)}</div>`;
+      }
+
+      dictAnswerBox.style.display = "block";
+      dictAnswerBox.innerHTML = `<strong>Doğru cevap:</strong> ${escapeHtml(correctAnswer)}${extra}`;
+
+      setTimeout(() => {
+        dictRoundNum++;
+        loadNextDictationItem();
+      }, DICTATION_NEXT_DELAY_WRONG);
+    }
+
+    function handleDictationCheck() {
+      if (!dictCurrent || dictLocked) return;
+
+      const userAnswer = dictInput.value;
+      const correctAnswer = dictMode === "word" ? dictCurrent.verb : dictCurrent.sentence;
+
+      if (userAnswer === correctAnswer) {
+        dictLocked = true;
+        dictInput.classList.remove("wrong");
+        dictInput.classList.add("correct");
+        dictStatus.textContent = "Doğru!";
+        dictFeedback.innerHTML = "";
+        registerCorrect(dictCurrent);
+        dictCorrect++;
+        dictCorrectCount.textContent = String(dictCorrect);
+
+        speakText(correctAnswer, true, escapeHtml(correctAnswer), () => {
+          setTimeout(() => {
+            dictRoundNum++;
+            loadNextDictationItem();
+          }, DICTATION_NEXT_DELAY_CORRECT);
+        });
+      } else {
+        dictAttempts++;
+        registerWrong(dictCurrent);
+        dictWrong++;
+        dictWrongCount.textContent = String(dictWrong);
+
+        dictInput.classList.remove("correct");
+        dictInput.classList.add("wrong");
+
+        const remaining = 3 - dictAttempts;
+
+        if (remaining > 0) {
+          dictStatus.textContent = `Hatalı, kalan deneme hakkı: ${remaining}`;
+          dictFeedback.innerHTML = "";
+          dictAnswerBox.style.display = "none";
+          dictAnswerBox.innerHTML = "";
+        } else {
+          dictStatus.textContent = "3 deneme bitti.";
+          showCorrectAnswerAndMoveOn(userAnswer, correctAnswer);
+        }
+      }
+    }
+
+    dictReplayBtn.addEventListener("click", speakDictationPrompt);
+    dictCheckBtn.addEventListener("click", handleDictationCheck);
+    dictInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        handleDictationCheck();
+      }
+    });
+
+    /* ---------- NAVIGATION ---------- */
+    let currentMainScreen = "menu";
+
+    function goMenu() {
+      currentMainScreen = "menu";
+      showScreen("menu", false);
+      hideOverlay();
+      window.speechSynthesis.cancel();
+    }
+
+    backBtn.addEventListener("click", () => {
+      if (currentMainScreen === "dictGame") {
+        currentMainScreen = "dictMenu";
+        showScreen("dictMenu", true);
+        return;
+      }
+      goMenu();
+    });
+
+    document.getElementById("menuMatchBtn").addEventListener("click", () => {
+      currentMainScreen = "match";
+      startMatchMode();
+    });
+
+    document.getElementById("menuSentenceBtn").addEventListener("click", () => {
+      currentMainScreen = "sentence";
+      startSentenceMode();
+    });
+
+    document.getElementById("menuDictationBtn").addEventListener("click", () => {
+      currentMainScreen = "dictMenu";
+      startDictMenu();
+    });
+
+    document.getElementById("dictWordBtn").addEventListener("click", () => {
+      currentMainScreen = "dictGame";
+      startDictGame("word");
+    });
+
+    document.getElementById("dictSentenceBtn").addEventListener("click", () => {
+      currentMainScreen = "dictGame";
+      startDictGame("sentence");
+    });
+
+    goMenu();
+  </script>
+</body>
+</html>
